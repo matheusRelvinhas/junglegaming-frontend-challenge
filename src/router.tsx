@@ -1,7 +1,11 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter, Outlet, type ErrorComponentProps } from '@tanstack/react-router'
 import { Layout } from '@/app/layout'
+import { StateMessage } from '@/components/StateMessage'
 import { COLLECTIONS, NETWORKS } from '@/constants/catalog'
+import { ICONS } from '@/constants/icons'
 import { AppProvider } from '@/context/AppProvider'
+import type { AuthMode } from '@/hooks/useAuthModal'
+import { CartPage } from '@/pages/cart/CartPage'
 import { HomePage } from '@/pages/home/HomePage'
 import { NftDetailPage } from '@/pages/nft-detail/NftDetailPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -35,7 +39,13 @@ function parseHomeSearch(search: Record<string, unknown>): ListNftsParams {
   }
 }
 
+function parseRootSearch(search: Record<string, unknown>): { auth?: AuthMode } {
+  const auth = search.auth
+  return { auth: auth === 'login' || auth === 'signup' ? auth : undefined }
+}
+
 const rootRoute = createRootRoute({
+  validateSearch: parseRootSearch,
   component: () => (
     <AppProvider>
       <Layout>
@@ -56,16 +66,38 @@ const homeRoute = createRoute({
 const nftDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/nft/$nftId',
+  staticData: { isMarketPage: true },
   component: NftDetailPage,
 })
 
+const cartRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/cart',
+  staticData: { title: 'Carrinho de NFTs', isMarketPage: true },
+  component: CartPage,
+})
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute]),
+  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute]),
+  defaultErrorComponent: ({ reset }: ErrorComponentProps) => (
+    <div className="py-10">
+      <StateMessage
+        icon={ICONS.offline}
+        title="Algo deu errado"
+        description="Não foi possível exibir esta página. Tente novamente."
+        onRetry={reset}
+      />
+    </div>
+  ),
   scrollRestoration: true,
 })
 
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
+  }
+  interface StaticDataRouteOption {
+    title?: string
+    isMarketPage?: boolean
   }
 }

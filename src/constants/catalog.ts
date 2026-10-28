@@ -18,6 +18,10 @@ export const NETWORKS: { slug: Network; label: string }[] = [
   { slug: 'solana', label: 'Solana' },
 ]
 
+export const RAIL_SIZE = 5
+
+export const STAY_IN_PLACE = { hash: true, resetScroll: false, hashScrollIntoView: false } as const
+
 export const SEARCH_INPUT_ID = 'search-nfts'
 export const FILTER_DIALOG_ID = 'catalog-filters-dialog'
 export const CATALOG_SECTION_ID = 'catalogo'

@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
+import { useAppContext } from '@/context/AppContext'
 import type { Nft } from '@/types/api'
+import { PriceUpdatedTag } from './PriceUpdate'
 import { Skeleton } from './Skeleton'
 
 type NftCardProps = {
@@ -7,6 +9,9 @@ type NftCardProps = {
 }
 
 export function NftCard({ nft }: NftCardProps) {
+  const { priceChanges } = useAppContext()
+  const isPriceUpdated = priceChanges.some((change) => change.nft_id === nft.id)
+
   return (
     <article className="relative rounded-xl bg-surface-2 desktop:rounded-none desktop:bg-transparent">
       <Link
@@ -32,8 +37,11 @@ export function NftCard({ nft }: NftCardProps) {
         <h3 className="mx-1.5 mt-3 text-sm font-normal group-hover:text-primary desktop:mx-0 desktop:mt-4 desktop:text-base">
           {nft.name}
         </h3>
-        <p className="mx-1.5 pb-1 text-sm font-bold text-primary desktop:mx-0 desktop:text-[1.0625rem]">
-          {nft.currency.ethereum} ETH
+        <p className="mx-1.5 flex flex-wrap items-center gap-1.5 pb-1 text-sm font-bold text-primary desktop:mx-0 desktop:text-[1.0625rem]">
+          <span key={nft.currency.ethereum} className={isPriceUpdated ? 'animate-price-flash rounded-sm' : undefined}>
+            {nft.currency.ethereum} ETH
+          </span>
+          {isPriceUpdated && <PriceUpdatedTag />}
         </p>
       </Link>
     </article>

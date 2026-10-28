@@ -1,16 +1,14 @@
-import { Icon } from '@iconify/react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import { useState } from 'react'
-import { ModalDialog } from '@/components/ModalDialog'
+import { DialogCloseButton, ModalDialog } from '@/components/ModalDialog'
 import { COLLECTIONS, FILTER_DIALOG_ID, NETWORKS } from '@/constants/catalog'
-import { ICONS } from '@/constants/icons'
 import { useAppContext } from '@/context/AppContext'
 import { useCatalogSearch } from '@/hooks/useCatalogSearch'
 import type { CatalogFacets } from '@/types/api'
 
 const PRICE_THUMB_LABELS = ['Preço mínimo em ETH', 'Preço máximo em ETH']
 
-function formatEth(value: number) {
+function formatPriceLabel(value: number) {
   return value.toFixed(2).replace('.', ',')
 }
 
@@ -70,7 +68,9 @@ function PriceRangeFilter({ bounds, minPrice, maxPrice, onApply }: PriceRangeFil
 
   function applyRange() {
     const [min, max] = range
-    onApply(min > lowestPrice ? Number(min.toFixed(2)) : undefined, max < highestPrice ? Number(max.toFixed(2)) : undefined)
+    const minPriceFilter = min > lowestPrice ? Number(min.toFixed(2)) : undefined
+    const maxPriceFilter = max < highestPrice ? Number(max.toFixed(2)) : undefined
+    onApply(minPriceFilter, maxPriceFilter)
   }
 
   return (
@@ -98,7 +98,7 @@ function PriceRangeFilter({ bounds, minPrice, maxPrice, onApply }: PriceRangeFil
           ))}
         </SliderPrimitive.Root>
         <p className="mt-4">
-          Preço: {formatEth(range[0])} - {formatEth(range[1])} ETH
+          Preço: {formatPriceLabel(range[0])} - {formatPriceLabel(range[1])} ETH
         </p>
         <button
           type="button"
@@ -187,14 +187,7 @@ export function FilterDialog({ facets, total }: FilterDialogProps) {
         <h2 id="filter-dialog-title" className="text-h3">
           Filtros
         </h2>
-        <button
-          type="button"
-          onClick={closeDialog}
-          aria-label="Fechar filtros"
-          className="grid size-9 place-items-center rounded-full border text-primary"
-        >
-          <Icon icon={ICONS.close} className="size-5" aria-hidden />
-        </button>
+        <DialogCloseButton label="Fechar filtros" onClick={closeDialog} className="rounded-full border" />
       </div>
 
       <FilterPanel facets={facets} />

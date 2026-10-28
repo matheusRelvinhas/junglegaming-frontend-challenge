@@ -1,19 +1,15 @@
-import { Link, useParams } from '@tanstack/react-router'
-import { NftCard, NftCardSkeleton } from '@/components/NftCard'
+import { useParams } from '@tanstack/react-router'
+import { Breadcrumb } from '@/components/Breadcrumb'
+import { NftRail } from '@/components/NftRail'
 import { Skeleton } from '@/components/Skeleton'
 import { StateMessage } from '@/components/StateMessage'
-import { CATALOG_SECTION_ID } from '@/constants/catalog'
+import { CATALOG_SECTION_ID, RAIL_SIZE } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
 import { useListNfts, useNftInfo } from '@/services/nfts'
 import type { CollectionSlug, NftInfo } from '@/types/api'
 import { NotFoundPage } from '../NotFoundPage'
 import { NftGallery } from './NftGallery'
 import { NftPurchasePanel } from './NftPurchasePanel'
-
-const RAIL_SIZE = 5
-const railListClass =
-  '-mx-6 flex snap-x gap-4 overflow-x-auto px-6 pb-2 desktop:mx-0 desktop:grid desktop:grid-cols-5 desktop:gap-[26px] desktop:overflow-visible desktop:px-0'
-const railItemClass = 'w-[160px] shrink-0 snap-start desktop:w-auto'
 
 function NftDetailSkeleton() {
   return (
@@ -77,38 +73,14 @@ function CollectionRail({ collection, currentNftId }: { collection: CollectionSl
   const sameCollection = useListNfts({ collection })
   const otherNfts = sameCollection.data?.items.filter((nft) => nft.id !== currentNftId).slice(0, RAIL_SIZE) ?? []
 
-  function renderContent() {
-    if (sameCollection.isPending) {
-      return (
-        <ul aria-busy="true" aria-label="Carregando NFTs da coleção" className={railListClass}>
-          {Array.from({ length: RAIL_SIZE }, (_, index) => (
-            <li key={index} className={railItemClass}>
-              <NftCardSkeleton />
-            </li>
-          ))}
-        </ul>
-      )
-    }
-    if (sameCollection.isError) return <p className="text-sand">Não foi possível carregar outros NFTs desta coleção.</p>
-    if (otherNfts.length === 0) return <p className="text-sand">Ainda não há outros NFTs nesta coleção.</p>
-    return (
-      <ul className={railListClass}>
-        {otherNfts.map((nft) => (
-          <li key={nft.id} className={railItemClass}>
-            <NftCard nft={nft} />
-          </li>
-        ))}
-      </ul>
-    )
-  }
-
   return (
-    <section aria-labelledby="collection-rail-title" className="mt-16 desktop:mt-[100px]">
-      <h2 id="collection-rail-title" className="mb-6 border-b pb-2 text-[1.0625rem] font-bold text-primary">
-        Mais desta coleção
-      </h2>
-      {renderContent()}
-    </section>
+    <NftRail
+      title="Mais desta coleção"
+      nfts={otherNfts}
+      isLoading={sameCollection.isPending}
+      isError={sameCollection.isError}
+      emptyMessage="Ainda não há outros NFTs nesta coleção."
+    />
   )
 }
 
@@ -144,15 +116,7 @@ export function NftDetailPage() {
   return (
     <>
       <title>{`${nft.name} | Kurio`}</title>
-      <nav aria-label="Trilha de navegação" className="mb-2 hidden text-[0.9375rem] font-semibold desktop:block">
-        <Link to="/" className="hover:text-primary">
-          Início
-        </Link>
-        {' / '}
-        <Link to="/" hash={CATALOG_SECTION_ID} className="hover:text-primary">
-          Mercado
-        </Link>
-      </nav>
+      <Breadcrumb />
 
       <div key={nft.id} className="grid gap-6 desktop:grid-cols-[480px_1fr] desktop:gap-[30px]">
         <NftGallery nft={nft} />

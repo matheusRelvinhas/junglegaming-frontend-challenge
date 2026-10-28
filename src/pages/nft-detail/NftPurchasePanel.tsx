@@ -1,12 +1,14 @@
 import { Icon } from '@iconify/react'
-import { useEffect, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
+import { PriceUpdatedTag } from '@/components/PriceUpdate'
 import { QuantityStepper } from '@/components/QuantityStepper'
 import { COLLECTIONS } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
-import { useAppContext } from '@/context/AppContext'
+import { isSameCartItem, useAppContext } from '@/context/AppContext'
 import type { NftInfo } from '@/types/api'
+import { range } from '@/utils/array'
 
-const FEEDBACK_DURATION_MS = 4000
 const MAX_STARS = 5
 
 type NftPurchasePanelProps = {
@@ -14,17 +16,18 @@ type NftPurchasePanelProps = {
 }
 
 export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
-  const { cartItems, addToCart, favoriteIds, toggleFavorite } = useAppContext()
+  const { cartItems, addToCart, favoriteIds, toggleFavorite, priceChanges } = useAppContext()
   const [editionId, setEditionId] = useState(() => nft.editions.find((edition) => edition.available > 0)?.id)
   const [quantity, setQuantity] = useState(1)
-  const [feedback, setFeedback] = useState('')
+  const navigate = useNavigate()
 
   const edition = nft.editions.find((item) => item.id === editionId)
-  const quantityInCart = cartItems.find((item) => item.nft_id === nft.id && item.edition === editionId)?.quantity ?? 0
+  const quantityInCart = cartItems.find((item) => isSameCartItem(item, nft.id, editionId ?? ''))?.quantity ?? 0
   const maxQuantity = Math.max(0, (edition?.available ?? 0) - quantityInCart)
   const canBuy = maxQuantity > 0
   const selectedQuantity = Math.min(quantity, Math.max(maxQuantity, 1))
   const isFavorite = favoriteIds.includes(nft.id)
+  const isPriceUpdated = priceChanges.some((change) => change.nft_id === nft.id)
   const collectionLabel = COLLECTIONS.find((collection) => collection.slug === nft.collection)?.label
   const filledStars = Math.round(nft.rating)
   const shareUrl = encodeURIComponent(window.location.href)
@@ -35,16 +38,10 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
     { label: 'Compartilhar no X (Twitter)', icon: ICONS.twitter, href: `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}` },
   ]
   const nftFacts = [
-    ['ID do token', nft.token_id],
-    ['Coleção', collectionLabel],
-    ['Atributos', nft.attributes.join(', ')],
+    { label: 'ID do token', value: nft.token_id },
+    { label: 'Coleção', value: collectionLabel },
+    { label: 'Atributos', value: nft.attributes.join(', ') },
   ]
-
-  useEffect(() => {
-    if (!feedback) return
-    const timer = setTimeout(() => setFeedback(''), FEEDBACK_DURATION_MS)
-    return () => clearTimeout(timer)
-  }, [feedback])
 
   function selectEdition(newEditionId: string) {
     setEditionId(newEditionId)
@@ -54,12 +51,11 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
   function buy() {
     if (!edition || !canBuy) return
     addToCart({ nft_id: nft.id, edition: edition.id, quantity: selectedQuantity })
-    setQuantity(1)
-    setFeedback(`Adicionado ao carrinho: ${selectedQuantity}× ${nft.name} (edição ${edition.label}).`)
+    navigate({ to: '/cart' })
   }
 
   function buyButtonLabel() {
-    if (!edition) return 'ESGOTADO'
+    if (!edition || edition.available === 0) return 'ESGOTADO'
     if (!canBuy) return 'LIMITE NO CARRINHO'
     return 'COMPRAR'
   }
@@ -81,14 +77,19 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
       </div>
 
       <div className="mt-1 flex items-center justify-between gap-4 border-b pb-2">
-        <p className="text-price whitespace-nowrap text-primary">{nft.currency.ethereum} ETH</p>
+        <p className="flex items-center gap-2 text-price whitespace-nowrap text-primary">
+          <span key={nft.currency.ethereum} className={isPriceUpdated ? 'animate-price-flash rounded-sm' : undefined}>
+            {nft.currency.ethereum} ETH
+          </span>
+          {isPriceUpdated && <PriceUpdatedTag />}
+        </p>
         <p className="hidden items-center gap-1 text-[0.9375rem] desktop:flex">
           <span className="flex" role="img" aria-label={`Nota ${nft.rating.toFixed(1)} de ${MAX_STARS}`}>
-            {Array.from({ length: MAX_STARS }, (_, index) => (
+            {range(MAX_STARS).map((star) => (
               <Icon
-                key={index}
+                key={star}
                 icon={ICONS.star}
-                className={`size-4 ${index < filledStars ? 'text-primary' : 'text-khaki/40'}`}
+                className={`size-4 ${star <= filledStars ? 'text-primary' : 'text-khaki/40'}`}
                 aria-hidden
               />
             ))}
@@ -104,18 +105,15 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
       <ul aria-label="Edições" className="mt-2 flex flex-wrap gap-1.5">
         {nft.editions.map((item) => {
           const isSoldOut = item.available === 0
-          const isSelected = item.id === editionId
           return (
             <li key={item.id}>
               <button
                 type="button"
-                aria-pressed={isSelected}
+                aria-pressed={item.id === editionId}
                 disabled={isSoldOut}
                 title={isSoldOut ? 'Esgotada' : `${item.available} disponíveis`}
                 onClick={() => selectEdition(item.id)}
-                className={`rounded-full border bg-surface px-2 py-0.5 text-sm desktop:bg-surface-2 ${
-                  isSelected ? 'border-primary text-primary' : 'text-sand'
-                } disabled:line-through disabled:opacity-40`}
+                className="rounded-full border bg-surface px-2 py-0.5 text-sm text-sand aria-pressed:border-primary aria-pressed:text-primary disabled:line-through disabled:opacity-40 desktop:bg-surface-2"
               >
                 {item.label}
                 {isSoldOut && <span className="sr-only"> (esgotada)</span>}
@@ -154,15 +152,11 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
         </div>
       </div>
 
-      <p role="status" className="mt-3 min-h-5 text-sm text-success">
-        {feedback}
-      </p>
-
-      <dl className="mt-3 grid gap-2.5 text-[0.9375rem] text-sand">
-        {nftFacts.map(([label, value]) => (
-          <div key={label} className="flex gap-2">
-            <dt>{label}:</dt>
-            <dd>{value}</dd>
+      <dl className="mt-6 grid gap-2.5 text-[0.9375rem] text-sand">
+        {nftFacts.map((fact) => (
+          <div key={fact.label} className="flex gap-2">
+            <dt>{fact.label}:</dt>
+            <dd>{fact.value}</dd>
           </div>
         ))}
       </dl>

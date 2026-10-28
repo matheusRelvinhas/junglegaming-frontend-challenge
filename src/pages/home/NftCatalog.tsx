@@ -9,6 +9,7 @@ import { useAppContext } from '@/context/AppContext'
 import { useCatalogSearch } from '@/hooks/useCatalogSearch'
 import { useListNfts } from '@/services/nfts'
 import type { Nft } from '@/types/api'
+import { range } from '@/utils/array'
 import { FilterDialog, FilterPanel } from './FilterPanel'
 
 const SKELETON_CARDS = 9
@@ -62,7 +63,7 @@ function Pagination({ page, totalPages, onPageChange }: { page: number; totalPag
           <Icon icon={ICONS.chevronLeft} className="size-5" aria-hidden />
         </button>
       )}
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+      {range(totalPages).map((pageNumber) => (
         <button
           key={pageNumber}
           type="button"
@@ -100,8 +101,8 @@ export function NftCatalog() {
     if (catalog.isPending) {
       return (
         <ul aria-busy="true" aria-label="Carregando NFTs" className={gridClass}>
-          {Array.from({ length: SKELETON_CARDS }, (_, index) => (
-            <li key={index} className={staggeredItemClass}>
+          {range(SKELETON_CARDS).map((placeholder) => (
+            <li key={placeholder} className={staggeredItemClass}>
               <NftCardSkeleton />
             </li>
           ))}

@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
-import { ModalDialog } from '@/components/ModalDialog'
+import { DialogCloseButton, ModalDialog } from '@/components/ModalDialog'
 import { ICONS } from '@/constants/icons'
 import type { NftInfo } from '@/types/api'
 
@@ -57,15 +57,12 @@ export function NftGallery({ nft }: NftGalleryProps) {
         className="m-auto w-[min(90vw,720px)] overflow-visible bg-transparent backdrop:bg-background/85"
       >
         <img src={selectedImage} alt={nft.name} className="max-h-[85dvh] w-full rounded-2xl object-contain" />
-        <button
-          type="button"
-          autoFocus
+        <DialogCloseButton
+          label="Fechar imagem ampliada"
           onClick={() => setIsZoomOpen(false)}
-          aria-label="Fechar imagem ampliada"
-          className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-background text-primary"
-        >
-          <Icon icon={ICONS.close} className="size-5" aria-hidden />
-        </button>
+          autoFocus
+          className="absolute top-3 right-3 rounded-full bg-background"
+        />
       </ModalDialog>
     </div>
   )

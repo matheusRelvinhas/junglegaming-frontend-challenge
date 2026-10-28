@@ -19,6 +19,7 @@ export type Nft = {
   collection: CollectionSlug
   top_nft: boolean
   rare_nft: boolean
+  version: number
 }
 
 export type ListNftsParams = {
@@ -67,7 +68,51 @@ export type NftInfo = Nft & {
   gallery: string[]
 }
 
+export type Coupon = {
+  code: string
+  discount_percent: number
+}
+
+export type User = {
+  id: string
+  name: string
+  email: string
+}
+
+export type LoginBody = {
+  email: string
+  password: string
+}
+
+export type RegisterBody = LoginBody & {
+  name: string
+}
+
+export type AuthResponse = {
+  token: string
+  user: User
+}
+
+export type UserResponse = {
+  user: User
+}
+
+export type NftUpdatedEvent = {
+  eventId: string
+  type: 'nft.updated'
+  resource: { type: 'nft'; id: number }
+  version: number
+  occurredAt: string
+  data: {
+    price: string
+    editions: { id: string; available: number }[]
+  }
+}
+
+export type MarketAction = 'price-up' | 'price-down' | 'sell-out' | 'restock'
+
 export type ApiError = {
   status: number | null
   message: string
+  field?: string
 }

@@ -15,6 +15,7 @@
 
   --sand: #cfb28c;
   --khaki: #b39463;
+  --gray: #9a928b;
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
@@ -50,6 +51,7 @@
 
   --color-sand: var(--sand);
   --color-khaki: var(--khaki);
+  --color-gray: var(--gray);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -103,6 +105,14 @@
   @keyframes shimmer {
     to {
       transform: translateX(100%);
+    }
+  }
+
+  --animate-price-flash: price-flash 1.6s ease-out;
+
+  @keyframes price-flash {
+    from {
+      background-color: color-mix(in oklab, var(--warning) 35%, transparent);
     }
   }
 }

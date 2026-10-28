@@ -1,12 +1,24 @@
 import { createContext, useContext } from 'react'
+import type { User } from '@/types/api'
 
-export const MOBILE_BREAKPOINT = 1040
+const MOBILE_BREAKPOINT = 1040
 export const MOBILE_MEDIA_QUERY = `(width < ${MOBILE_BREAKPOINT}px)`
 
 export type CartItem = {
   nft_id: number
   edition: string
   quantity: number
+}
+
+export function isSameCartItem(item: CartItem, nftId: number, edition: string) {
+  return item.nft_id === nftId && item.edition === edition
+}
+
+export type PriceChange = {
+  nft_id: number
+  name: string
+  previous_price: string
+  price: string
 }
 
 type AppContextValue = {
@@ -18,8 +30,17 @@ type AppContextValue = {
   cartItems: CartItem[]
   cartCount: number
   addToCart: (item: CartItem) => void
+  updateCartQuantity: (nftId: number, edition: string, quantity: number) => void
+  removeFromCart: (nftId: number, edition: string) => void
   favoriteIds: number[]
   toggleFavorite: (nftId: number) => void
+  user: User | null
+  isCheckingSession: boolean
+  startSession: (token: string, user: User) => void
+  signOut: () => void
+  priceChanges: PriceChange[]
+  dismissPriceChanges: (nftIds: number[]) => void
+  realtimeMessage: string
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

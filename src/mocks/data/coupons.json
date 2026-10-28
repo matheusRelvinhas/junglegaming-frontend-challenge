@@ -1,0 +1,4 @@
+[
+  { "code": "KURIO10", "discount_percent": 10, "expired": false },
+  { "code": "EXPIRADO", "discount_percent": 15, "expired": true }
+]

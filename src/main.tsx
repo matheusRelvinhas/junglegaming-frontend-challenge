@@ -19,8 +19,8 @@ async function enableMocks() {
     if (String(event.reason?.message).startsWith('Failed to update a ServiceWorker')) event.preventDefault()
   })
 
-  const [{ setupWorker }, { handlers }] = await Promise.all([import('msw/browser'), import('@/mocks/handlers')])
-  await setupWorker(...handlers).start({ onUnhandledFrame: 'bypass' })
+  const { startMocks } = await import('@/mocks/browser')
+  await startMocks()
 }
 
 enableMocks().then(() => {
