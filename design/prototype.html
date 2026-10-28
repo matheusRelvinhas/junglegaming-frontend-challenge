@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kurio — Protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+<!-- Iconify web component: mesmos nomes de ícone usados no app com @iconify/react -->
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<style>
+/* =========================================================
+   DESIGN TOKENS — extraídos do Figma (pixel sampling 1:1)
+   Estes mesmos valores devem virar o tema do Tailwind.
+   ========================================================= */
+:root {
+  --bg: #140D0A;          /* fundo da página */
+  --surface: #241612;     /* painéis, cards, sidebar, modais, footer */
+  --surface-2: #2C1B14;   /* cards elevados (mobile) */
+  --surface-3: #38220F;   /* faixa do footer, input newsletter, chips */
+  --border: #432C1A;      /* bordas, divisores, inputs */
+  --cream: #F5F1EB;       /* texto principal */
+  --sand: #CFB28C;        /* texto secundário / descrições */
+  --khaki: #B39463;       /* placeholder / texto terciário */
+  --accent: #D28A4C;      /* primária: botões, preços, ativo */
+  --accent-2: #B8733D;    /* fim do gradiente dos botões mobile */
+  --on-accent: #140D0A;   /* texto sobre a cor primária */
+  --required: #E5664A;    /* asterisco de campo obrigatório */
+  --canvas: #1E1E1E;      /* fundo do canvas do Figma (só protótipo) */
+
+  --font: 'Roboto Mono', ui-monospace, Consolas, monospace;
+  --font-num: 'Roboto', system-ui, sans-serif; /* só na paginação */
+
+  --container: 1200px;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-2xl: 24px; --r-pill: 999px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--canvas);
+  color: var(--cream);
+  font: 400 14px/1.6 var(--font);
+  letter-spacing: .04em;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; letter-spacing: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Ícones via Iconify (<iconify-icon>): tamanho controlado por font-size */
+.icon { font-size: 20px; width: 1em; height: 1em; flex: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Barra do protótipo (não faz parte do design) ---------- */
+.proto-bar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  padding: 10px 16px; background: #0b0807; border-bottom: 1px solid #2a2a2a;
+  font: 500 12px/1 var(--font-num); letter-spacing: 0;
+}
+.proto-bar strong { color: var(--accent); margin-right: 8px; font-family: var(--font); }
+.proto-bar .sep { width: 1px; height: 20px; background: #333; margin: 0 6px; }
+.proto-bar a { padding: 7px 10px; border-radius: 6px; color: #bbb; }
+.proto-bar a:hover { background: #222; color: #fff; }
+.proto-bar a.on { background: var(--accent); color: var(--on-accent); }
+.proto-bar .label { color: #777; text-transform: uppercase; font-size: 10px; letter-spacing: .1em; }
+
+/* ---------- Frame desktop ---------- */
+.frame-desktop { width: 1440px; max-width: 100%; margin: 24px auto; background: var(--bg); padding-bottom: 32px; position: relative; overflow: hidden; }
+.wrap { width: min(var(--container), 100% - 32px); margin-inline: auto; }
+
+/* ---------- Header ---------- */
+.header { height: 75px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: relative; }
+.logo { font-weight: 700; font-size: 13px; letter-spacing: .14em; }
+.nav { position: absolute; left: 50%; top: 0; bottom: 0; transform: translateX(-50%); display: flex; gap: 40px; }
+.nav a { position: relative; padding-top: 30px; font-size: 16px; }
+.nav a.active { color: var(--accent); font-weight: 600; }
+.nav a.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--accent); border-radius: 2px; }
+.header-actions { display: flex; align-items: center; gap: 28px; }
+.cart-btn { position: relative; }
+.badge-count { position: absolute; top: -5px; right: -9px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 9px/15px var(--font-num); text-align: center; letter-spacing: 0; }
+
+/* ---------- Botões ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 24px; border-radius: var(--r-sm); font-weight: 700; font-size: 15px; transition: filter .15s, background .15s; white-space: nowrap; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-outline { border: 1px solid var(--accent); color: var(--accent); font-weight: 500; }
+.btn-outline:hover { background: rgba(210,138,76,.08); }
+.btn-sm { height: 35px; padding: 0 12px; font-size: 15px; font-weight: 500; }
+.btn-block { width: 100%; }
+.btn-lg { height: 45px; }
+.btn-pill { border-radius: var(--r-pill); background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: var(--on-accent); }
+.link-accent { color: var(--accent); }
+.link-accent:hover { text-decoration: underline; }
+
+/* ---------- Inputs ---------- */
+.field { display: grid; gap: 8px; }
+.field label, .label { font-size: 15px; color: var(--cream); }
+.req { color: var(--required); font-size: 18px; line-height: 0; margin-left: 2px; }
+.input, .select { height: 40px; width: 100%; border: 1px solid var(--border); background: transparent; border-radius: 2px; padding: 0 12px; font-size: 14px; color: var(--cream); }
+.input::placeholder { color: var(--khaki); }
+.input:focus, .select:focus { outline: none; border-color: var(--accent); }
+.select { appearance: none; color: var(--khaki); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M5 8l5 5 5-5' fill='none' stroke='%23CFB28C' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center; }
+.input-wrap { position: relative; }
+.input-wrap .icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--khaki); }
+.textarea { width: 100%; min-height: 150px; border: 1px solid var(--border); background: transparent; resize: vertical; padding: 12px; }
+.ens { display: flex; gap: 10px; }
+.ens .select { width: 78px; flex: none; color: var(--cream); padding-left: 10px; background-position: right 8px center; }
+.radio { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.radio .dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--accent); display: grid; place-items: center; flex: none; }
+.radio.checked .dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+/* ---------- Hero ---------- */
+.hero { display: grid; grid-template-columns: 1fr 450px; margin-top: 32px; }
+.hero-copy { padding: 44px 40px 0; position: relative; }
+.eyebrow { font-size: 14px; letter-spacing: .14em; }
+.hero h1 { margin: 14px 0 12px; font-size: 44px; line-height: 70px; font-weight: 700; letter-spacing: .06em; }
+.hero p { margin: 0 0 30px; max-width: 560px; color: var(--sand); line-height: 24px; letter-spacing: .06em; }
+.hero .btn { width: 140px; letter-spacing: .04em; }
+.hero-media img { width: 450px; height: 450px; border-radius: var(--r-2xl); object-fit: cover; }
+.dots { display: flex; gap: 8px; justify-content: center; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.dots.outline i { border: 1.5px solid var(--accent); background: transparent; width: 12px; height: 12px; }
+.dots.outline i.on { background: var(--accent); }
+.hero .dots { position: absolute; right: 70px; bottom: -50px; }
+
+/* ---------- Catálogo ---------- */
+.catalog { display: grid; grid-template-columns: 310px 1fr; gap: 48px; margin-top: 96px; align-items: start; }
+.panel { background: var(--surface); padding: 20px 20px 24px; }
+.panel h3 { margin: 0 0 18px; font-size: 18px; font-weight: 600; letter-spacing: .03em; }
+.filter-list { list-style: none; margin: 0 0 28px; padding: 0 0 0 12px; display: grid; gap: 18px; }
+.filter-list li { display: flex; justify-content: space-between; font-size: 15px; color: var(--sand); cursor: pointer; }
+.filter-list li span:last-child { font-weight: 600; }
+.filter-list li.active { color: var(--accent); }
+.filter-list li:hover { color: var(--cream); }
+.range { position: relative; height: 18px; margin: 4px 0 18px 12px; }
+.range::before { content: ""; position: absolute; left: 0; right: 0; top: 8px; height: 3px; background: var(--accent); border-radius: 2px; }
+.range i { position: absolute; top: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface-3); }
+.featured { margin-top: 24px; background: linear-gradient(180deg, #2a1a12 0%, var(--bg) 100%); text-align: center; }
+.featured h4 { margin: 0; padding: 26px 20px 4px; text-align: left; color: var(--accent); font-size: 22px; letter-spacing: .04em; }
+.featured h5 { margin: 0 0 10px; font-size: 20px; letter-spacing: .04em; }
+.featured img { width: 100%; border-radius: var(--r-xl); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.tabs { display: flex; gap: 22px; }
+.tabs button { font-size: 15px; font-weight: 600; padding-bottom: 4px; border-bottom: 2px solid transparent; }
+.tabs button.active { color: var(--accent); border-color: var(--accent); }
+.sort { display: flex; align-items: center; gap: 4px; font-size: 15px; }
+
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 64px 34px; }
+.nft-card { position: relative; }
+.nft-card .media { position: relative; background: var(--surface); aspect-ratio: 258 / 300; display: grid; place-items: center; }
+.nft-card .media img { width: 97%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-lg); }
+.nft-card .name { margin-top: 18px; font-size: 16px; }
+.nft-card .price { font-size: 17px; font-weight: 700; color: var(--accent); }
+.nft-card .old { color: var(--khaki); font-weight: 400; text-decoration: line-through; margin-left: 8px; }
+.nft-card .tag { position: absolute; top: 16px; left: 4px; background: var(--accent); color: var(--on-accent); font-size: 15px; padding: 2px 14px; font-weight: 500; z-index: 1; }
+.nft-card .media-wrap { position: relative; }
+.nft-card .quick { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; opacity: 0; transition: opacity .15s; }
+.nft-card:hover .quick, .nft-card:focus-within .quick { opacity: 1; }
+.quick { display: flex; gap: 10px; }
+.quick button { width: 34px; height: 34px; background: var(--surface); border-radius: 2px; display: grid; place-items: center; color: var(--cream); }
+.quick button:hover { color: var(--accent); }
+
+.pagination { display: flex; gap: 8px; justify-content: flex-end; margin-top: 86px; font-family: var(--font-num); letter-spacing: 0; }
+.pagination button { width: 35px; height: 35px; border: 1px solid var(--border); border-radius: 2px; font-size: 18px; }
+.pagination button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
+
+/* ---------- Promo banners ---------- */
+.promos { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 96px; }
+.promo { display: grid; grid-template-columns: 287px 1fr; background: var(--surface); border-radius: var(--r-md); min-height: 250px; }
+.promo img { width: 100%; height: 250px; object-fit: cover; border-radius: var(--r-xl); }
+.promo div { padding: 38px 30px 30px 10px; text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.promo h3 { margin: 0 0 10px; font-size: 17px; line-height: 24px; }
+.promo p { margin: 0 0 6px; color: var(--sand); line-height: 24px; }
+.promo .btn { width: 140px; margin-top: auto; font-weight: 500; }
+
+/* ---------- Blog ---------- */
+.section-title { text-align: center; margin-top: 110px; }
+.section-title h2 { margin: 0; font-size: 26px; letter-spacing: .04em; }
+.section-title p { margin: 8px 0 34px; color: var(--sand); }
+.blog { display: grid; grid-template-columns: repeat(4, 268px); gap: 24px; }
+.post { background: var(--surface); border-radius: var(--r-md); overflow: hidden; }
+.post img { width: 100%; height: 195px; object-fit: cover; object-position: top; }
+.post div { padding: 14px 16px 16px; }
+.post small { font-size: 12px; color: var(--sand); display: block; line-height: 16px; }
+.post h3 { margin: 16px 0 10px; font-size: 16px; line-height: 21px; }
+.post p { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--accent); }
+.post a { font-size: 12px; font-weight: 600; color: var(--accent); }
+
+/* ---------- Footer ---------- */
+.footer { margin-top: 96px; }
+.features { background: var(--surface); display: grid; grid-template-columns: 266px 266px 266px 1fr; padding: 32px 30px 16px 48px; }
+.feature { padding: 0 12px 0 0; border-right: 1px solid var(--accent); margin-right: 16px; }
+.feature .circle { width: 74px; height: 74px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 22px; }
+.feature h3 { margin: 14px 0 10px; font-size: 17px; }
+.feature p { margin: 0; color: var(--sand); line-height: 22px; letter-spacing: .06em; }
+.newsletter h3 { margin: 0 0 22px; font-size: 17px; line-height: 16px; }
+.newsletter form { display: flex; margin-bottom: 18px; }
+.newsletter input { flex: 1; height: 40px; background: var(--surface-3); border: 0; padding: 0 12px; }
+.newsletter input::placeholder { color: var(--khaki); }
+.newsletter button { background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 18px; padding: 0 16px; }
+.newsletter p { margin: 0; color: var(--sand); font-size: 13px; line-height: 22px; }
+.band { background: var(--surface-3); display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 22px 32px; min-height: 88px; }
+.band .logo { font-size: 13px; }
+.links { background: var(--surface); display: grid; grid-template-columns: repeat(4, 1fr); padding: 26px 32px 32px; }
+.links h4 { margin: 0 0 6px; font-size: 18px; letter-spacing: .04em; }
+.links ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.links a:hover { color: var(--accent); }
+.socials { display: flex; gap: 8px; margin: 12px 0 30px; }
+.socials a { width: 32px; height: 32px; border: 1px solid var(--accent); border-radius: 2px; display: grid; place-items: center; color: var(--accent); }
+.wallet-chip { display: inline-flex; gap: 10px; align-items: center; padding: 6px 10px; margin-top: 10px; border: 1px solid var(--border); background: var(--surface-3); border-radius: var(--r-sm); color: var(--accent); font-size: 8.5px; font-weight: 700; letter-spacing: .04em; }
+.copyright { text-align: center; margin-top: 14px; font-size: 14px; }
+
+/* ---------- Detalhe ---------- */
+.breadcrumb { margin: 28px 0 8px; font-weight: 600; font-size: 15px; }
+.detail { display: grid; grid-template-columns: 100px 444px 1fr; gap: 28px 30px; align-items: start; }
+.thumbs { display: grid; gap: 16px; }
+.thumbs img { width: 100px; height: 100px; border-radius: var(--r-md); object-fit: cover; cursor: pointer; }
+.thumbs img.on { outline: 1px solid var(--accent); }
+.gallery { background: var(--surface); padding: 20px; position: relative; }
+.gallery img { width: 100%; border-radius: var(--r-xl); }
+.gallery .zoom { position: absolute; top: 12px; right: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--bg); display: grid; place-items: center; }
+.info { padding-left: 4px; }
+.info h1 { margin: 0; font-size: 28px; letter-spacing: .04em; }
+.price-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.price-row .price { font-size: 22px; font-weight: 700; color: var(--accent); }
+.stars { display: inline-flex; align-items: center; gap: 4px; font-size: 15px; color: var(--cream); }
+.stars .icon { font-size: 15px; color: var(--accent); }
+.info h4 { margin: 0 0 12px; font-size: 15px; }
+.info .muted { color: var(--sand); line-height: 24px; margin: 0 0 6px; }
+.chips { display: flex; gap: 6px; margin-bottom: 14px; }
+.chip { padding: 3px 6px; border: 1px solid var(--border); border-radius: var(--r-pill); font-size: 14px; color: var(--sand); background: var(--surface); }
+.chip.on { border-color: var(--accent); color: var(--accent); }
+.chip:disabled { opacity: .4; text-decoration: line-through; cursor: not-allowed; }
+.buy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.stepper { display: inline-flex; align-items: center; gap: 14px; font-size: 18px; }
+.stepper button { width: 32px; height: 46px; border-radius: var(--r-xl); background: var(--accent); color: var(--on-accent); display: grid; place-items: center; }
+.stepper.sm { gap: 12px; font-size: 16px; }
+.stepper.sm button { width: 18px; height: 22px; border-radius: 9px; }
+.stepper.sm button .icon { font-size: 12px; }
+.buy-row .actions { display: flex; gap: 8px; }
+.buy-row .btn { width: 130px; font-size: 14px; }
+.meta { color: var(--sand); font-size: 15px; display: grid; gap: 10px; }
+.share { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--cream); }
+.share .icon { font-size: 17px; }
+.detail-tabs { margin-top: 70px; display: flex; gap: 40px; border-bottom: 1px solid var(--border); }
+.detail-tabs button { font-size: 18px; padding-bottom: 6px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.detail-tabs button.active { color: var(--accent); font-weight: 700; border-color: var(--accent); }
+.detail-body { padding-top: 14px; color: var(--sand); line-height: 24px; }
+.detail-body b { display: block; color: var(--cream); margin-top: 10px; }
+.detail-body p { margin: 0 0 24px; }
+.detail-body p.tight { margin: 0; }
+.rail-title { margin: 100px 0 24px; padding-bottom: 8px; border-bottom: 1px solid var(--border); color: var(--accent); font-size: 17px; font-weight: 700; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 26px; }
+.grid-5 .nft-card .media { aspect-ratio: 219 / 254; }
+.grid-5 .nft-card .name { margin-top: 18px; font-size: 15px; }
+.grid-5 .nft-card .price { font-size: 15px; }
+.grid-5 + .dots { margin-top: 32px; }
+
+/* ---------- Carrinho ---------- */
+.cart { display: grid; grid-template-columns: 786px 1fr; gap: 86px; align-items: start; }
+.table-head, .cart-row { display: grid; grid-template-columns: 1fr 138px 136px 150px 40px; align-items: center; }
+.table-head { font-weight: 600; font-size: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.table-head span:first-child { padding-left: 0; }
+.cart-row { background: var(--surface); height: 70px; margin-bottom: 12px; }
+.cart-row .item { display: flex; gap: 16px; align-items: center; }
+.cart-row img { width: 70px; height: 70px; object-fit: cover; }
+.cart-row .t { font-weight: 700; font-size: 16px; }
+.cart-row small { display: block; color: var(--sand); font-size: 14px; }
+.cart-row .total { color: var(--accent); font-weight: 700; font-size: 16px; }
+.cart-row .trash { color: var(--sand); }
+.cart-row .trash:hover { color: var(--accent); }
+.summary h3 { margin: 0 0 22px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-size: 18px; }
+.summary h4 { margin: 0 0 6px; font-size: 13px; }
+.promo-input { display: flex; margin-bottom: 22px; }
+.promo-input input { flex: 1; height: 40px; border: 1px solid var(--accent); background: transparent; padding: 0 8px; font-size: 12px; }
+.promo-input input::placeholder { color: var(--khaki); }
+.promo-input button { background: var(--accent); color: var(--on-accent); padding: 0 18px; font-weight: 700; }
+.sum-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.sum-row .v { font-size: 17px; }
+.sum-row .v.sm { font-size: 14px; }
+.sum-note { text-align: right; font-size: 11px; color: var(--accent); margin-top: -8px; margin-bottom: 18px; }
+.sum-total { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 20px; }
+.sum-total .v { color: var(--accent); font-size: 18px; }
+.summary .continue { display: block; text-align: center; margin-top: 12px; color: var(--accent); font-size: 15px; }
+
+/* ---------- Pagamento ---------- */
+.checkout { display: grid; grid-template-columns: 762px 1fr; gap: 32px; align-items: start; margin-top: 20px; }
+.form-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 24px; }
+.form-title { margin: 0 0 12px; font-size: 18px; }
+.your-nfts h3 { margin: 0 0 8px; font-size: 18px; }
+.your-nfts .head { display: flex; justify-content: space-between; font-weight: 600; font-size: 16px; padding-bottom: 6px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.mini-row .t, .mini-row small { white-space: nowrap; }
+.mini-row { display: grid; grid-template-columns: 70px 1fr auto auto; gap: 6px; align-items: center; background: var(--surface); height: 70px; padding-right: 12px; margin-bottom: 12px; }
+.mini-row img { width: 70px; height: 70px; object-fit: cover; border-radius: var(--r-md); }
+.mini-row .t { font-weight: 700; font-size: 15px; line-height: 20px; letter-spacing: .02em; }
+.mini-row small { color: var(--sand); font-size: 13px; letter-spacing: .02em; }
+.mini-row .q { color: var(--sand); font-size: 13px; white-space: nowrap; }
+.mini-row .s { color: var(--accent); font-weight: 700; font-size: 17px; white-space: nowrap; }
+.wallet-opt { display: flex; align-items: center; gap: 12px; height: 45px; padding: 0 12px; border: 1px solid var(--border); margin-bottom: 16px; cursor: pointer; }
+.wallet-opt.checked { border-color: var(--cream); }
+
+/* ---------- Modais ---------- */
+.overlay { position: absolute; inset: 0; background: rgba(20,13,10,.55); display: grid; place-items: start center; padding-top: 166px; }
+.modal { position: relative; width: 500px; background: var(--surface); border-bottom: 10px solid var(--accent); padding: 48px 80px 64px; }
+.modal .close { position: absolute; top: 14px; right: 16px; color: var(--accent); }
+.modal .switch { display: flex; justify-content: center; gap: 8px; font-size: 20px; font-weight: 600; margin-bottom: 40px; }
+.modal .switch span { padding: 0 2px; }
+.modal .switch .bar { width: 1px; background: var(--accent); }
+.modal .switch .on { color: var(--accent); }
+.modal .lead { text-align: center; margin: 0 0 24px; font-size: 13px; line-height: 16px; }
+.modal .input { margin-bottom: 12px; }
+.modal .forgot { text-align: right; display: block; color: var(--accent); margin: 0 0 20px; }
+.or { display: flex; align-items: center; gap: 12px; margin: 24px -80px 10px; font-size: 13px; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.social-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 40px; border: 1px solid var(--border); margin-bottom: 12px; font-size: 13px; color: var(--sand); }
+.social-btn:hover { border-color: var(--accent); }
+.receipt { width: 578px; background: var(--surface); border-bottom: 10px solid var(--accent); }
+.receipt-top { text-align: center; padding: 22px 0 18px; border-bottom: 1px solid var(--accent); color: var(--accent); }
+.receipt-top p { margin: 10px 0 0; font-size: 16px; }
+.receipt-strip { display: grid; grid-template-columns: auto auto auto auto; justify-content: center; border-bottom: 1px solid var(--accent); padding: 14px 0; }
+.receipt-strip div { padding: 0 16px; border-right: 1px solid var(--accent); line-height: 19px; color: var(--sand); }
+.receipt-strip div:last-child { border: 0; }
+.receipt-strip b { display: block; font-weight: 600; }
+.receipt-body { padding: 18px 44px 48px; }
+.receipt-body .head { display: grid; grid-template-columns: 1fr 90px 110px; font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-top: 8px; font-size: 16px; }
+.receipt-line { display: grid; grid-template-columns: 70px 1fr 90px 110px; gap: 12px; align-items: center; margin-top: 12px; }
+.receipt-line img { width: 70px; height: 70px; border-radius: var(--r-md); object-fit: cover; }
+.receipt-line .q { color: var(--sand); }
+.receipt-line .s { color: var(--accent); font-weight: 700; font-size: 18px; text-align: right; }
+.receipt-sum { display: grid; grid-template-columns: 1fr auto; gap: 4px 0; padding: 14px 0 8px 170px; border-bottom: 1px solid var(--border); }
+.receipt-note { text-align: center; color: var(--accent); line-height: 22px; margin: 14px 0 22px; }
+
+/* ---------- Conta ---------- */
+.account { display: grid; grid-template-columns: 310px 1fr; gap: 28px; margin-top: 32px; align-items: start; }
+.side-menu { background: var(--surface); padding: 14px 0 12px; }
+.side-menu h3 { margin: 0 10px 8px; font-size: 18px; }
+.side-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px 12px 16px; color: var(--accent); font-size: 15px; border-left: 6px solid transparent; }
+.side-menu a.active { border-color: var(--accent); }
+.side-menu a:hover { background: rgba(210,138,76,.06); }
+.side-menu .icon { font-size: 18px; }
+.side-menu .logout { border-top: 1px solid var(--border); margin-top: 6px; font-weight: 700; }
+.avatar { display: flex; align-items: center; gap: 24px; }
+.avatar .ph { width: 50px; height: 50px; border-radius: 50%; background: var(--surface-3); display: grid; place-items: center; color: var(--accent); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; }
+.section-head h3 { margin: 0; font-size: 17px; }
+.section-head p { margin: 4px 0 0; color: var(--sand); }
+
+/* =========================================================
+   MOBILE (frames 414 × 900)
+   ========================================================= */
+.mobile-canvas { display: flex; gap: 48px; padding: 32px; overflow-x: auto; }
+.phone { width: 414px; height: 900px; flex: none; background: var(--bg); border-radius: 40px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.phone-title { color: #888; font: 500 12px var(--font-num); margin: 0 0 8px 8px; letter-spacing: 0; }
+.m-pad { padding: 0 24px; }
+.m-search { display: flex; gap: 8px; margin: 40px 24px 16px; }
+.m-search label { flex: 1; display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 12px; background: var(--surface); border-radius: var(--r-md); color: var(--khaki); font-size: 15px; }
+.m-search button { width: 45px; height: 45px; border-radius: 10px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; }
+.m-hero { margin: 0 24px; height: 190px; border-radius: var(--r-2xl); background: radial-gradient(circle at 30% 110%, #6b4528 0%, transparent 55%), linear-gradient(120deg, #5a3a22, #2c1b14); position: relative; padding: 14px 16px; overflow: hidden; }
+.m-hero small { font-size: 12px; font-weight: 600; }
+.m-hero h2 { margin: 8px 0 6px; font-size: 16px; line-height: 29px; letter-spacing: .06em; max-width: 190px; }
+.m-hero p { margin: 0; font-size: 12px; line-height: 17px; color: var(--sand); max-width: 190px; }
+.m-hero a { display: inline-flex; gap: 6px; margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--accent); }
+.m-hero .big { position: absolute; right: 16px; top: 12px; width: 138px; height: 138px; border-radius: var(--r-lg); object-fit: cover; }
+.m-hero .small { position: absolute; right: 94px; top: 98px; width: 58px; height: 58px; border-radius: var(--r-lg); object-fit: cover; border: 2px solid #4a3020; }
+.m-hero .dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); }
+.m-tabs { display: flex; gap: 10px; margin: 16px 24px; font-size: 14px; font-weight: 500; }
+.m-tabs .active { color: var(--accent); border-bottom: 2px solid var(--accent); font-weight: 700; }
+.m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; flex: 1; overflow: hidden; }
+.m-col { display: grid; gap: 20px; align-content: start; }
+.m-col.offset { margin-top: 32px; }
+.m-card { background: var(--surface-2); border-radius: var(--r-xl); padding: 8px 4px 0; position: relative; }
+.m-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-xl); }
+.m-card .t { margin: 12px 0 0 6px; font-size: 14px; }
+.m-card .p { margin: 0 0 4px 6px; color: var(--accent); font-weight: 700; font-size: 14px; }
+.m-card .fav { position: absolute; top: 12px; right: 10px; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; color: var(--accent); }
+.m-card .fav .icon { font-size: 16px; }
+.m-card .tag { position: absolute; top: 16px; left: 0; background: var(--accent); color: var(--on-accent); padding: 4px 8px; font-size: 12px; z-index: 1; }
+.m-tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: var(--surface); border-radius: 32px 32px 0 0; display: flex; justify-content: space-around; align-items: center; color: var(--sand); }
+.m-tabbar .on { color: var(--accent); }
+.m-tabbar .fab { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: var(--cream); display: grid; place-items: center; margin-top: -60px; box-shadow: 0 0 0 10px var(--bg); }
+.m-top { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 12px; }
+.m-round { width: 36px; height: 36px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; color: var(--sand); border: 1px solid var(--border); }
+.m-round .icon { font-size: 16px; }
+.m-detail-img { margin: 0 24px; border-radius: var(--r-2xl) var(--r-2xl) 0 0; height: 340px; object-fit: cover; object-position: top; width: calc(100% - 48px); }
+.m-sheet { background: var(--surface); border-radius: 32px; padding: 26px 22px 20px; margin-top: -14px; flex: 1; position: relative; }
+.m-sheet h1 { margin: 0; font-size: 20px; }
+.m-rating { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border: 1px solid var(--accent); border-radius: var(--r-pill); font-size: 12px; font-weight: 700; }
+.m-rating .icon { font-size: 12px; color: var(--accent); }
+.m-buybar { background: var(--surface); border-top: 1px solid var(--border); border-radius: 32px 32px 0 0; padding: 22px 22px 30px; }
+.m-buybar .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.m-buybar .pill { height: 58px; flex: 1; font-size: 15px; }
+.m-cart-item { display: grid; grid-template-columns: 100px 1fr; gap: 10px; background: var(--surface); border-radius: var(--r-xl); margin: 0 24px 20px; height: 100px; overflow: hidden; }
+.m-cart-item img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--r-xl); }
+.m-cart-item .t { font-weight: 700; font-size: 14px; margin-top: 12px; }
+.m-cart-item small { color: var(--sand); font-size: 12px; }
+.m-cart-item .p { color: var(--accent); font-weight: 700; font-size: 17px; margin-top: 8px; }
+.m-cart-item .r { display: flex; justify-content: space-between; align-items: end; padding-right: 14px; }
+.m-step { display: inline-flex; gap: 10px; align-items: center; }
+.m-step button { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-3); display: grid; place-items: center; }
+.m-step button .icon { font-size: 12px; }
+.m-summary { background: var(--surface); border-radius: 32px 32px 0 0; padding: 22px 24px 30px; margin-top: auto; }
+.m-promo { display: flex; border: 1px solid var(--border); border-radius: var(--r-pill); height: 48px; margin-bottom: 14px; }
+.m-promo input { flex: 1; background: none; border: 0; padding: 0 16px; font-size: 12px; }
+.m-promo input::placeholder { color: var(--khaki); }
+.m-promo button { border-radius: var(--r-pill); padding: 0 16px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: var(--on-accent); font-weight: 700; }
+.m-wallet { background: var(--surface); border-radius: var(--r-lg); padding: 14px 16px; display: grid; grid-template-columns: 26px 1fr 16px; gap: 14px; align-items: center; margin: 0 24px 20px; line-height: 22px; }
+.m-wallet b { font-size: 15px; }
+.m-wallet span { display: block; color: var(--sand); font-size: 14px; }
+.m-opt { display: flex; align-items: center; gap: 12px; background: var(--surface); border-radius: var(--r-lg); height: 64px; padding: 0 16px; margin: 0 24px 16px; font-size: 14px; }
+.m-opt .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--surface-3); display: grid; place-items: center; color: var(--accent); font-weight: 700; font-size: 13px; }
+.m-opt .radio { margin-left: auto; }
+.m-opt .radio .dot { border-color: var(--khaki); }
+.m-opt .radio.checked .dot { border-color: var(--accent); }
+.m-auth { padding: 0 28px; text-align: center; flex: 1; display: flex; flex-direction: column; }
+.m-auth .brand { margin: 124px 0 90px; font-size: 32px; font-weight: 700; letter-spacing: .14em; }
+.m-auth h2 { margin: 0 0 32px; font-size: 19px; }
+.m-auth .input { height: 50px; border-radius: var(--r-sm); margin-bottom: 12px; padding: 0 16px; }
+.m-auth .btn { height: 60px; border-radius: var(--r-sm); font-size: 16px; margin-top: 30px; }
+.m-auth .or { margin: 48px 0 10px; }
+.m-auth .footer-link { margin-top: auto; padding-bottom: 32px; color: var(--sand); }
+
+/* =========================================================
+   DESIGN SYSTEM PAGE
+   ========================================================= */
+.ds { max-width: 1200px; margin: 24px auto; background: var(--bg); padding: 48px; }
+.ds h2 { margin: 48px 0 16px; font-size: 20px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.ds h2:first-child { margin-top: 0; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.swatch { border: 1px solid var(--border); }
+.swatch div { height: 72px; }
+.swatch p { margin: 0; padding: 8px 10px; font-size: 12px; line-height: 18px; }
+.swatch code { color: var(--sand); }
+.type-row { display: grid; grid-template-columns: 220px 1fr; align-items: baseline; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+.type-row code { color: var(--khaki); font-size: 12px; }
+.ds-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+
+/* =========================================================
+   ESTADOS NÃO DESENHADOS NO FIGMA (exigidos pelo README)
+   Seguem a mesma linguagem visual: superfícies marrons, borda fina,
+   acento laranja e sempre ícone + texto (nunca só cor).
+   ========================================================= */
+:root {
+  --success: #7FB77E;  /* verde-sálvia (harmoniza com o verde das artes) */
+  --warning: #E0B04C;
+  --danger:  #E5664A;  /* mesmo tom do asterisco obrigatório */
+  --info:    #9DB8C7;
+}
+.skeleton { position: relative; overflow: hidden; background: var(--surface); border-radius: var(--r-sm); }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(245,241,235,.06), transparent); animation: shimmer 1.4s infinite; }
+@keyframes shimmer { to { transform: translateX(100%); } }
+.sk-line { height: 14px; margin-top: 10px; }
+.toast { display: flex; gap: 12px; align-items: flex-start; width: 360px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,.45); }
+.toast b { display: block; font-size: 14px; }
+.toast p { margin: 2px 0 0; color: var(--sand); font-size: 13px; line-height: 18px; }
+.toast.success { border-left-color: var(--success); } .toast.success > .icon { color: var(--success); }
+.toast.error { border-left-color: var(--danger); } .toast.error > .icon { color: var(--danger); }
+.toast.info > .icon { color: var(--accent); }
+.banner { display: flex; gap: 12px; align-items: center; padding: 12px 16px; border: 1px solid var(--warning); background: rgba(224,176,76,.08); color: var(--cream); font-size: 14px; }
+.banner > .icon { color: var(--warning); }
+.banner.danger { border-color: var(--danger); background: rgba(229,102,74,.08); } .banner.danger > .icon { color: var(--danger); }
+.banner .btn { margin-left: auto; }
+.status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: var(--r-pill); font-size: 12px; font-weight: 700; border: 1px solid; }
+.status.pending { color: var(--warning); border-color: var(--warning); }
+.status.confirmed { color: var(--success); border-color: var(--success); }
+.status.declined { color: var(--danger); border-color: var(--danger); }
+.status .icon { font-size: 14px; }
+.state-box { text-align: center; padding: 40px 24px; background: var(--surface); border: 1px dashed var(--border); }
+.state-box > .icon { font-size: 40px; color: var(--accent); }
+.state-box h4 { margin: 12px 0 6px; font-size: 16px; }
+.state-box p { margin: 0 0 16px; color: var(--sand); }
+.field-error { color: var(--danger); font-size: 12px; display: flex; gap: 4px; align-items: center; }
+.input.invalid { border-color: var(--danger); }
+.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.price-flash { color: var(--warning); }
+.price-flash s { color: var(--khaki); margin-right: 6px; font-weight: 400; }
+
+/* Página de documentação (Fundamentos / Componentes) */
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.ds-box { border: 1px solid var(--border); padding: 20px; }
+.ds-box h4 { margin: 0 0 4px; font-size: 14px; }
+.ds-box > small { display: block; color: var(--khaki); font-size: 11px; margin-bottom: 14px; }
+.ds-comp { display: grid; grid-template-columns: 260px 1fr; gap: 24px; padding: 24px 0; border-bottom: 1px dashed var(--border); }
+.ds-comp > div:first-child h3 { margin: 0 0 6px; font-size: 16px; color: var(--cream); }
+.ds-comp > div:first-child p { margin: 0 0 8px; color: var(--sand); font-size: 12px; line-height: 18px; }
+.ds-comp code, .ds code { color: var(--accent); font-size: 12px; }
+.ds-comp .where { color: var(--khaki); font-size: 11px; line-height: 16px; }
+.ds-intro { color: var(--sand); margin: -6px 0 24px; max-width: 760px; }
+.ds-sub { margin: 0 0 12px; font-size: 13px; color: var(--khaki); text-transform: uppercase; letter-spacing: .1em; }
+.icon-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.icon-cell { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border); cursor: copy; text-align: left; }
+.icon-cell:hover { border-color: var(--accent); }
+.icon-cell .icon { font-size: 22px; color: var(--sand); }
+.icon-cell b { display: block; font-size: 12px; }
+.icon-cell code { font-size: 10.5px; color: var(--khaki); }
+.scale-bar { height: 12px; background: var(--accent); }
+.radius-box { width: 64px; height: 64px; border: 1.5px solid var(--accent); background: var(--surface); }
+
+/* ---------- Responsividade do protótipo ---------- */
+@media (max-width: 1100px) {
+  .frame-desktop { margin: 0; }
+  .nav { display: none; }
+  .hero, .catalog, .detail, .cart, .checkout, .account, .promos { grid-template-columns: 1fr; }
+  .hero-media img { width: 100%; height: auto; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-5, .blog { grid-template-columns: repeat(2, 1fr); }
+  .features, .band, .links { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .thumbs { grid-auto-flow: column; justify-content: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .skeleton::after, .spinner { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="proto-bar" aria-label="Telas do protótipo" id="protoBar"></nav>
+<main id="stage"></main>
+
+<!-- Ilustração do recibo (não é ícone; os ícones vêm do Iconify) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-thanks" viewBox="0 0 64 80"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M4 32v44h56V32"/><path d="M4 76 32 50l28 26"/><path d="M4 32l10-8M60 32l-10-8"/><path d="M14 40V12h36v28"/><path d="M26 12 32 4l6 8"/></g><text x="32" y="25" fill="currentColor" font-family="Roboto Mono, monospace" font-weight="700" font-size="10" text-anchor="middle">THANK</text><text x="32" y="36" fill="currentColor" font-family="Roboto Mono, monospace" font-weight="700" font-size="10" text-anchor="middle">YOU</text></symbol>
+  </defs>
+</svg>
+
+<script>
+/* =========================================================
+   DADOS — os mesmos nomes/preços que aparecem no Figma.
+   Servem de base para as fixtures do MSW.
+   ========================================================= */
+const A = 'assets/';
+const NFTS = [
+  { id: 'emerald-ape-042',    name: 'Emerald Ape #042',    price: '1.19', img: 'emerald-ape.png', token: '#0042' },
+  { id: 'sage-nomad-009',     name: 'Sage Nomad #009',     price: '1.69', img: 'sage-nomad.png',  token: '#0009' },
+  { id: 'neon-vessel-552',    name: 'Neon Vessel #552',    price: '1.99', old: '2.29', img: 'ivory-baron.png', token: '#0552', tag: 'RARO' },
+  { id: 'cosmic-bloom-118',   name: 'Cosmic Bloom #118',   price: '1.29', img: 'sage-nomad.png',  token: '#0118' },
+  { id: 'violet-nomad-314',   name: 'Violet Nomad #314',   price: '1.39', img: 'sage-nomad.png',  token: '#0314' },
+  { id: 'ivory-baron-088',    name: 'Ivory Baron #088',    price: '1.79', img: 'ivory-baron.png', token: '#0088' },
+  { id: 'golden-beat-207',    name: 'Golden Beat #207',    price: '0.99', img: 'golden-beat.png', token: '#0207' },
+  { id: 'golden-freq-071',    name: 'Golden Frequency #071', price: '0.59', img: 'golden-beat.png', token: '#0071' },
+  { id: 'golden-signal-160',  name: 'Golden Signal #160',  price: '0.39', img: 'golden-beat.png', token: '#0160' },
+];
+const byId = id => NFTS.find(n => n.id === id);
+const CART = [
+  { nft: byId('emerald-ape-042'), qty: 2, total: '2.38' },
+  { nft: byId('violet-nomad-314'), qty: 6, total: '8.34' },
+  { nft: byId('ivory-baron-088'), qty: 9, total: '16.11' },
+];
+const COLLECTIONS = [['Arte digital',33],['Fotografia',12],['Música',65],['Arte 3D',39],['Colecionáveis',23],['Generativa',17],['Jogos',19],['Assinaturas',13],['Utilidade',18]];
+const NETWORKS = [['Ethereum',119],['Polygon',78],['Solana',86]];
+
+/* =========================================================
+   ÍCONES — mapa semântico → nome Iconify (validados na API do Iconify).
+   Base: Basil (estilo "curved", igual aos SVGs exportados do Figma).
+   Complementos: Solar, ic, logos, token-branded, simple-icons.
+   No app React: <Icon icon={ICONS.search} /> com @iconify/react.
+   ========================================================= */
+const ICONS = {
+  // navegação / header
+  search: 'basil:search-outline',          cart: 'basil:shopping-cart-outline',
+  'cart-solid': 'basil:shopping-cart-solid', user: 'basil:user-solid',
+  'user-outline': 'basil:user-outline',    login: 'basil:login-outline',
+  logout: 'basil:logout-outline',          home: 'basil:home-solid',
+  menu: 'basil:menu-outline',              x: 'basil:cross-outline',
+  'chevron-down': 'basil:caret-down-outline', 'chevron-right': 'basil:caret-right-outline',
+  'chevron-left': 'basil:caret-left-outline', 'arrow-right': 'basil:arrow-right-outline',
+  // ações
+  heart: 'basil:heart-outline',            'heart-fill': 'basil:heart-solid',
+  plus: 'ic:round-plus',                   minus: 'ic:round-minus',
+  trash: 'basil:trash-outline',            zoom: 'basil:search-outline',
+  'eye-off': 'basil:eye-closed-outline',   edit: 'basil:edit-outline',
+  copy: 'basil:copy-outline',              share: 'basil:share-outline',
+  filter: 'solar:tuning-2-linear',         sort: 'basil:sort-outline',
+  scan: 'solar:scanner-linear',            more: 'basil:other-1-outline',
+  refresh: 'solar:refresh-linear',
+  // conteúdo / conta
+  star: 'basil:star-solid',                mail: 'basil:envelope-outline',
+  pin: 'basil:location-outline',           offers: 'solar:graph-up-linear',
+  download: 'basil:download-outline',      alert: 'solar:danger-triangle-linear',
+  image: 'basil:image-outline',            wallet: 'basil:wallet-outline',
+  lock: 'basil:lock-outline',              coupon: 'solar:sale-linear',
+  invoice: 'basil:invoice-outline',        shield: 'solar:shield-check-linear',
+  // estados / feedback
+  check: 'basil:check-outline',            info: 'basil:info-circle-outline',
+  clock: 'basil:clock-outline',            cancel: 'basil:cancel-outline',
+  offline: 'solar:cloud-cross-linear',
+  // redes sociais (footer)
+  facebook: 'basil:facebook-solid',        instagram: 'basil:instagram-outline',
+  twitter: 'basil:twitter-solid',          linkedin: 'basil:linkedin-solid',
+  youtube: 'basil:youtube-solid',
+  // marcas coloridas
+  google: 'logos:google-icon',             'facebook-color': 'logos:facebook',
+  metamask: 'token-branded:metamask',      coinbase: 'token-branded:coinbase',
+  walletconnect: 'simple-icons:walletconnect',
+  ethereum: 'token-branded:ethereum',      polygon: 'token-branded:polygon',
+  solana: 'token-branded:solana',
+};
+const ic = (name, style = '') => `<iconify-icon class="icon" icon="${ICONS[name] || name}" aria-hidden="true"${style ? ` style="${style}"` : ''}></iconify-icon>`;
+
+/* ---------- Componentes compartilhados ---------- */
+const Header = (active = 'Início') => `
+  <header class="wrap header">
+    <a class="logo" href="#home">KURIO</a>
+    <nav class="nav" aria-label="Principal">
+      ${['Início','Mercado','Criadores','Aprenda'].map(l => `<a href="${l==='Início'?'#home':'#detail'}" class="${l===active?'active':''}" ${l===active?'aria-current="page"':''}>${l}</a>`).join('')}
+    </nav>
+    <div class="header-actions">
+      <button aria-label="Buscar">${ic('search')}</button>
+      <a class="cart-btn" href="#cart" aria-label="Carrinho, 6 itens">${ic('cart')}<span class="badge-count">6</span></a>
+      <a class="btn btn-primary btn-sm" href="#login">${ic('login')}Entrar</a>
+    </div>
+  </header>`;
+
+const NftCard = (n, { hover = false } = {}) => `
+  <article class="nft-card">
+    ${n.tag ? `<span class="tag">${n.tag}</span>` : ''}
+    <div class="media-wrap">
+      <a class="media" href="#detail" aria-label="${n.name}">
+        <img src="${A + n.img}" alt="${n.name}" loading="lazy" width="250" height="250" />
+      </a>
+      <div class="quick" ${hover ? 'style="opacity:1"' : ''}>
+        <button aria-label="Adicionar ao carrinho">${ic('cart')}</button>
+        <button aria-label="Favoritar">${ic('heart')}</button>
+        <button aria-label="Ver detalhes">${ic('zoom')}</button>
+      </div>
+    </div>
+    <div class="name">${n.name}</div>
+    <div class="price">${n.price} ETH${n.old ? `<span class="old">${n.old} ETH</span>` : ''}</div>
+  </article>`;
+
+const Footer = () => `
+  <footer class="wrap footer">
+    <section class="features">
+      ${[['W','Segurança da carteira','Proteja sua carteira e colecione arte digital verificada com confiança.'],
+         ['C','Criadores em destaque','Conheça artistas, estúdios e comunidades que moldam a cultura digital na rede.'],
+         ['D','Alertas de lançamentos','Receba calendários de cunhagem, novidades de listas de acesso e análises do mercado.']]
+        .map(([l,t,d]) => `<div class="feature"><div class="circle">${l}</div><h3>${t}</h3><p>${d}</p></div>`).join('')}
+      <div class="newsletter">
+        <h3>Antecipe-se ao próximo lançamento</h3>
+        <form onsubmit="return false"><label class="sr-only" for="nl">E-mail</label><input id="nl" type="email" placeholder="digite seu e-mail..." /><button>Enviar</button></form>
+        <p>Receba lançamentos selecionados, histórias de criadores e novidades do mercado.</p>
+      </div>
+    </section>
+    <section class="band">
+      <span class="logo">KURIO</span>
+      <span>Feito para colecionadores,<br/>criadores e cultura</span>
+      <span>contato@email.com</span>
+      <span>+55 11 4002 8922</span>
+    </section>
+    <section class="links">
+      <div><h4>Meu perfil</h4><ul>${['Meu perfil','Minha coleção','Atividade','Estúdio do criador','Lista de interesse'].map(l=>`<li><a href="#profile">${l}</a></li>`).join('')}</ul></div>
+      <div><h4>Central de ajuda</h4><ul>${['Central de ajuda','Como comprar NFTs','Carteira e segurança','Política do mercado','Denunciar item'].map(l=>`<li><a href="#">${l}</a></li>`).join('')}</ul></div>
+      <div><h4>Coleções</h4><ul>${['Arte digital','Fotografia','Música','Arte 3D','Utilidade'].map(l=>`<li><a href="#home">${l}</a></li>`).join('')}</ul></div>
+      <div><h4>Redes sociais</h4>
+        <div class="socials">${['facebook','instagram','twitter','linkedin','youtube'].map(s=>`<a href="#" aria-label="${s}">${ic(s)}</a>`).join('')}</div>
+        <h4>Carteiras compatíveis</h4>
+        <span class="wallet-chip">METAMASK <span>•</span> WALLETCONNECT <span>•</span> COINBASE</span>
+      </div>
+    </section>
+    <p class="copyright">© 2026 Kurio. Propriedade digital para todos.</p>
+  </footer>`;
+
+const Stepper = (q, sm = false) => `
+  <div class="stepper ${sm ? 'sm' : ''}" data-stepper>
+    <button aria-label="Diminuir quantidade" data-dec>${ic('minus')}</button>
+    <span aria-live="polite">${q}</span>
+    <button aria-label="Aumentar quantidade" data-inc>${ic('plus')}</button>
+  </div>`;
+
+const Summary = (title = 'Resumo da carteira') => `
+  <h3>${title}</h3>
+  <h4>Código promocional</h4>
+  <div class="promo-input"><input placeholder="Digite o código promocional..." aria-label="Código promocional" /><button>Aplicar</button></div>
+  <div class="sum-row"><span>Subtotal</span><span class="v">26.83 ETH</span></div>
+  <div class="sum-row"><span>Desconto do lançamento</span><span class="v sm">(-) 00.00</span></div>
+  <div class="sum-row"><span>Taxa de rede</span><span class="v">0.016 ETH</span></div>
+  <div class="sum-note">Taxa estimada</div>
+  <div class="sum-total"><span>Total</span><span class="v">26.846 ETH</span></div>`;
+
+/* =========================================================
+   TELAS DESKTOP
+   ========================================================= */
+const HomeBody = () => `
+  ${Header('Início')}
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Bem-vindo à Kurio</div>
+      <h1>SEJA DONO DO FUTURO<br/>DA ARTE DIGITAL</h1>
+      <p>Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte digital rara, apoie artistas e tenha uma parte da cultura da internet.</p>
+      <a class="btn btn-primary" href="#home">EXPLORAR</a>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+    <div class="hero-media"><img src="${A}emerald-ape.png" alt="Emerald Ape #042 — macaco de óculos redondos e jaqueta verde" width="450" height="450" /></div>
+  </section>
+
+  <section class="wrap catalog">
+    <aside>
+      <div class="panel">
+        <h3>Coleções</h3>
+        <ul class="filter-list">${COLLECTIONS.map(([c,n],i)=>`<li class="${i===0?'active':''}"><span>${c}</span><span>(${n})</span></li>`).join('')}</ul>
+        <h3>Faixa de preço</h3>
+        <div class="range" aria-hidden="true"><i style="left:0"></i><i style="left:66%"></i></div>
+        <p style="margin:0 0 8px 12px">Preço: 0,02 - 12,30 ETH</p>
+        <button class="btn btn-primary btn-sm" style="margin-left:12px">Aplicar</button>
+        <h3 style="margin-top:28px">Rede</h3>
+        <ul class="filter-list" style="margin:0">${NETWORKS.map(([c,n])=>`<li><span>${c}</span><span>(${n})</span></li>`).join('')}</ul>
+      </div>
+      <div class="featured">
+        <h4>NFT EM DESTAQUE</h4>
+        <h5>OFERTA LIMITADA</h5>
+        <img src="${A}sage-featured.png" alt="Sage Nomad — gorila de chapéu e moletom roxo" />
+      </div>
+    </aside>
+    <div>
+      <div class="toolbar">
+        <div class="tabs" role="tablist">
+          <button class="active" role="tab" aria-selected="true">Todos os NFTs</button>
+          <button role="tab">Novos lançamentos</button>
+          <button role="tab">Em alta</button>
+        </div>
+        <button class="sort">Ordenar por: Listados recentemente ${ic('chevron-down')}</button>
+      </div>
+      <div class="grid-3">${NFTS.map((n,i)=>NftCard(n,{hover:i===1})).join('')}</div>
+      <nav class="pagination" aria-label="Paginação">
+        <button class="on" aria-current="page">1</button><button>2</button><button>3</button><button>4</button>
+        <button aria-label="Próxima página">${ic('chevron-right')}</button>
+      </nav>
+    </div>
+  </section>
+
+  <section class="wrap promos">
+    <article class="promo"><img src="${A}emerald-banner.png" alt="" /><div>
+      <h3>Lançamentos gênesis<br/>de edição limitada</h3>
+      <p>Colecione edições escassas diretamente dos criadores antes da revelação pública.</p>
+      <a class="btn btn-primary" href="#home">Explorar ${ic('arrow-right')}</a></div></article>
+    <article class="promo"><img src="${A}ivory-banner.png" alt="" /><div>
+      <h3>Arte digital selecionada<br/>e muito mais</h3>
+      <p>Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.</p>
+      <a class="btn btn-primary" href="#home">Explorar ${ic('arrow-right')}</a></div></article>
+  </section>
+
+  <section class="wrap">
+    <div class="section-title"><h2>Diário da Cunhagem</h2><p>Histórias, guias e insights para colecionadores sobre o universo da propriedade digital.</p></div>
+    <div class="blog">
+      ${[['ivory-baron.png','12 de setembro','6','Como funciona a propriedade de NFTs','Aprenda a colecionar, negociar e verificar ativos digitais.'],
+         ['emerald-ape.png','13 de setembro','2','10 artistas digitais para acompanhar','Conheça criadores que moldam a cultura digital.'],
+         ['sage-nomad.png','15 de setembro','3','Raridade, atributos e procedência','Entenda raridade, procedência, direitos autorais e utilidade.'],
+         ['golden-beat.png','15 de setembro','2','Como proteger sua carteira','Proteja sua carteira, seus ativos e sua identidade.']]
+        .map(([img,d,m,t,p])=>`<article class="post"><img src="${A+img}" alt="" /><div><small>${d} &nbsp;|&nbsp; Leitura de ${m} min</small><h3>${t}</h3><p>${p}</p><a href="#">Ler mais →</a></div></article>`).join('')}
+    </div>
+  </section>
+  ${Footer()}`;
+
+const screens = {};
+
+screens.home = () => `<div class="frame-desktop">${HomeBody()}</div>`;
+
+screens.detail = () => `<div class="frame-desktop">
+  ${Header('Mercado')}
+  <div class="wrap">
+    <div class="breadcrumb"><a href="#home">Início</a> / <a href="#home">Mercado</a></div>
+    <section class="detail">
+      <div class="thumbs">${[0,1,2,3].map(i=>`<img src="${A}emerald-ape.png" alt="Visualização ${i+1}" class="${i===0?'on':''}" />`).join('')}</div>
+      <div class="gallery">
+        <img src="${A}emerald-ape.png" alt="Emerald Ape #042" />
+        <button class="zoom" aria-label="Ampliar imagem">${ic('zoom')}</button>
+      </div>
+      <div class="info">
+        <h1>Emerald Ape #042</h1>
+        <div class="price-row">
+          <span class="price">1.19 ETH</span>
+          <span class="stars" aria-label="Nota 4.8 de 5">${ic('star').repeat(5)} 19 avaliações de colecionadores</span>
+        </div>
+        <h4>Sobre este NFT:</h4>
+        <p class="muted">Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.</p>
+        <h4>Edição:</h4>
+        <div class="chips" role="radiogroup" aria-label="Edição">
+          <button class="chip" data-chip>1/1</button><button class="chip" data-chip>1/10</button><button class="chip on" data-chip aria-checked="true">1/50</button><button class="chip" data-chip>ABERTA</button>
+        </div>
+        <div class="buy-row">
+          ${Stepper(1)}
+          <div class="actions">
+            <button class="btn btn-primary">COMPRAR</button>
+            <button class="btn btn-outline">${ic('heart')}Favoritar</button>
+          </div>
+        </div>
+        <div class="meta">
+          <span>ID do token: #0042</span>
+          <span>Coleção: Kurio Apes</span>
+          <span>Atributos: Óculos, Esmeralda, Raro</span>
+          <span class="share">Compartilhar este NFT: ${ic('linkedin')} ${ic('mail')} ${ic('twitter')}</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="detail-tabs" role="tablist">
+      <button class="active" role="tab" aria-selected="true">Detalhes do NFT</button>
+      <button role="tab">Avaliações de colecionadores (19)</button>
+    </div>
+    <div class="detail-body">
+      <p>Emerald Ape #042 é uma obra digital 1/50 finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.</p>
+      <p>A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência registrada na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade.</p>
+      <b>Rede:</b><p class="tight">Cunhado na Ethereum com procedência imutável e metadados armazenados no IPFS.</p>
+      <b>Contrato:</b><p class="tight">Direitos autorais do criador: 5% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.</p>
+      <b>Direitos autorais:</b><p class="tight">0x7A42...19E8 • Contrato inteligente ERC-721 verificado.</p>
+    </div>
+
+    <h2 class="rail-title">Mais desta coleção</h2>
+    <div class="grid-5">${NFTS.slice(3,7).concat(NFTS[8]).map(n=>NftCard({...n,tag:null,old:null})).join('')}</div>
+    <div class="dots outline" aria-hidden="true"><i></i><i class="on"></i><i></i></div>
+  </div>
+  ${Footer()}
+</div>`;
+
+screens.cart = () => `<div class="frame-desktop">
+  ${Header('Mercado')}
+  <div class="wrap">
+    <div class="breadcrumb">Início / Mercado / Carrinho</div>
+    <section class="cart">
+      <div>
+        <div class="table-head"><span>NFTs</span><span>Preço</span><span>Edições</span><span>Total</span><span></span></div>
+        ${CART.map(({nft,qty,total})=>`
+          <div class="cart-row">
+            <div class="item"><img src="${A+nft.img}" alt="" /><div><div class="t">${nft.name}</div><small>ID do token: ${nft.token}</small></div></div>
+            <span>${nft.price} ETH</span>
+            ${Stepper(qty,true)}
+            <span class="total">${total} ETH</span>
+            <button class="trash" aria-label="Remover ${nft.name}">${ic('trash')}</button>
+          </div>`).join('')}
+      </div>
+      <aside class="summary">
+        ${Summary()}
+        <a class="btn btn-primary btn-block" href="#payment">Conectar e finalizar</a>
+        <a class="continue" href="#home">Continuar explorando</a>
+      </aside>
+    </section>
+    <h2 class="rail-title">Colecionadores também viram</h2>
+    <div class="grid-5">${NFTS.slice(3,7).concat(NFTS[8]).map(n=>NftCard({...n,tag:null,old:null})).join('')}</div>
+    <div class="dots outline" aria-hidden="true"><i></i><i class="on"></i><i></i></div>
+  </div>
+  ${Footer()}
+</div>`;
+
+const Req = '<span class="req" aria-hidden="true">*</span>';
+const F = (label, { req = true, ph = '', type = 'text', select = false, id } = {}) => {
+  id = id || 'f-' + Math.random().toString(36).slice(2, 8);
+  return `<div class="field"><label for="${id}">${label}${req ? Req : ''}</label>${select
+    ? `<select class="select" id="${id}" ${req?'required':''}><option>${ph}</option></select>`
+    : `<input class="input" id="${id}" type="${type}" placeholder="${ph}" ${req?'required':''} />`}</div>`;
+};
+const EnsField = () => `<div class="field"><label>Nome ENS${Req}</label><div class="ens"><select class="select" aria-label="Domínio"><option>.eth</option></select></div></div>`;
+
+screens.payment = () => `<div class="frame-desktop">
+  ${Header('Mercado')}
+  <div class="wrap">
+    <div class="breadcrumb">Início / Mercado / Pagamento</div>
+    <section class="checkout">
+      <form onsubmit="return false">
+        <h2 class="form-title">Perfil do colecionador</h2>
+        <div class="form-2">
+          ${F('Nome de exibição')}${F('Nome de usuário')}
+          ${F('Rede',{select:true,ph:'Selecione uma rede'})}${F('Nome do perfil')}
+          ${F('Endereço da carteira',{ph:'Endereço 0x da carteira'})}
+          <div class="field"><label>&nbsp;</label><input class="input" placeholder="ENS ou carteira secundária (opcional)" aria-label="ENS ou carteira secundária" /></div>
+          ${F('Tipo de carteira',{select:true,ph:'Selecione uma carteira'})}${F('Código de indicação')}
+          ${F('E-mail',{type:'email'})}${EnsField()}
+        </div>
+        <label class="radio" style="margin:30px 0 24px" data-radio><span class="dot"></span>Usar outra carteira?</label>
+        <div class="field" style="max-width:350px"><label for="obs">Observação do colecionador (opcional)</label><textarea class="textarea" id="obs"></textarea></div>
+      </form>
+      <aside class="your-nfts">
+        <h3>Seus NFTs</h3>
+        <div class="head"><span>NFTs</span><span>Subtotal</span></div>
+        ${CART.map(({nft,qty,total})=>`<div class="mini-row"><img src="${A+nft.img}" alt="" /><div><div class="t">${nft.name}</div><small>ID do token: ${nft.token}</small></div><span class="q">(x ${qty})</span><span class="s">${total} ETH</span></div>`).join('')}
+        <p style="text-align:center;margin:0 0 8px">Tem um código promocional? <a class="link-accent" href="#">Aplique aqui</a></p>
+        <div class="sum-row"><span>Subtotal</span><span class="v">26.83 ETH</span></div>
+        <div class="sum-row"><span>Desconto do lançamento</span><span class="v sm">(-) 00.00</span></div>
+        <div class="sum-row"><span>Taxa de rede</span><span class="v">0.016 ETH</span></div>
+        <div class="sum-note" style="text-align:center">Taxa estimada</div>
+        <div style="border-top:1px solid var(--border);padding:10px 40px 0;display:flex;justify-content:space-between;font-weight:700"><span>Total</span><span style="color:var(--accent);font-size:18px">26.846 ETH</span></div>
+        <h3 style="text-align:center;margin:12px 0 18px">Carteira e rede</h3>
+        <div role="radiogroup" aria-label="Carteira">
+          <label class="wallet-opt radio" data-radio><span class="dot"></span><span class="wallet-chip" style="margin:0">METAMASK • WALLETCONNECT • COINBASE</span></label>
+          <label class="wallet-opt radio" data-radio><span class="dot"></span>MetaMask</label>
+          <label class="wallet-opt radio checked" data-radio><span class="dot"></span>&nbsp; Coinbase Wallet</label>
+        </div>
+        <a class="btn btn-primary btn-block btn-lg" style="border-radius:6px;margin-top:8px" href="#confirm">Confirmar compra</a>
+      </aside>
+    </section>
+  </div>
+</div>`;
+
+screens.confirm = () => `<div class="frame-desktop" style="min-height:1000px">
+  <div class="overlay" style="background:transparent">
+    <div class="receipt" role="dialog" aria-modal="true" aria-labelledby="rc-title">
+      <div class="receipt-top" style="position:relative">
+        <button class="close" style="position:absolute;top:14px;right:16px;color:var(--accent)" aria-label="Fechar">${ic('x')}</button>
+        <svg width="64" height="80" style="color:var(--accent);margin:0 auto" aria-hidden="true"><use href="#i-thanks"/></svg>
+        <p id="rc-title">Seus NFTs agora estão na sua carteira</p>
+      </div>
+      <div class="receipt-strip">
+        <div><b style="color:var(--sand)">ID da transação</b>0xA91F…E82C</div>
+        <div>Data<br/>29 Jul, 2026</div>
+        <div>Total<br/>26.846 ETH</div>
+        <div><b>Carteira</b>MetaMask</div>
+      </div>
+      <div class="receipt-body">
+        <b>Detalhes da transação</b>
+        <div class="head"><span>NFTs</span><span>Edições</span><span style="text-align:right">Subtotal</span></div>
+        ${CART.map(({nft,qty,total})=>`<div class="receipt-line"><img src="${A+nft.img}" alt="" /><div><b>${nft.name}</b><br/><small style="color:var(--sand)">ID do token: ${nft.token}</small></div><span class="q">(x ${qty})</span><span class="s">${total} ETH</span></div>`).join('')}
+        <div class="receipt-sum"><span>Taxa de rede</span><span style="font-size:17px">0.016 ETH</span><b>Total</b><b style="color:var(--accent);font-size:18px">26.846 ETH</b></div>
+        <p class="receipt-note">Transação confirmada na Ethereum. A propriedade foi transferida para sua carteira conectada e registrada na rede.</p>
+        <div style="text-align:center"><a class="btn btn-primary btn-lg" href="#">Ver no Etherscan</a></div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const AuthModal = (mode) => `
+  <div class="overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <a class="close" href="#home" aria-label="Fechar">${ic('x')}</a>
+      <div class="switch" id="auth-title">
+        <a href="#login" class="${mode==='login'?'on':''}">Entrar</a><span class="bar"></span><a href="#signup" class="${mode==='signup'?'on':''}">Criar conta</a>
+      </div>
+      ${mode === 'login' ? `
+        <p class="lead">Entre para gerenciar sua carteira, coleção e perfil de criador.</p>
+        <input class="input" type="email" placeholder="contato@email.com" aria-label="E-mail" />
+        <div class="input-wrap"><input class="input" type="password" value="senhasecreta" aria-label="Senha" style="border-color:var(--accent)" />${ic('eye-off')}</div>
+        <a class="forgot" href="#">Esqueceu a senha?</a>
+        <button class="btn btn-primary btn-block btn-lg">Entrar</button>
+      ` : `
+        <p class="lead">Crie seu perfil de colecionador e conecte uma carteira quando quiser.</p>
+        <input class="input" placeholder="Nome de usuário" aria-label="Nome de usuário" />
+        <input class="input" type="email" placeholder="Digite seu e-mail" aria-label="E-mail" />
+        <div class="input-wrap"><input class="input" type="password" placeholder="Senha" aria-label="Senha" />${ic('eye-off')}</div>
+        <input class="input" type="password" placeholder="Confirmar senha" aria-label="Confirmar senha" />
+        <button class="btn btn-primary btn-block btn-lg" style="margin-top:12px">Criar conta</button>
+      `}
+      <div class="or">Ou continue com</div>
+      <button class="social-btn">${ic('google')}Continuar com Google</button>
+      <button class="social-btn">${ic('facebook-color')}Continuar com Facebook</button>
+    </div>
+  </div>`;
+
+screens.login  = () => `<div class="frame-desktop">${HomeBody()}${AuthModal('login')}</div>`;
+screens.signup = () => `<div class="frame-desktop">${HomeBody()}${AuthModal('signup')}</div>`;
+
+const SideMenu = (active) => `
+  <nav class="side-menu" aria-label="Conta">
+    <h3>Meu perfil</h3>
+    ${[['user','Dados do perfil','#profile'],['pin','Carteiras','#wallets'],['cart','Atividade','#'],['heart','Lista de interesse','#'],['offers','Ofertas','#'],['download','Arquivos baixados','#'],['alert','Suporte','#']]
+      .map(([i,l,h])=>`<a href="${h}" class="${l===active?'active':''}" ${l===active?'aria-current="page"':''}>${ic(i)}${l}</a>`).join('')}
+    <a href="#home" class="logout">${ic('logout')}Sair</a>
+  </nav>`;
+
+screens.profile = () => `<div class="frame-desktop" style="min-height:1080px">
+  ${Header('Início')}
+  <div class="wrap account">
+    ${SideMenu('Dados do perfil')}
+    <form onsubmit="return false" style="padding-top:0">
+      <h2 class="form-title" style="font-size:16px;margin-bottom:24px">Perfil do colecionador</h2>
+      <div class="form-2" style="gap:30px 28px">
+        ${F('Nome de exibição')}${F('Nome de usuário')}
+        ${F('E-mail',{type:'email'})}
+        <div class="field"><label>Nome ENS${Req}</label><div class="ens"><select class="select" aria-label="Domínio"><option>.eth</option></select><input class="input" aria-label="Nome ENS" /></div></div>
+        ${F('Apelido da carteira')}
+        <div class="field"><span class="label">Avatar</span><div class="avatar"><span class="ph">${ic('image')}</span><button class="btn btn-primary btn-sm" style="width:98px;height:40px">Alterar</button><button>Remover</button></div></div>
+      </div>
+      <h3 style="margin:40px 0 20px;font-size:16px">Alterar senha</h3>
+      <div style="display:grid;gap:22px;max-width:417px">
+        ${['Senha atual','Nova senha','Confirmar nova senha'].map(l=>`<div class="field"><label>${l}</label><div class="input-wrap"><input class="input" type="password" aria-label="${l}" />${ic('eye-off')}</div></div>`).join('')}
+      </div>
+      <button class="btn btn-primary" style="margin-top:32px;width:131px">Salvar</button>
+    </form>
+  </div>
+</div>`;
+
+screens.wallets = () => `<div class="frame-desktop" style="min-height:1080px">
+  ${Header('Início')}
+  <div class="wrap account">
+    ${SideMenu('Carteiras')}
+    <form onsubmit="return false">
+      <div class="section-head"><div><h3>Carteira principal</h3><p>Estas carteiras ficam disponíveis no pagamento e para receber NFTs comprados.</p></div><a class="link-accent" style="font-weight:700;font-size:16px" href="#">Adicionar</a></div>
+      <div class="form-2" style="margin-top:32px">
+        ${F('Nome de exibição')}${F('Apelido da carteira')}
+        ${F('Rede',{select:true,ph:'Selecione uma rede'})}${F('Nome do perfil')}
+        ${F('Endereço da carteira',{ph:'Endereço 0x da carteira'})}
+        <div class="field"><label>&nbsp;</label><input class="input" placeholder="ENS ou carteira secundária (opcional)" aria-label="ENS ou carteira secundária" /></div>
+        ${F('Tipo de carteira',{select:true,ph:'Selecione uma carteira'})}${F('Código de indicação')}
+        ${F('E-mail',{type:'email'})}
+        <div class="field"><label>Nome ENS${Req}</label><div class="ens"><select class="select" aria-label="Domínio"><option>.eth</option></select><input class="input" aria-label="Nome ENS" /></div></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:32px;padding:0 4px;font-size:14px">Salvar carteira</button>
+      <div class="section-head" style="margin-top:36px">
+        <div><h3>Carteira secundária</h3><p>Você ainda não adicionou uma carteira secundária.</p></div>
+        <div style="display:flex;gap:10px;align-items:center"><label class="radio" data-radio><span class="dot"></span>Igual à carteira principal</label><a class="link-accent" style="font-weight:700;font-size:16px" href="#">Adicionar</a></div>
+      </div>
+    </form>
+  </div>
+</div>`;
+
+/* =========================================================
+   TELAS MOBILE
+   ========================================================= */
+const Phone = (title, body) => `<div><p class="phone-title">${title}</p><div class="phone">${body}</div></div>`;
+
+const mHome = () => Phone('Mobile · Início', `
+  <div class="m-search">
+    <label>${ic('search')}<input placeholder="Explorar coleções" style="background:none;border:0;flex:1" aria-label="Explorar coleções" /></label>
+    <button aria-label="Filtros">${ic('filter')}</button>
+  </div>
+  <div class="m-hero">
+    <small>Bem-vindo à Kurio</small>
+    <h2>SEJA DONO DA CULTURA DIGITAL</h2>
+    <p>Descubra NFTs selecionados de criadores do mundo todo.</p>
+    <a href="#">EXPLORAR ${ic('arrow-right','font-size:14px')}</a>
+    <img class="big" src="${A}emerald-ape.png" alt="" /><img class="small" src="${A}sage-nomad.png" alt="" />
+    <div class="dots"><i></i><i></i><i></i></div>
+  </div>
+  <div class="m-tabs"><span class="active">Todos os NFTs</span><span>Novos lançamentos</span><span>Em alta</span></div>
+  <div class="m-grid">
+    <div class="m-col">
+      <div class="m-card"><span class="fav">${ic('heart')}</span><img src="${A}emerald-ape.png" alt="Emerald Ape #042" /><div class="t">Emerald Ape #042</div><div class="p">1.19 ETH</div></div>
+      <div class="m-card"><span class="tag">RARO</span><img src="${A}ivory-baron.png" alt="Neon Vessel #552" /><div class="t">Neon Vessel #552</div><div class="p">1.99 ETH</div></div>
+    </div>
+    <div class="m-col offset">
+      <div class="m-card"><img src="${A}sage-nomad.png" alt="Sage Nomad #009" /><div class="t">Sage Nomad #009</div><div class="p">1.69 ETH</div></div>
+      <div class="m-card"><img src="${A}golden-beat.png" alt="Golden Beat #207" /><div class="t">Golden Beat #207</div><div class="p">0.99 ETH</div></div>
+    </div>
+  </div>
+  <nav class="m-tabbar" aria-label="Navegação">
+    <a class="on" href="#" aria-label="Início">${ic('home')}</a>
+    <a href="#" aria-label="Favoritos">${ic('heart-fill')}</a>
+    <a class="fab" href="#" aria-label="Escanear">${ic('scan')}</a>
+    <a href="#" aria-label="Carrinho">${ic('cart-solid')}</a>
+    <a href="#" aria-label="Perfil">${ic('user')}</a>
+  </nav>`);
+
+const mDetail = () => Phone('Mobile · Detalhe', `
+  <div class="m-top"><button class="m-round" aria-label="Voltar">${ic('chevron-left')}</button><button class="m-round" aria-label="Favoritar">${ic('heart')}</button></div>
+  <img class="m-detail-img" src="${A}emerald-ape.png" alt="Emerald Ape #042" />
+  <div class="m-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h1>Emerald Ape #042</h1><span class="m-rating">${ic('star')}4.8<span style="font-weight:400">(19)</span></span></div>
+    <p style="color:var(--sand);line-height:24px;margin:10px 0 8px">Um colecionável digital 1/50 finalizado à mão da coleção Kurio Editions, verificado na Ethereum.</p>
+    <b>Edição:</b>
+    <div class="chips" style="margin-top:6px"><button class="chip" data-chip>1/1</button><button class="chip" data-chip>1/10</button><button class="chip on" data-chip>1/50</button><button class="chip" data-chip>ABERTA</button></div>
+    <div class="meta" style="font-size:14px;gap:8px"><span>ID do token: #0042</span><span>Coleção: Kurio Apes</span><span>Atributos: Óculos, Esmeralda, Raro</span></div>
+  </div>
+  <div class="m-buybar">
+    <div class="row"><span style="display:flex;align-items:center;gap:10px">Qtd. ${Stepper(1,true)}</span><b style="color:var(--accent);font-size:20px">1.19 ETH</b></div>
+    <div style="display:flex;gap:12px"><button class="btn btn-pill pill">Comprar NFT</button><button class="m-round" style="width:58px;height:58px;color:var(--accent)" aria-label="Adicionar ao carrinho">${ic('cart-solid')}</button></div>
+  </div>`);
+
+const mCart = () => Phone('Mobile · Carrinho', `
+  <div class="m-top" style="justify-content:flex-start;gap:60px"><button class="m-round" aria-label="Voltar">${ic('chevron-left')}</button><b style="font-size:19px">Carrinho de NFTs</b></div>
+  ${[['emerald-ape.png','Emerald Ape #042','1/50','1.19',1],['sage-nomad.png','Violet Nomad #314','1/1','1.39',1],['ivory-baron.png','Ivory Baron #088','1/10','3.58',2],['golden-beat.png','Golden Beat #207','1/50','1.98',2]]
+    .map(([img,t,e,p,q])=>`<div class="m-cart-item"><img src="${A+img}" alt="" /><div><div class="t">${t}</div><small>Edição: ${e}</small><div class="r"><span class="p">${p} ETH</span><span class="m-step"><button aria-label="Diminuir">${ic('minus')}</button>${q}<button aria-label="Aumentar">${ic('plus')}</button></span></div></div></div>`).join('')}
+  <div class="m-summary">
+    <div class="m-promo"><input placeholder="Digite o código promocional..." aria-label="Código promocional" /><button>Aplicar</button></div>
+    <div class="sum-row"><span>Subtotal</span><span>8.92 ETH</span></div>
+    <div class="sum-row"><span>Desconto do lançamento</span><span>(-) 00.00</span></div>
+    <div class="sum-row" style="margin:0"><span>Taxa de rede</span><span>0.016 ETH</span></div>
+    <div class="sum-note" style="margin:0 0 4px">Taxa estimada</div>
+    <div class="sum-total"><span>Total</span><span class="v">8.936 ETH</span></div>
+    <button class="btn btn-pill btn-block" style="height:58px">Conectar e finalizar</button>
+  </div>`);
+
+const mPayment = () => Phone('Mobile · Pagamento', `
+  <div class="m-top" style="justify-content:flex-start;gap:24px"><button class="m-round" aria-label="Voltar">${ic('chevron-left')}</button><b style="font-size:19px">Pagamento com carteira</b></div>
+  <div class="m-pad" style="display:flex;justify-content:space-between;margin:4px 0 12px"><b>Carteira conectada</b><a class="link-accent" style="font-weight:700;font-size:13px" href="#">Trocar carteira</a></div>
+  <div class="m-wallet radio checked" data-radio><span class="dot"></span><div><b>Reserva</b><span>nova.kurio.eth</span><span>Rede Polygon</span></div>${ic('more','color:var(--accent)')}</div>
+  <div class="m-wallet radio" data-radio><span class="dot" style="border-color:var(--khaki)"></span><div><b>Principal</b><span>0xA91F…E82C</span><span>Rede principal Ethereum</span></div>${ic('more','color:var(--accent)')}</div>
+  <b class="m-pad" style="margin:0 0 12px">Carteira e rede</b>
+  <div class="m-opt"><span class="ic">W</span>WalletConnect<label class="radio" data-radio><span class="dot"></span></label></div>
+  <div class="m-opt"><span class="ic">M</span>MetaMask<label class="radio" data-radio><span class="dot"></span></label></div>
+  <div class="m-opt"><span class="ic">${ic('coinbase','font-size:22px')}</span>Coinbase Wallet<label class="radio checked" data-radio><span class="dot"></span></label></div>
+  <div class="m-pad" style="text-align:right;font-weight:700;font-size:16px">Total: <span style="color:var(--accent);margin-left:24px">8.936 ETH</span></div>
+  <div class="m-pad" style="margin-top:auto;padding-bottom:32px"><a class="btn btn-pill btn-block" style="height:60px" href="#">Confirmar compra</a></div>`);
+
+const mLogin = () => Phone('Mobile · Login', `
+  <div class="m-auth">
+    <div class="brand">KURIO</div>
+    <h2>Entrar</h2>
+    <input class="input" type="email" placeholder="contato@email.com" aria-label="E-mail" />
+    <div class="input-wrap"><input class="input" type="password" value="senhasecreta" style="border-color:var(--accent)" aria-label="Senha" />${ic('eye-off')}</div>
+    <a class="link-accent" style="text-align:right" href="#">Esqueceu a senha?</a>
+    <button class="btn btn-primary">Entrar</button>
+    <div class="or">Ou continue com</div>
+    <button class="social-btn">${ic('google')}Continuar com Google</button>
+    <button class="social-btn">${ic('facebook-color')}Continuar com Facebook</button>
+    <p class="footer-link" style="margin-top:40px">Novo na Kurio? <a href="#">Crie uma conta</a></p>
+  </div>`);
+
+const mSignup = () => Phone('Mobile · Cadastro', `
+  <div class="m-auth">
+    <div class="brand">KURIO</div>
+    <h2>Criar perfil de colecionador</h2>
+    <input class="input" placeholder="Nome de usuário" style="text-align:center" aria-label="Nome de usuário" />
+    <input class="input" type="email" placeholder="Digite seu e-mail" aria-label="E-mail" />
+    <div class="input-wrap"><input class="input" type="password" placeholder="Senha" aria-label="Senha" />${ic('eye-off')}</div>
+    <div class="input-wrap"><input class="input" type="password" placeholder="Confirmar senha" aria-label="Confirmar senha" />${ic('eye-off')}</div>
+    <button class="btn btn-primary">Criar perfil</button>
+    <div class="or" style="margin-top:36px">Ou continue com</div>
+    <button class="social-btn">${ic('google')}Continuar com Google</button>
+    <button class="social-btn">${ic('facebook-color')}Continuar com Facebook</button>
+    <p class="footer-link">Já tem uma conta? <a href="#">Entre</a></p>
+  </div>`);
+
+screens.mobile = () => `<div class="mobile-canvas">${[mHome, mDetail, mCart, mPayment, mLogin, mSignup].map(f => f()).join('')}</div>`;
+
+/* =========================================================
+   ABA: FUNDAMENTOS — cor primária, defaults, tipografia, ícones
+   ========================================================= */
+screens.foundations = () => {
+  const sw = ([v, h, d, note]) => `<div class="swatch"><div style="background:${h}"></div><p><b>${v}</b><br/><code>${h}</code><br/>${d}${note ? `<br/><small style="color:var(--khaki)">${note}</small>` : ''}</p></div>`;
+  const brand = [['--accent','#D28A4C','Primária: CTAs, preço, item ativo, foco'],['--accent-2','#B8733D','Fim do gradiente (botões pill mobile)'],['--on-accent','#140D0A','Texto/ícone sobre a primária']];
+  const surfaces = [['--bg','#140D0A','Fundo da página'],['--surface','#241612','Painéis, cards, sidebar, modais, footer'],['--surface-2','#2C1B14','Cards elevados (mobile)'],['--surface-3','#38220F','Faixa do footer, input newsletter, chip'],['--border','#432C1A','Bordas, divisores, inputs']];
+  const text = [['--cream','#F5F1EB','Texto principal / títulos'],['--sand','#CFB28C','Texto secundário / descrições'],['--khaki','#B39463','Placeholder / terciário / preço antigo']];
+  const states = [['--success','#7FB77E','Pedido confirmado, sucesso','proposto'],['--warning','#E0B04C','Preço alterado, pedido pendente','proposto'],['--danger','#E5664A','Erro, recusado, obrigatório (*)','asterisco do Figma'],['--info','#9DB8C7','Informativo neutro','proposto']];
+  const type = [
+    ['display','Hero H1','44px / 70px · 700 · .06em · UPPER','<span style="font-size:44px;font-weight:700;letter-spacing:.06em;line-height:1">SEJA DONO</span>'],
+    ['h1','Título do NFT','28px · 700 · .04em','<span style="font-size:28px;font-weight:700">Emerald Ape #042</span>'],
+    ['h2','Título de seção','26px · 700','<span style="font-size:26px;font-weight:700">Diário da Cunhagem</span>'],
+    ['price-lg','Preço destaque','22px · 700 · accent','<span style="font-size:22px;font-weight:700;color:var(--accent)">1.19 ETH</span>'],
+    ['h3','Título de painel','18px · 600','<span style="font-size:18px;font-weight:600">Coleções</span>'],
+    ['title','Título de card','16–17px · 700','<span style="font-size:17px;font-weight:700">Segurança da carteira</span>'],
+    ['body-lg','Corpo / nav / label','15–16px · 400','<span style="font-size:15px">Ordenar por: Listados recentemente</span>'],
+    ['body','Descrição','14px / 24px · 400 · sand','<span style="color:var(--sand)">Descubra NFTs selecionados de criadores.</span>'],
+    ['caption','Legenda / meta','12px / 16px · 400','<span style="font-size:12px;color:var(--sand)">12 de setembro | Leitura de 6 min</span>'],
+    ['micro','Chip de carteiras','8.5px · 700 · UPPER','<span class="wallet-chip" style="margin:0">METAMASK • WALLETCONNECT • COINBASE</span>'],
+  ];
+  const space = [4,8,12,16,20,24,32,40,48,64,96];
+  const radii = [['sm','4px','botões, inputs'],['md','8px','cards de blog, thumbs'],['lg','12px','imagem do card'],['xl','16px','imagens grandes, cards mobile'],['2xl','24px','hero, card hero mobile'],['pill','999px','chips, botões mobile']];
+  const iconGroups = {
+    'Navegação': ['search','cart','cart-solid','user','user-outline','login','logout','home','menu','x','chevron-down','chevron-right','chevron-left','arrow-right'],
+    'Ações': ['heart','heart-fill','plus','minus','trash','zoom','eye-off','edit','copy','share','filter','sort','scan','more','refresh'],
+    'Conteúdo e conta': ['star','mail','pin','offers','download','alert','image','wallet','lock','coupon','invoice','shield'],
+    'Estados e feedback': ['check','info','clock','cancel','offline'],
+    'Redes sociais': ['facebook','instagram','twitter','linkedin','youtube'],
+    'Marcas e redes blockchain': ['google','facebook-color','metamask','coinbase','walletconnect','ethereum','polygon','solana'],
+  };
+  return `<div class="ds">
+    <h2>Fundamentos</h2>
+    <p class="ds-intro">Tokens extraídos do Figma por amostragem de pixel (escala 1:1). Estes valores viram as CSS variables do tema Tailwind/shadcn. O que está marcado como <i>proposto</i> não existe no Figma e cobre estados exigidos pelo README.</p>
+
+    <p class="ds-sub">Cor primária</p>
+    <div class="swatches" style="margin-bottom:24px">${brand.map(sw).join('')}</div>
+    <p class="ds-sub">Superfícies</p>
+    <div class="swatches" style="margin-bottom:24px">${surfaces.map(sw).join('')}</div>
+    <p class="ds-sub">Texto</p>
+    <div class="swatches" style="margin-bottom:24px">${text.map(sw).join('')}</div>
+    <p class="ds-sub">Estados</p>
+    <div class="swatches">${states.map(sw).join('')}</div>
+
+    <h2>Padrões default</h2>
+    <div class="ds-grid">
+      <div class="ds-box"><h4>Página</h4><small>body</small>bg <code>--bg</code> · texto <code>--cream</code><br/>Roboto Mono 14px / 1.6<br/>letter-spacing <code>.04em</code></div>
+      <div class="ds-box"><h4>Container</h4><small>desktop 1440</small>max-width <code>1200px</code> (margens de 120px)<br/>gutter mobile <code>24px</code><br/>breakpoints <code>390 · 768 · 1440</code></div>
+      <div class="ds-box"><h4>Foco</h4><small>:focus-visible</small><button class="btn btn-primary btn-sm" style="outline:2px solid var(--accent);outline-offset:2px">Exemplo</button><br/><br/>outline 2px <code>--accent</code>, offset 2px</div>
+      <div class="ds-box"><h4>Hover / disabled</h4><small>interações</small>primário: <code>brightness(1.08)</code><br/>outline: fundo accent 8%<br/>disabled: <code>opacity .5</code> + <code>not-allowed</code></div>
+      <div class="ds-box"><h4>Overlay de modal</h4><small>dialog / drawer</small><code>rgba(20,13,10,.55)</code><br/>modal: <code>--surface</code> + barra inferior 10px <code>--accent</code></div>
+      <div class="ds-box"><h4>Movimento</h4><small>motion</small>transições de 150ms<br/>shimmer de 1.4s<br/><code>prefers-reduced-motion</code> desliga as animações</div>
+    </div>
+
+    <h2>Tipografia: Roboto Mono</h2>
+    <p class="ds-intro">Fonte monoespaçada em toda a interface (o zero cortado do Figma confirma Roboto Mono). Pesos: 400, 500, 600 e 700. A paginação usa Roboto (sans).</p>
+    ${type.map(([k,n,s,ex])=>`<div class="type-row"><div><b>${n}</b> <code>text-${k}</code><br/><code style="color:var(--khaki)">${s}</code></div><div>${ex}</div></div>`).join('')}
+
+    <h2>Espaçamento e raios</h2>
+    <p class="ds-sub">Escala de espaço (base 4px)</p>
+    <div style="display:grid;gap:6px;margin-bottom:28px">${space.map(s=>`<div style="display:grid;grid-template-columns:60px 1fr;align-items:center;gap:12px"><code>${s}px</code><div class="scale-bar" style="width:${s*3}px"></div></div>`).join('')}</div>
+    <p class="ds-sub">Raios</p>
+    <div class="ds-row">${radii.map(([k,v,d])=>`<div style="text-align:center"><div class="radius-box" style="border-radius:${v}"></div><code>${k} · ${v}</code><br/><small style="color:var(--khaki)">${d}</small></div>`).join('')}</div>
+
+    <h2>Ícones (Iconify)</h2>
+    <p class="ds-intro">Base <b>Basil</b> (estilo "curved", igual aos SVGs exportados do Figma), completada com <b>Solar</b>, <b>ic</b>, <b>logos</b>, <b>token-branded</b> e <b>simple-icons</b>. No React: <code>&lt;Icon icon="basil:search-outline" /&gt;</code> via <code>@iconify/react</code>. Clique para copiar o nome.</p>
+    ${Object.entries(iconGroups).map(([g, list]) => `<p class="ds-sub" style="margin-top:20px">${g}</p><div class="icon-table">${list.map(n=>`<button class="icon-cell" data-copy="${ICONS[n]}">${ic(n)}<span><b>${n}</b><code>${ICONS[n]}</code></span></button>`).join('')}</div>`).join('')}
+  </div>`;
+};
+
+/* =========================================================
+   ABA: COMPONENTES — padrões que se repetem entre telas
+   ========================================================= */
+screens.components = () => {
+  const C = (name, desc, base, where, demo) => `
+    <div class="ds-comp">
+      <div><h3>${name}</h3><p>${desc}</p><p>Base: <code>${base}</code></p><div class="where">Aparece em: ${where}</div></div>
+      <div>${demo}</div>
+    </div>`;
+  return `<div class="ds">
+    <h2>Componentes</h2>
+    <p class="ds-intro">Padrões que se repetem entre as telas, cada um com o componente base do shadcn/ui e os lugares onde aparece. Estados marcados como <i>proposto</i> não estão no Figma, mas o README exige e eles seguem a mesma linguagem visual.</p>
+
+    <p class="ds-sub">Ações</p>
+    ${C('Button','Primário (sólido), outline, link, pill com gradiente (mobile) e com ícone.','shadcn Button + cva variants','header (Entrar), hero, filtros, detalhe, carrinho, pagamento, modais, perfil',
+      `<div class="ds-row"><button class="btn btn-primary">EXPLORAR</button><button class="btn btn-primary btn-sm">${ic('login')}Entrar</button><button class="btn btn-outline">${ic('heart')}Favoritar</button><button class="btn btn-pill" style="height:58px;width:200px">Comprar NFT</button><a class="link-accent" href="#">Continuar explorando</a><button class="btn btn-primary" disabled style="opacity:.5;cursor:not-allowed">Desabilitado</button><button class="btn btn-primary" aria-busy="true"><span class="spinner"></span>Processando…</button></div>`)}
+    ${C('IconButton','Botão só com ícone, sempre com aria-label. Quadrado (hover do card) ou redondo (mobile).','shadcn Button size="icon"','hover do NftCard, header, zoom da galeria, mobile (voltar/favoritar)',
+      `<div class="ds-row"><span class="quick" style="position:static;opacity:1;transform:none"><button aria-label="Carrinho">${ic('cart')}</button><button aria-label="Favoritar">${ic('heart')}</button><button aria-label="Ver">${ic('zoom')}</button></span><button class="m-round" aria-label="Voltar">${ic('chevron-left')}</button><button class="m-round" style="color:var(--accent)" aria-label="Favorito">${ic('heart-fill')}</button></div>`)}
+    ${C('QuantityStepper','Quantidade inteira com limite por edição. Botão desabilitado nos limites, valor com aria-live.','composição própria (Button + Input)','detalhe (lg), carrinho (sm), mobile detalhe e carrinho',
+      `<div class="ds-row">${Stepper(1)} ${Stepper(2,true)} <span class="m-step"><button aria-label="Diminuir">${ic('minus')}</button>2<button aria-label="Aumentar">${ic('plus')}</button></span><span style="color:var(--khaki);font-size:12px">máx. 9 disponíveis</span></div>`)}
+
+    <p class="ds-sub" style="margin-top:28px">Formulários</p>
+    ${C('Field (label + input + erro)','Label com asterisco laranja-avermelhado para obrigatório. O erro fica ligado ao campo via aria-describedby e usa ícone + texto.','shadcn Form + Input + Label (react-hook-form + zod)','pagamento, perfil, carteiras, login, cadastro',
+      `<div class="form-2" style="max-width:720px">${F('Nome de exibição',{ph:'Ex.: Nova Sato'})}
+       <div class="field"><label for="err">E-mail${Req}</label><input class="input invalid" id="err" value="nova@" aria-invalid="true" aria-describedby="err-msg" /><span id="err-msg" class="field-error">${ic('alert','font-size:14px')}Informe um e-mail válido.</span></div>
+       <div class="field"><label>Senha</label><div class="input-wrap"><input class="input" type="password" value="12345678" aria-label="Senha" />${ic('eye-off')}</div></div>
+       <div class="field"><label for="u2">Nome de usuário${Req}</label><input class="input invalid" id="u2" value="nova" aria-invalid="true" /><span class="field-error">${ic('alert','font-size:14px')}Este usuário já está em uso (409).</span></div></div>`)}
+    ${C('Select / EnsInput','Select com chevron Basil. O ENS combina o select de domínio com um input.','shadcn Select','pagamento (rede, tipo de carteira), carteiras, perfil (ENS)',
+      `<div class="form-2" style="max-width:720px">${F('Rede',{select:true,ph:'Selecione uma rede'})}<div class="field"><label>Nome ENS${Req}</label><div class="ens"><select class="select" aria-label="Domínio"><option>.eth</option></select><input class="input" aria-label="Nome ENS" /></div></div></div>`)}
+    ${C('PromoCodeInput','Input com o botão Aplicar colado. Variante desktop (borda accent) e mobile (pill).','Input + Button','carrinho, pagamento ("Aplique aqui"), mobile carrinho',
+      `<div style="max-width:340px"><div class="promo-input"><input placeholder="Digite o código promocional..." aria-label="Cupom" /><button>Aplicar</button></div><div class="m-promo"><input placeholder="Digite o código promocional..." aria-label="Cupom" /><button>Aplicar</button></div><span class="field-error">${ic('alert','font-size:14px')}Cupom expirado em 30/09/2026.</span></div>`)}
+    ${C('Radio / RadioCard','Radio laranja. O RadioCard envolve a opção inteira (borda cream quando selecionado).','shadcn RadioGroup','pagamento (carteira e rede), mobile pagamento, carteiras ("Igual à principal")',
+      `<div style="max-width:405px" role="radiogroup" aria-label="Exemplo"><label class="wallet-opt radio" data-radio><span class="dot"></span>${ic('metamask')} MetaMask</label><label class="wallet-opt radio checked" data-radio><span class="dot"></span>${ic('coinbase')} Coinbase Wallet</label><div class="m-opt" style="margin:0"><span class="ic">${ic('walletconnect')}</span>WalletConnect<label class="radio" data-radio><span class="dot"></span></label></div></div>`)}
+    ${C('EditionChip','Seleção de edição (1/1, 1/10, 1/50, ABERTA). A edição esgotada fica desabilitada com texto riscado e o motivo escrito.','shadcn ToggleGroup','detalhe desktop e mobile',
+      `<div class="chips" role="radiogroup" aria-label="Edição"><button class="chip" data-chip>1/1</button><button class="chip on" data-chip>1/50</button><button class="chip" disabled title="Esgotada">1/10</button><button class="chip" data-chip>ABERTA</button></div>`)}
+
+    <p class="ds-sub" style="margin-top:28px">NFT e catálogo</p>
+    ${C('NftCard','Imagem 1:1 dentro de uma caixa surface, nome e preço em accent. Variantes: tag RARO, preço antigo riscado, hover com ações rápidas e skeleton.','composição própria','início (grid 3), "Mais desta coleção" e "Colecionadores também viram" (grid 5), mobile (2 colunas)',
+      `<div style="display:grid;grid-template-columns:repeat(4,200px);gap:24px">${NftCard(NFTS[0])}${NftCard(NFTS[1],{hover:true})}${NftCard(NFTS[2])}
+       <article class="nft-card" aria-busy="true"><div class="skeleton" style="aspect-ratio:258/300"></div><div class="skeleton sk-line" style="width:70%;margin-top:18px"></div><div class="skeleton sk-line" style="width:40%"></div></article></div>`)}
+    ${C('FilterPanel','Lista com contagem (o item ativo fica em accent), range de preço e rede. No mobile vira Sheet/Drawer pelo botão de filtro.','shadcn Slider + Checkbox + Sheet (mobile)','início (sidebar), mobile (botão filtro)',
+      `<div class="panel" style="width:310px"><h3>Rede</h3><ul class="filter-list" style="margin:0">${NETWORKS.map(([c,n],i)=>`<li class="${i===0?'active':''}"><span style="display:flex;gap:8px;align-items:center">${ic(c.toLowerCase(),'font-size:16px')}${c}</span><span>(${n})</span></li>`).join('')}</ul></div>`)}
+    ${C('Tabs (underline)','Aba ativa em accent com sublinhado. Teclado: setas trocam de aba.','shadcn Tabs','início (Todos/Novos/Em alta), detalhe (Detalhes/Avaliações), mobile, auth modal (Entrar | Criar conta)',
+      `<div class="tabs"><button class="active">Todos os NFTs</button><button>Novos lançamentos</button><button>Em alta</button></div>`)}
+    ${C('Pagination / CarouselDots / Breadcrumb','Paginação quadrada (Roboto), dots sólidos ou outline e breadcrumb em negrito.','shadcn Pagination, Carousel (embla), Breadcrumb','início, detalhe, carrinho, pagamento',
+      `<div class="ds-row"><nav class="pagination" style="margin:0"><button class="on">1</button><button>2</button><button>3</button><button>${ic('chevron-right')}</button></nav><div class="dots"><i></i><i></i><i></i></div><div class="dots outline"><i></i><i class="on"></i><i></i></div><span class="breadcrumb" style="margin:0">Início / Mercado / Carrinho</span></div>`)}
+
+    <p class="ds-sub" style="margin-top:28px">Carrinho e checkout</p>
+    ${C('LineItem','Linha de NFT com thumb 70px. Variantes: carrinho (stepper + lixeira), resumo (x qtd + subtotal) e recibo.','composição própria','carrinho, pagamento (Seus NFTs), confirmação, mobile carrinho',
+      `<div style="max-width:786px"><div class="cart-row"><div class="item"><img src="${A}emerald-ape.png" alt="" /><div><div class="t">Emerald Ape #042</div><small>ID do token: #0042</small></div></div><span>1.19 ETH</span>${Stepper(2,true)}<span class="total">2.38 ETH</span><button class="trash" aria-label="Remover">${ic('trash')}</button></div>
+       <div class="mini-row" style="max-width:405px"><img src="${A}ivory-baron.png" alt="" /><div><div class="t">Ivory Baron #088</div><small>ID do token: #0088</small></div><span class="q">(x 9)</span><span class="s">16.11 ETH</span></div></div>`)}
+    ${C('PriceSummary','Subtotal, desconto, taxa de rede (com "Taxa estimada") e total em accent. Valores vêm da cotação da API, como strings decimais.','composição própria','carrinho, pagamento, confirmação, mobile carrinho',
+      `<div class="summary" style="max-width:332px">${Summary()}</div>`)}
+    ${C('PriceChangeBanner (proposto)','Aviso de alteração de preço ou disponibilidade recebida via Socket.IO (nft.updated). Bloqueia a confirmação até o usuário aceitar a nova cotação.','shadcn Alert','carrinho, pagamento',
+      `<div style="display:grid;gap:12px;max-width:760px"><div class="banner" role="status">${ic('alert')}<span><b>Emerald Ape #042</b> mudou de preço: <span class="price-flash"><s>1.19 ETH</s>1.29 ETH</span></span><button class="btn btn-primary btn-sm">Revisar cotação</button></div><div class="banner danger" role="alert">${ic('cancel')}<span>A edição <b>1/10</b> de Ivory Baron #088 esgotou. Ajustamos a quantidade disponível.</span></div></div>`)}
+    ${C('OrderStatus (proposto)','Estado do pedido (order.updated), sempre com ícone + texto. Pendente fica com spinner. Confirmado e recusado são terminais.','shadcn Badge','pagamento, confirmação, retomada após refresh',
+      `<div class="ds-row"><span class="status pending"><span class="spinner" style="width:12px;height:12px"></span>Pagamento pendente</span><span class="status confirmed">${ic('check')}Confirmado</span><span class="status declined">${ic('cancel')}Recusado</span></div>`)}
+
+    <p class="ds-sub" style="margin-top:28px">Overlays e feedback</p>
+    ${C('Dialog','Surface com barra accent de 10px na base, botão X em accent e foco preso dentro. Fecha com Esc e devolve o foco ao gatilho.','shadcn Dialog (Radix)','login, cadastro, confirmação de pedido',
+      `<div class="modal" style="width:420px;padding:32px 40px 40px"><button class="close" aria-label="Fechar">${ic('x')}</button><div class="switch" style="margin-bottom:16px"><a class="on">Entrar</a><span class="bar"></span><a>Criar conta</a></div><p class="lead">Conteúdo do diálogo…</p><button class="btn btn-primary btn-block">Ação principal</button></div>`)}
+    ${C('Toast (proposto)','Feedback de mutations (favoritar, carrinho, perfil), anunciado via role="status".','shadcn Sonner','global',
+      `<div style="display:grid;gap:12px"><div class="toast success" role="status">${ic('check')}<div><b>Adicionado ao carrinho</b><p>Emerald Ape #042 · edição 1/50 (x1)</p></div></div><div class="toast error" role="alert">${ic('alert')}<div><b>Não foi possível favoritar</b><p>Desfizemos a alteração. Tente novamente.</p></div></div><div class="toast info" role="status">${ic('offline')}<div><b>Conexão perdida</b><p>Reconectando… seu pedido pendente será retomado.</p></div></div></div>`)}
+    ${C('Skeleton (shimmer)','Mantém as dimensões do conteúdo para evitar CLS. Respeita reduced-motion.','shadcn Skeleton + shimmer','catálogo, detalhe, resumo do carrinho',
+      `<div style="display:grid;grid-template-columns:200px 1fr;gap:24px;max-width:700px"><div class="skeleton" style="aspect-ratio:1"></div><div><div class="skeleton" style="height:28px;width:60%"></div><div class="skeleton sk-line" style="width:30%;height:20px"></div><div class="skeleton sk-line"></div><div class="skeleton sk-line" style="width:85%"></div><div class="skeleton sk-line" style="width:50%;height:40px;margin-top:20px"></div></div></div>`)}
+    ${C('EmptyState / ErrorState (proposto)','Resultado vazio, NFT inexistente (404) e falha com "Tentar novamente".','composição própria','catálogo, detalhe, carrinho vazio, rotas inexistentes',
+      `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px"><div class="state-box">${ic('search')}<h4>Nenhum NFT encontrado</h4><p>Ajuste os filtros ou limpe a busca.</p><button class="btn btn-outline btn-sm">Limpar filtros</button></div><div class="state-box">${ic('cart')}<h4>Seu carrinho está vazio</h4><p>Explore o mercado e adicione NFTs.</p><a class="btn btn-primary btn-sm" href="#home">Explorar</a></div><div class="state-box">${ic('offline')}<h4>Falha ao carregar</h4><p>Erro 503: serviço indisponível.</p><button class="btn btn-primary btn-sm">${ic('refresh')}Tentar novamente</button></div></div>`)}
+
+    <p class="ds-sub" style="margin-top:28px">Layout</p>
+    ${C('Header / MobileTabBar','Header desktop (logo, nav central com sublinhado, busca, carrinho com badge, Entrar). No mobile, tab bar inferior com FAB central.','composição própria + shadcn NavigationMenu','todas as telas',
+      `<div style="background:var(--bg);padding:0 16px">${Header('Início')}</div>`)}
+    ${C('SideMenu (conta)','Item ativo com barra lateral accent de 6px. "Sair" fica separado por divisor.','composição própria','perfil, carteiras',
+      `<div style="width:310px">${SideMenu('Carteiras')}</div>`)}
+    ${C('FeatureCard / PromoBanner / BlogCard / Footer','Blocos de marketing que se repetem no rodapé de todas as páginas desktop.','composição própria','início, detalhe, carrinho, pagamento',
+      `<div style="display:grid;grid-template-columns:1fr 268px;gap:24px;align-items:start"><article class="promo"><img src="${A}emerald-banner.png" alt="" /><div><h3>Lançamentos gênesis<br/>de edição limitada</h3><p>Colecione edições escassas.</p><a class="btn btn-primary" href="#">Explorar ${ic('arrow-right')}</a></div></article><article class="post"><img src="${A}golden-beat.png" alt="" /><div><small>15 de setembro | Leitura de 2 min</small><h3>Como proteger sua carteira</h3><p>Proteja sua carteira.</p><a href="#">Ler mais →</a></div></article></div>`)}
+  </div>`;
+};
+
+/* =========================================================
+   ROUTER DO PROTÓTIPO
+   ========================================================= */
+const MENU = [
+  ['label','Desktop'],['home','Início'],['detail','Detalhe'],['cart','Carrinho'],['payment','Pagamento'],['confirm','Confirmação'],['login','Login'],['signup','Cadastro'],['profile','Perfil'],['wallets','Carteiras'],
+  ['sep'],['mobile','Mobile (6 telas)'],['sep'],['foundations','Fundamentos'],['components','Componentes'],
+];
+function render() {
+  const key = (location.hash.slice(1) || 'home');
+  const fn = screens[key] || screens.home;
+  document.getElementById('protoBar').innerHTML = '<strong>KURIO · protótipo</strong>' + MENU.map(([k,l]) =>
+    k === 'sep' ? '<span class="sep"></span>' : k === 'label' ? `<span class="label">${l}</span>` : `<a href="#${k}" class="${k===key?'on':''}">${l}</a>`).join('');
+  document.getElementById('stage').innerHTML = fn();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', render);
+render();
+
+/* Micro-interações (só para sentir o fluxo) */
+document.addEventListener('click', e => {
+  const copy = e.target.closest('[data-copy]');
+  if (copy) {
+    navigator.clipboard?.writeText(copy.dataset.copy);
+    const b = copy.querySelector('b'), old = b.textContent;
+    b.textContent = 'copiado!'; setTimeout(() => (b.textContent = old), 900);
+  }
+  const step = e.target.closest('[data-inc],[data-dec]');
+  if (step) {
+    const out = step.parentElement.querySelector('span');
+    out.textContent = Math.max(1, +out.textContent + (step.hasAttribute('data-inc') ? 1 : -1));
+  }
+  const chip = e.target.closest('[data-chip]');
+  if (chip && !chip.disabled) {
+    chip.parentElement.querySelectorAll('[data-chip]').forEach(c => { c.classList.remove('on'); c.removeAttribute('aria-checked'); });
+    chip.classList.add('on'); chip.setAttribute('aria-checked', 'true');
+  }
+  const radio = e.target.closest('[data-radio]');
+  if (radio) {
+    const group = radio.closest('[role=radiogroup]') || radio.parentElement.parentElement;
+    group.querySelectorAll('[data-radio]').forEach(r => r.classList.remove('checked'));
+    radio.classList.add('checked');
+  }
+});
+</script>
+</body>
+</html>
