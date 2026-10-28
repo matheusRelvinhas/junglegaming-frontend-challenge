@@ -1,0 +1,1147 @@
+[
+  {
+    "id": 1,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Emerald Ape #042 é uma obra de arte digital finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity"
+    ],
+    "rating": 4.9,
+    "reviews_count": 14,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 3
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 17
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Sage Nomad #009 é uma obra de arte digital finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.7,
+    "reviews_count": 25,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 6
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 24
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Neon Vessel #552 é uma obra de colecionáveis finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco",
+      "Raro"
+    ],
+    "rating": 4.5,
+    "reviews_count": 36,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 9
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 31
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Cosmic Bloom #118 é uma obra de generativa finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.3,
+    "reviews_count": 7,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 1
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 38
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Violet Nomad #314 é uma obra de arte digital finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 5,
+    "reviews_count": 18,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 4
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 45
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Ivory Baron #088 é uma obra de fotografia finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco"
+    ],
+    "rating": 4.8,
+    "reviews_count": 29,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 7
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 11
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Golden Beat #207 é uma obra de música finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.6,
+    "reviews_count": 40,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 10
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 18
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Golden Frequency #071 é uma obra de música finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.4,
+    "reviews_count": 11,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 2
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 25
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Golden Signal #160 é uma obra de música finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.2,
+    "reviews_count": 22,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 5
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 32
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Jade Monarch #233 é uma obra de colecionáveis finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity",
+      "Raro"
+    ],
+    "rating": 4.9,
+    "reviews_count": 33,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 8
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 39
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Obsidian Sage #407 é uma obra de arte 3d finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco"
+    ],
+    "rating": 4.7,
+    "reviews_count": 4,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 0
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 46
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Lunar Drifter #019 é uma obra de fotografia finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.5,
+    "reviews_count": 15,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 3
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 12
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Velvet Pulse #321 é uma obra de música finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.3,
+    "reviews_count": 26,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 6
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 19
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Copper Monk #145 é uma obra de jogos finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity"
+    ],
+    "rating": 5,
+    "reviews_count": 37,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 9
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 26
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Static Bloom #502 é uma obra de generativa finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.8,
+    "reviews_count": 8,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 1
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 33
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Midnight Baron #276 é uma obra de arte 3d finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco",
+      "Raro"
+    ],
+    "rating": 4.6,
+    "reviews_count": 19,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 4
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 40
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Amber Echo #391 é uma obra de assinaturas finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.4,
+    "reviews_count": 30,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 7
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 47
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Forest Regent #064 é uma obra de utilidade finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity"
+    ],
+    "rating": 4.2,
+    "reviews_count": 41,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 10
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 13
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Pixel Nomad #730 é uma obra de jogos finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.9,
+    "reviews_count": 12,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 2
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 20
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Ivory Cipher #612 é uma obra de utilidade finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco"
+    ],
+    "rating": 4.7,
+    "reviews_count": 23,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 5
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 27
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Solar Chorus #455 é uma obra de assinaturas finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.5,
+    "reviews_count": 34,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 8
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 34
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Emerald Oracle #808 é uma obra de arte digital finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity",
+      "Raro"
+    ],
+    "rating": 4.3,
+    "reviews_count": 5,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 0
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 41
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Dusk Wanderer #097 é uma obra de fotografia finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 5,
+    "reviews_count": 16,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 3
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 48
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Marble Duke #350 é uma obra de colecionáveis finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco",
+      "Raro"
+    ],
+    "rating": 4.8,
+    "reviews_count": 27,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 6
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 14
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Tempo Spark #188 é uma obra de música finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.6,
+    "reviews_count": 38,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 9
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 21
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Canopy King #271 é uma obra de jogos finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity"
+    ],
+    "rating": 4.4,
+    "reviews_count": 9,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 1
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 28
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "creator": "Theo Brandt",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila sereno de chapéu bucket e moletom roxo. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Mist Pilgrim #563 é uma obra de arte 3d finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Theo Brandt recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Chapéu bucket",
+      "Moletom roxo",
+      "Sereno"
+    ],
+    "rating": 4.2,
+    "reviews_count": 20,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 4
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 35
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "creator": "Nova Sato",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um gorila elegante de blazer marfim e gola alta. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Onyx Scholar #149 é uma obra de generativa finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Blazer marfim",
+      "Gola alta",
+      "Brinco"
+    ],
+    "rating": 4.9,
+    "reviews_count": 31,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 7
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 42
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "creator": "Leo Matsu",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco dourado de headphones verdes. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Bass Prophet #620 é uma obra de assinaturas finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Leo Matsu recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Headphone",
+      "Pelagem dourada",
+      "Jaqueta creme"
+    ],
+    "rating": 4.7,
+    "reviews_count": 42,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 1
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 10
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 49
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "creator": "Iris Vale",
+    "description": "Um colecionável digital finalizado à mão da coleção Kurio Editions: um macaco de óculos redondos e jaqueta varsity verde. Verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.",
+    "details": [
+      "Verdant Ape #011 é uma obra de utilidade finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na Ethereum. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.",
+      "A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência na rede. Iris Vale recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade."
+    ],
+    "attributes": [
+      "Óculos",
+      "Esmeralda",
+      "Jaqueta varsity"
+    ],
+    "rating": 4.5,
+    "reviews_count": 13,
+    "editions": [
+      {
+        "id": "1-1",
+        "label": "1/1",
+        "available": 0
+      },
+      {
+        "id": "1-10",
+        "label": "1/10",
+        "available": 2
+      },
+      {
+        "id": "1-50",
+        "label": "1/50",
+        "available": 15
+      },
+      {
+        "id": "open",
+        "label": "ABERTA",
+        "available": 99
+      }
+    ]
+  }
+]

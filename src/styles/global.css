@@ -97,6 +97,14 @@
   --text-price--font-weight: 700;
   --text-h3: 1.125rem;
   --text-h3--font-weight: 600;
+
+  --animate-shimmer: shimmer 1.4s infinite;
+
+  @keyframes shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
 }
 
 @layer base {
@@ -111,8 +119,16 @@
     letter-spacing: 0.04em;
   }
 
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   ::selection {
     @apply bg-primary text-primary-foreground;
+  }
+
+  :disabled {
+    cursor: not-allowed;
   }
 
   :focus-visible {
