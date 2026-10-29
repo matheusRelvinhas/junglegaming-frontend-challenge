@@ -30,7 +30,7 @@ As medianas, LCP, CLS, TBT e o ambiente da última auditoria estão em [`RESULTS
 - **Mobile:** Accessibility 96–100, Best Practices 100, SEO 100. **Performance fica entre 80 e 84**, com LCP de cerca de 3,6 s e TBT de 275–415 ms, abaixo da meta de 90 (análise abaixo).
 - **CLS:** perto de zero em todos os casos (até 0,015).
 
-**Relatórios versionados:** só o HTML e o JSON da execução representativa (a de Performance mediana) de cada página e perfil vão para `reports/`. As 3 execuções são praticamente iguais, e todos os números delas estão no `RESULTS.md` e no `results.json`. Os relatórios completos das 12 execuções são gerados em `runs/`, que fica fora do Git.
+**Relatórios fora do Git:** o HTML e o JSON da execução representativa (a de Performance mediana) de cada página e perfil vão para `reports/`, e os das 12 execuções, para `runs/`. As duas pastas ficam fora do Git: são geradas pelo `npm run lighthouse`, e todos os números estão versionados no `RESULTS.md` e no `results.json`.
 
 ## Melhorias aplicadas a partir da primeira auditoria
 

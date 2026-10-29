@@ -13,6 +13,7 @@ dist-ssr
 dist-e2e
 dist-lighthouse
 lighthouse/runs
+lighthouse/reports
 *.local
 
 test-results
