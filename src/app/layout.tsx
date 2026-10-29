@@ -19,7 +19,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       {isMobile ? <MobileTopBar /> : <DesktopHeader />}
-      <main className="container mx-auto flex-1 px-6 pt-2 pb-16 desktop:pt-8 desktop:pb-0">{children}</main>
+      <main className="container mx-auto flex-1 px-6 pt-2 pb-16 desktop:min-h-dvh desktop:pt-8 desktop:pb-0">{children}</main>
       {isMobile ? <MobileTabBar /> : <Footer />}
       <AuthDialog />
       <p aria-live="polite" className="sr-only">

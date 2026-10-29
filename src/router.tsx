@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter, Outlet, type ErrorComponentProps } from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Outlet, type ErrorComponentProps } from '@tanstack/react-router'
 import { Layout } from '@/app/layout'
 import { StateMessage } from '@/components/StateMessage'
 import { ACCOUNT_MENU, type AccountTab } from '@/constants/account'
@@ -6,11 +6,7 @@ import { COLLECTIONS, NETWORKS, SORT_OPTIONS } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
 import { AppProvider } from '@/context/AppProvider'
 import type { AuthMode } from '@/hooks/useAuthModal'
-import { AccountPage } from '@/pages/account/AccountPage'
-import { CartPage } from '@/pages/cart/CartPage'
-import { CheckoutPage } from '@/pages/checkout/CheckoutPage'
 import { HomePage } from '@/pages/home/HomePage'
-import { NftDetailPage } from '@/pages/nft-detail/NftDetailPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import type { ListNftsParams } from '@/types/api'
 
@@ -77,6 +73,11 @@ const rootRoute = createRootRoute({
   ),
   notFoundComponent: () => <NotFoundPage />,
 })
+
+const NftDetailPage = lazyRouteComponent(() => import('@/pages/nft-detail/NftDetailPage'), 'NftDetailPage')
+const CartPage = lazyRouteComponent(() => import('@/pages/cart/CartPage'), 'CartPage')
+const CheckoutPage = lazyRouteComponent(() => import('@/pages/checkout/CheckoutPage'), 'CheckoutPage')
+const AccountPage = lazyRouteComponent(() => import('@/pages/account/AccountPage'), 'AccountPage')
 
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,

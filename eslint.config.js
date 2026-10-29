@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'dist-e2e', 'playwright-report', 'test-results', 'public/mockServiceWorker.js']),
+  globalIgnores(['dist', 'dist-e2e', 'dist-lighthouse', 'lighthouse/reports', 'lighthouse/runs', 'playwright-report', 'test-results', 'public/mockServiceWorker.js']),
   {
     files: ['src/**/*.{ts,tsx}'],
     extends: [
@@ -21,7 +21,7 @@ export default defineConfig([
   },
   {
     // Testes, scripts e configs rodam no Node (sem React).
-    files: ['tests/**/*.ts', 'scripts/**/*.ts', '*.config.ts'],
+    files: ['tests/**/*.ts', 'scripts/**/*.ts', 'lighthouse/**/*.ts', '*.config.ts'],
     extends: [js.configs.recommended, tseslint.configs.recommended],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },

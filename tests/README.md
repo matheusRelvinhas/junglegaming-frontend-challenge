@@ -61,12 +61,14 @@ Nos cenários sensíveis a tempo, a latência é a do mock (determinística) e o
 
 ## Regressão visual
 
-As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas. É **uma baseline só para Windows e Linux**: a comparação aceita até 3% de pixels diferentes (antialias de fonte muda entre sistemas). A tela é estabilizada antes da captura:
+As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas para **Windows** (`home-win32.png`). O nome leva o sistema porque o Linux quebra as linhas de texto de outro jeito e a página fica com outra altura. Por isso, no CI os testes visuais rodam num job `windows-latest`, e os E2E rodam no Ubuntu (`--grep-invert "@visual"`). A comparação aceita só 1% de pixels diferentes (antialias).
+
+A tela é estabilizada antes da captura:
 - dados limpos do mock;
 - `reducedMotion: 'reduce'`, que para o carrossel e as animações;
 - fontes e ícones locais;
 - espera pelas imagens.
 
-Mudou o layout de propósito? Rode `npm run test:e2e:update-snapshots`, confira as imagens e versione-as.
+Mudou o layout de propósito? No Windows, rode `npm run test:e2e:update-snapshots`, confira as imagens `*-win32.png` e faça commit delas. Em Linux ou macOS, rode só os E2E (`npx playwright test --grep-invert "@visual"`): não há baseline para esses sistemas.
 
 Os seletores usam papel e nome acessível (`getByRole`, `getByLabel`). Quando o teste não acha um elemento pelo nome, há um problema de acessibilidade a corrigir.

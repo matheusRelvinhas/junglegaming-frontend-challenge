@@ -56,7 +56,7 @@ function FeaturedNft({ nft, isLoading }: { nft?: Nft; isLoading: boolean }) {
 function SortSelect({ sort, onChange }: { sort?: CatalogSort; onChange: (sort: CatalogSort) => void }) {
   return (
     <label className="flex items-center gap-2 text-xs desktop:text-sm">
-      <span className="text-sand">Ordenar por:</span>
+      <span className="whitespace-nowrap text-sand">Ordenar por:</span>
       <span className="relative">
         <select
           value={sort ?? 'recent'}
@@ -189,7 +189,7 @@ export function NftCatalog() {
             Todos os NFTs
           </h2>
           <div className="flex items-center gap-4">
-            <p role="status" className="text-xs text-khaki">
+            <p role="status" className="text-xs whitespace-nowrap text-khaki">
               {catalog.isFetching ? 'Atualizando…' : catalog.data && `${catalog.data.total} NFTs`}
             </p>
             <SortSelect sort={filters.sort} onChange={(sort) => updateCatalogSearch({ sort: sort === 'recent' ? undefined : sort })} />

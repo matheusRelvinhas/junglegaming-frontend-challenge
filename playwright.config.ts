@@ -14,9 +14,9 @@ export default defineConfig({
   expect: {
     timeout: 10_000,
 
-    toHaveScreenshot: { maxDiffPixelRatio: 0.03, animations: 'disabled', caret: 'hide' },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled', caret: 'hide' },
   },
-  snapshotPathTemplate: '{testDir}/visual/__screenshots__/{projectName}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/visual/__screenshots__/{projectName}/{arg}-{platform}{ext}',
   use: {
     baseURL: `http://localhost:${PORT}`,
     locale: 'pt-BR',

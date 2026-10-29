@@ -35,7 +35,7 @@ Desafio frontend: implementar o **Kurio**, um marketplace de NFTs em React + Typ
 | 7e | **Pagamento + Confirmação** (`/checkout`): formulário do colecionador, cotação revalidada (`/api/quote`), carteira com conexão/recusa/desconexão, pedido idempotente (`/api/orders`), pendente/confirmado/recusado, recibo em modal | ✅ |
 | 8 | Tempo real (nft.updated / order.updated) + reconciliação | ✅ (`nft.updated` e `order.updated`, com painel de dev) |
 | 9 | Testes Playwright (E2E + visual) | ✅ [tests/](tests/README.md): 9 arquivos E2E por tela + regressão visual, desktop e mobile, CI no GitHub Actions |
-| 10 | Lighthouse, documentação (README da solução + ARCHITECTURE.md), deploy | ⏳ |
+| 10 | Lighthouse, documentação (README da solução + ARCHITECTURE.md), deploy | ⏳ (Lighthouse ✅: `npm run lighthouse`, [lighthouse/README.md](lighthouse/README.md); desktop 100 em Performance, mobile 80–84 justificado; WebP, páginas sob demanda, CLS e robots.txt corrigidos) |
 
 > O ritmo é **um passo de cada vez, com calma**. Não adiante etapas sem o usuário pedir.
 
@@ -508,7 +508,7 @@ O cliente ignora `eventId` já visto e `version` ≤ a atual. Após reconectar, 
 - **Projetos**: `desktop` (Chromium 1440×900, tudo) e `mobile` (Pixel 7, só `@principal` e `@visual`).
 - **Organização**: um arquivo por tela, nomes em inglês (`tests/e2e/catalog|nft-detail|auth|cart|checkout|account|realtime|accessibility|loading.spec.ts`, `tests/visual/screens.spec.ts`), helpers em `tests/support/app.ts`. Títulos dos testes em pt-BR.
 - **Seletores** por papel/nome acessível. Estado isolado por contexto; cenário do MSW por teste (`test.use({ scenario })`); eventos pelo socket (`window.__kurioMock`).
-- **Visual**: baseline única para Windows e Linux (`tests/visual/__screenshots__/<projeto>/`, sem sufixo de sistema), tolerância de 3% de pixels, `reducedMotion: 'reduce'`, fontes e ícones locais.
+- **Visual**: baselines do Windows (`tests/visual/__screenshots__/<projeto>/<tela>-win32.png`). O Linux quebra linhas de outro jeito e a página muda de altura, então no CI os visuais rodam num job `windows-latest` e os E2E no Ubuntu (`--grep-invert "@visual"`). Tolerância de 1%, `reducedMotion: 'reduce'`, fontes e ícones locais.
 - **Relatório e CI**: HTML (`playwright-report/`), traces e capturas só das falhas (`test-results/`). CI em `.github/workflows/e2e.yml` (typecheck, lint, E2E, artefatos).
 - **Melhorias feitas a partir dos testes**: foco preso no `ModalDialog` (Tab/Shift+Tab circulam dentro do diálogo), `aria-busy` nas linhas e no resumo do carrinho, e o cliente de tempo real não perde eventos sem cache (ver Tempo real).
 

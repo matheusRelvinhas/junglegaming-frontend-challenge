@@ -21,8 +21,8 @@ function detailPrice(page: Page) {
 }
 
 async function sendSentinelEvent(page: Page) {
-  await changeMarket(page, 2, 'price-up')
-  await expect(page.getByText('1.86 ETH').first()).toBeVisible()
+  await changeMarket(page, 1, 'sell-out')
+  await expect(page.locator('[aria-live="polite"]').filter({ hasText: 'Disponibilidade de Emerald Ape #042 atualizada.' })).toHaveCount(1)
 }
 
 test.describe('Tempo real: nft.updated', () => {
