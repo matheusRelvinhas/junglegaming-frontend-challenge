@@ -1,7 +1,8 @@
-import { delay, http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { STORAGE_KEYS } from '@/constants/storage'
 import type { LoginBody, Profile, RegisterBody, User } from '@/types/api'
 import { readStoredJson, saveStoredJson } from '@/utils/storage'
+import { networkDelay } from './scenario'
 
 const SESSION_DURATION_MS = 8 * 60 * 60 * 1000
 
@@ -68,7 +69,7 @@ export function expireAllSessions() {
 
 export const authHandlers = [
   http.post('/api/auth/register', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const body = (await request.json()) as RegisterBody
     const name = body.name?.trim()
@@ -88,7 +89,7 @@ export const authHandlers = [
   }),
 
   http.post('/api/auth/login', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const body = (await request.json()) as LoginBody
     const users = await getUsers()
@@ -104,7 +105,7 @@ export const authHandlers = [
   }),
 
   http.get('/api/auth/session', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const token = getBearerToken(request)
     const session = getActiveSessions().find((activeSession) => activeSession.token === token)

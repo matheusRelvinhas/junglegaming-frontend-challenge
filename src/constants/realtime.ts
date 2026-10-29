@@ -7,4 +7,7 @@ export const REALTIME_COMMANDS = {
 export const MOCK_COMMANDS = {
   nftAction: 'mock:nft-action',
   resetMarket: 'mock:reset-market',
+  replayLastEvent: 'mock:replay-last-event',
+  sendStaleEvent: 'mock:send-stale-event',
+  dropConnection: 'mock:drop-connection',
 } as const

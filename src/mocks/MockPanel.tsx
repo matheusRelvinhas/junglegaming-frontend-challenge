@@ -5,15 +5,12 @@ import { ICONS } from '@/constants/icons'
 import { MOCK_COMMANDS } from '@/constants/realtime'
 import { emitToRealtime } from '@/services/realtime'
 import type { MarketAction } from '@/types/api'
+import type { FavoritesScenario, LatencyScenario, MockScenario, PaymentScenario, ReadsScenario, WalletScenario } from '@/types/mock'
 import { expireAllSessions } from './auth'
 import nftsData from './data/nfts.json'
 import {
   getScenario,
   saveScenario,
-  type FavoritesScenario,
-  type MockScenario,
-  type PaymentScenario,
-  type WalletScenario,
 } from './scenario'
 
 const MARKET_ACTIONS: { action: MarketAction; label: string }[] = [
@@ -37,6 +34,16 @@ const PAYMENT_OPTIONS: { value: PaymentScenario; label: string }[] = [
 const FAVORITES_OPTIONS: { value: FavoritesScenario; label: string }[] = [
   { value: 'success', label: 'Salva' },
   { value: 'fail', label: 'Falha' },
+]
+
+const LATENCY_OPTIONS: { value: LatencyScenario; label: string }[] = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'slow', label: 'Lenta (+2s)' },
+]
+
+const READS_OPTIONS: { value: ReadsScenario; label: string }[] = [
+  { value: 'success', label: 'Funcionam' },
+  { value: 'fail', label: 'Falham (503)' },
 ]
 
 const actionButtonClass = 'h-9 rounded-sm border border-primary px-2 text-xs text-primary hover:bg-primary/10'
@@ -159,6 +166,18 @@ export function MockPanel() {
           options={PAYMENT_OPTIONS}
           selected={scenario.payment}
           onSelect={(payment) => changeScenario({ payment })}
+        />
+        <ScenarioOptions
+          label="Rede"
+          options={LATENCY_OPTIONS}
+          selected={scenario.latency}
+          onSelect={(latency) => changeScenario({ latency })}
+        />
+        <ScenarioOptions
+          label="Leituras (catálogo, detalhe, banners)"
+          options={READS_OPTIONS}
+          selected={scenario.reads}
+          onSelect={(reads) => changeScenario({ reads })}
         />
         <ScenarioOptions
           label="Favoritos"

@@ -2,7 +2,7 @@ import { createRootRoute, createRoute, createRouter, Outlet, type ErrorComponent
 import { Layout } from '@/app/layout'
 import { StateMessage } from '@/components/StateMessage'
 import { ACCOUNT_MENU, type AccountTab } from '@/constants/account'
-import { COLLECTIONS, NETWORKS } from '@/constants/catalog'
+import { COLLECTIONS, NETWORKS, SORT_OPTIONS } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
 import { AppProvider } from '@/context/AppProvider'
 import type { AuthMode } from '@/hooks/useAuthModal'
@@ -31,9 +31,11 @@ function toPage(value: unknown) {
 function parseHomeSearch(search: Record<string, unknown>): ListNftsParams {
   const collection = COLLECTIONS.find((item) => item.slug === search.collection)
   const network = NETWORKS.find((item) => item.slug === search.network)
+  const sort = SORT_OPTIONS.find((item) => item.value !== 'recent' && item.value === search.sort)
 
   return {
     search: toText(search.search) || undefined,
+    sort: sort?.value,
     collection: collection?.slug,
     network: network?.slug,
     min_price: toPrice(search.min_price),

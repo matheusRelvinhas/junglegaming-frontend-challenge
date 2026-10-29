@@ -22,17 +22,24 @@ Desafio frontend: implementar o **Kurio**, um marketplace de NFTs em React + Typ
 | 2 | Protótipo HTML ("figma navegável") + design system | ✅ [design/prototype.html](design/prototype.html) |
 | 3 | Este arquivo de contexto | ✅ |
 | 4a | Base: Tailwind v4 + tema (`global.css`), Context API (`isMobile`), `layout.tsx`, alias `@/`, TS strict | ✅ |
-| 4b | Restante da stack (shadcn, Router, Query, Axios, MSW, Socket.IO, Iconify, Playwright) | ⏳ |
+| 4b | TanStack Router, TanStack Query, Axios (`axiosGet`/`axiosPost`), MSW, Iconify, Playwright (instalado) | ✅ |
+| 4c | shadcn, Socket.IO, config do Playwright/Lighthouse | ⏳ (Socket.IO ✅: `socket.io-client` + `@mswjs/socket.io-binding`) |
+| 7a | **Início**: layout mobile/desktop, busca, filtros (modal no mobile, slider de preço), ordenação (`?sort=`), catálogo paginado `list_nfts`, destaque, carrossel de banners, footer | ✅ (faltam as abas "Novos lançamentos / Em alta") |
+| 7b | **Detalhe do NFT**: `nft_info`, galeria/zoom, edições com estoque, quantidade, COMPRAR (carrinho no Context), favoritar (localStorage), "Mais desta coleção", 404 | ✅ |
+| 7c | **Carrinho** (`/cart`): itens do localStorage, quantidade/remoção, cupom (`KURIO10`/`EXPIRADO`), totais com `big.js`, "Colecionadores também viram" | ✅ ("Conectar e finalizar" ainda sem ação) |
+| 7d | **Login e cadastro**: modal único (`?auth=login` / `?auth=signup`) em mobile e desktop, API mock com hash de senha, sessão que sobrevive ao F5, logout | ✅ |
 | 5 | Tema (tokens → Tailwind) + componentes base | ⏳ |
 | 6 | Camada de dados: contratos, fixtures, handlers MSW, cenários | ⏳ |
 | 7 | Telas: Início → Detalhe → Carrinho → Auth → Checkout → Confirmação → Perfil/Carteiras | ⏳ |
-| 8 | Tempo real (nft.updated / order.updated) + reconciliação | ⏳ |
-| 9 | Testes Playwright (E2E + visual) | ⏳ |
+| 7f | **Perfil** (`/account?tab=`): Dados do perfil (avatar, senha), Carteiras (usadas no pagamento), Atividade (compras), Lista de interesse (favoritos por usuário, otimista); Ofertas/Arquivos/Suporte desabilitados; mobile próprio | ✅ |
+| 7e | **Pagamento + Confirmação** (`/checkout`): formulário do colecionador, cotação revalidada (`/api/quote`), carteira com conexão/recusa/desconexão, pedido idempotente (`/api/orders`), pendente/confirmado/recusado, recibo em modal | ✅ |
+| 8 | Tempo real (nft.updated / order.updated) + reconciliação | ✅ (`nft.updated` e `order.updated`, com painel de dev) |
+| 9 | Testes Playwright (E2E + visual) | ✅ [tests/](tests/README.md): 9 arquivos E2E por tela + regressão visual, desktop e mobile, CI no GitHub Actions |
 | 10 | Lighthouse, documentação (README da solução + ARCHITECTURE.md), deploy | ⏳ |
 
 > O ritmo é **um passo de cada vez, com calma**. Não adiante etapas sem o usuário pedir.
 
-> **Estilo de código**: simples e fácil de entender, nomes que descrevem a lógica, poucos comentários (só quando o porquê não é óbvio).
+> **Estilo de código**: simples e fácil de entender, nomes que descrevem a lógica, poucos comentários (só quando o porquê não é óbvio). Laços só sobre arrays reais com `.map`/`.filter`/`.find`/`.forEach` (`range()`/`unique()` em `src/utils/array.ts` quando não há dados), sem `reduce`/`flatMap`/`Map`/`Object.fromEntries` quando houver forma mais direta. Tags semânticas mantidas onde têm função (exigência do README); `<div>`/`<span>` no resto. Detalhes no `CLAUDE.md`.
 
 ---
 
@@ -67,6 +74,8 @@ Desafio frontend: implementar o **Kurio**, um marketplace de NFTs em React + Typ
 | Toasts | `sonner` (componente do shadcn) |
 | Carrossel | `embla-carousel-react` (Carousel do shadcn) |
 
+> **Ícones locais (feito)**: `npm run icons` (`scripts/generate-icons.ts`) gera `src/constants/icon-data.json` só com os ícones do mapa `ICONS`, a partir dos pacotes `@iconify-json/*` (dev). O `main.tsx` registra com `addCollection`: o app não chama a API do Iconify (testes offline, visual estável, Lighthouse). Mudou o mapa `ICONS`? Rode `npm run icons`.
+>
 > Sobre ícones: **`react-icons`** e **`@iconify/react`** são bibliotecas diferentes. A escolha foi o Iconify (`<Icon icon="basil:search-outline" />`), porque dá acesso a todas as coleções do icon-sets.iconify.design. Para não depender da API do Iconify em runtime (Lighthouse e offline), registre os ícones usados localmente com `addCollection`/`addIcon`, a partir de `@iconify-json/<prefix>`, ou use o plugin `unplugin-icons`.
 
 ---
@@ -119,6 +128,7 @@ Extraídos por amostragem de pixel. Viram CSS variables do tema shadcn/Tailwind.
 | `bg-primary-dark` | `#B8733D` | fim do gradiente mobile (`from-primary to-primary-dark`) |
 | `bg-surface` / `bg-surface-2` / `bg-surface-3` | `#241612` / `#2C1B14` / `#38220F` | `card`, `popover`, `muted` e `secondary` são aliases |
 | `text-sand` / `text-khaki` | `#CFB28C` / `#B39463` | `text-muted-foreground` = sand |
+| `text-gray` | `#9A928B` | cinza quente para dados secundários (ex.: e-mail do usuário); contraste ~5,6:1 sobre `surface` |
 | `border-border` / `border-input` / `outline-ring` | `#432C1A` / `#432C1A` / primary | |
 | `text-destructive` / `text-success` / `text-warning` / `text-info` | estados | |
 | `bg-accent` | `#38220F` | ⚠️ no shadcn, `accent` é o **fundo de hover**, não a cor da marca |
@@ -315,7 +325,139 @@ Estados não desenhados seguem a mesma linguagem visual: superfície marrom, bor
 
 ---
 
-## 10. Contratos (proposta inicial)
+## 10. Contratos
+
+### Implementado
+
+**Camada HTTP** ([src/services/api.ts](src/services/api.ts)): `axiosGet<T>(url, { params, signal })` e `axiosPost<T>(url, body, { params, signal })`. Ambas usam `baseURL: '/api'`, devolvem `Promise<T>` com os dados e, em falha, lançam um `ApiError` (`{ status, message }`) com mensagem em pt-BR. O `signal` vem do TanStack Query e cancela respostas obsoletas. Tipos em [src/types/api.ts](src/types/api.ts).
+
+**`GET /api/list_nfts`**: lista paginada (9 por página). Hook: `useListNfts(params)` em [src/services/nfts.ts](src/services/nfts.ts) (queryKey `['list_nfts', params]`, `keepPreviousData`).
+
+```ts
+type ListNftsResponse = {
+  items: Nft[]; page: number; page_size: number; total: number; total_pages: number
+  facets: { collections: Record<CollectionSlug, number>; networks: Record<Network, number>; price: { min: string; max: string } }
+}
+```
+
+`facets` traz as contagens dos filtros e os limites do slider de preço (sobre o catálogo inteiro). O destaque usa `useListNfts({ top_nft: true })`.
+
+```ts
+type Nft = {
+  id: number; name: string; url_img: string
+  currency: { ethereum: string; polygon: string | null; solana: string | null } // string decimal
+  collection: CollectionSlug // 'digital-art' | 'photography' | 'music' | '3d-art' | ...
+  top_nft: boolean  // só um true → card "NFT EM DESTAQUE"
+  rare_nft: boolean // tag RARO
+}
+```
+
+| Query param | Regra (aplicada no mock, [src/mocks/handlers.ts](src/mocks/handlers.ts)) |
+|---|---|
+| `search` | nome contém o texto (sem diferenciar maiúsculas) |
+| `collection` | `nft.collection === slug` |
+| `network` | `ethereum` = todos; `polygon`/`solana` = só quem tem valor não-null |
+| `min_price` / `max_price` | faixa sobre `currency.ethereum` (número na URL, ex.: `0.05`) |
+| `sort` | `price-asc` · `price-desc` · `name` (A–Z, pt-BR); sem `sort` = "Listados recentemente" (ordem das fixtures). Select "Ordenar por:" no topo do catálogo (`SORT_OPTIONS`); trocar a ordem volta para a página 1 |
+| `page` | página (padrão 1; fora do intervalo é ajustada para a última) |
+| `top_nft` | `true` = só o NFT em destaque |
+
+Os mesmos parâmetros são o estado da URL da Início (`/?search=&collection=&network=&min_price=&max_price=&page=`), validados em [src/router.tsx](src/router.tsx). Toda mudança passa por `useCatalogSearch()` ([src/hooks/useCatalogSearch.ts](src/hooks/useCatalogSearch.ts)): mudar filtro volta para a página 1, mantém o `#catalogo` e não rola a página. No menu desktop, "Início" fica marcado sem hash e "Mercado" com `#catalogo`.
+
+**`GET /api/banners`** → `Banner[]` (`{ title, description, img_url }`, 3 itens em [src/mocks/data/banners.json](src/mocks/data/banners.json), imagens de `public/nfts`). Hook `useBanners()` em `services/nfts.ts`. O hero da Início (`HeaderMain` em [src/pages/home/HomePage.tsx](src/pages/home/HomePage.tsx)) é um carrossel: troca a cada 6s, pausa com mouse/foco em cima e com "reduzir movimento", e tem pontos clicáveis (ativo vira pílula + `aria-current`, sem depender só de cor). Todos os banners ficam no DOM (`hidden` nos inativos, imagens já carregadas); fade de entrada `animate-banner-in`. "Bem-vindo à Kurio" e EXPLORAR são fixos. O `h1` da Início é `sr-only` ("Kurio: marketplace de NFTs") e os títulos dos banners são `h2`. Skeleton no carregamento e erro com "Tentar novamente".
+
+**Filtros**: desktop = sidebar; mobile = `<dialog>` nativo (bottom sheet) aberto pelo botão da barra superior (`isFilterOpen` no Context), com foco preso, Esc e retorno de foco. Faixa de preço = slider de dois pontos (`@radix-ui/react-slider`, dentro de [src/pages/home/FilterPanel.tsx](src/pages/home/FilterPanel.tsx)) + "Aplicar". O texto da busca fica no Context (`search`/`setSearch`, resposta imediata) e vai para a URL com debounce de 300ms; voltar no navegador ressincroniza o input. Fixtures: [src/mocks/data/nfts.json](src/mocks/data/nfts.json) (30 NFTs). Mocks ativados por `VITE_ENABLE_MOCKS=true` (`.env`).
+
+**`GET /api/nft_info/:id`**: detalhe do NFT (`NftInfo` = `Nft` + `token_id`, `creator`, `description` (Sobre este NFT), `details[]` (aba Detalhes), `network_info`, `contract_info`, `royalties_info`, `attributes[]`, `rating`, `reviews_count`, `editions[]`, `gallery[]`). `editions` = `{ id, label, available }` para `1/1`, `1/10`, `1/50`, `ABERTA`; `available: 0` = edição esgotada. 404 `{ message }` para id inexistente/inválido. Hook `useNftInfo(id)` (sem retry em 404). Dados extras em [src/mocks/data/nft-details.json](src/mocks/data/nft-details.json) (gerado de forma determinística).
+
+**Detalhe (`/nft/$nftId`)**: o card da lista (e o destaque) leva para a rota com o id; a página busca `nft_info` e, **depois** da resposta, `list_nfts?collection=` para "Mais desta coleção" (até 5, sem o NFT atual). No desktop "Mercado" fica marcado no detalhe (o clique leva a `/#catalogo`). Aba "Avaliações (N)" desabilitada, mostrando `reviews_count`. Galeria com miniaturas + zoom (`<dialog>`). Quantidade limitada a `available − já no carrinho`.
+
+**Carrinho e favoritos (Context)**: `cartItems` (`{ nft_id, edition, quantity }`), `cartCount`, `addToCart`, `favoriteIds`, `toggleFavorite`, `favoriteError` em `AppContext`. O carrinho fica no localStorage (`kurio:cart`). COMPRAR adiciona ao carrinho e leva para `/cart`; o badge do header/tab bar mostra a quantidade. O Context também expõe `updateCartQuantity` e `removeFromCart`.
+- **Favoritos por usuário via API** (substituiu o localStorage `kurio:favorites`): `useFavorites(token)` (`['favorites', token]`) e `useToggleFavorite` em [src/services/account.ts](src/services/account.ts). É a **atualização otimista com rollback** do README: o coração muda na hora (`onMutate`), volta ao estado anterior se a API falhar (`onError`, erro em `role="alert"`) e confirma com o servidor (refaz o GET, porque o clique pode ter cancelado a primeira busca), e no sucesso usa a lista devolvida pelo POST (sem GET extra). Deslogado, favoritar abre o login.
+- Carrinho do visitante no localStorage; na etapa de carrinho/login, sincronizar com a API do carrinho e mesclar os itens do visitante.
+
+**Limitações conhecidas do MSW v3**:
+- `worker.start()` chama `registration.update()` sem `catch`; no F5 isso gera uma rejeição "Failed to update a ServiceWorker… Not found" sem impacto. Tratada em `src/main.tsx` (filtro só dessa mensagem).
+- O Chrome encerra Service Workers ociosos (ex.: aba alguns minutos em segundo plano). O worker reiniciado esquece que a aba usa mock (`activeClientIds` só existe na memória dele), a requisição escapa e o Vite responde o `index.html` com 200 (GET) ou 404 vazio (POST, o que fazia login/cadastro falharem às vezes). O interceptor do Axios em `src/services/api.ts` detecta a resposta sem JSON (sucesso ou erro), chama `reconnectMocks()` ([src/mocks/browser.ts](src/mocks/browser.ts): `worker.stop()` + `start()`, uma reconexão compartilhada entre requisições simultâneas) e repete a mesma requisição uma vez. Se ainda vier HTML (ou com mocks desligados), vira `ApiError` e a tela mostra o erro com "Tentar novamente". O router tem `defaultErrorComponent` para nenhum erro de renderização derrubar a página inteira.
+
+**Carrinho (`/cart`)**: o ícone do carrinho (header e tab bar) e o COMPRAR do detalhe levam à página. Ela tem 2 componentes:
+- `CartOverview` ([src/pages/cart/CartOverview.tsx](src/pages/cart/CartOverview.tsx)): itens + "Resumo da carteira". Busca o `nft_info` de cada NFT do carrinho (`useNftInfos`, reaproveita o cache do detalhe). Quantidade limitada ao estoque da edição; se o carrinho tiver mais que o estoque, avisa e soma só o disponível. Lixeira remove. Skeleton nas linhas e no resumo.
+- `CollectorsAlsoViewed` (em [CartPage.tsx](src/pages/cart/CartPage.tsx)): NFTs das coleções do carrinho, sem os que já estão nele (até 5); com o carrinho vazio, o início do catálogo. Usa o `NftRail` compartilhado (o mesmo do "Mais desta coleção").
+- **Totais calculados no front** (decisão do usuário, ⚠️ desvio do README, que pede totais vindos de uma cotação da API): subtotal = Σ preço × quantidade disponível, desconto = subtotal × % do cupom, taxa de rede estimada fixa `0.016` (`ESTIMATED_NETWORK_FEE` em [src/utils/eth.ts](src/utils/eth.ts)), total = subtotal − desconto + taxa. Tudo com `big.js` e exibido por `formatEth` (mínimo 2 casas, sem perder precisão). Registrar em `ARCHITECTURE.md`.
+- **`GET /api/coupon/:code`**: `200 { code, discount_percent }` · `404 { message: 'Cupom inválido.' }` · `410 { message: 'Este cupom expirou.' }`. Códigos em [src/mocks/data/coupons.json](src/mocks/data/coupons.json): `KURIO10` (10%) e `EXPIRADO`. Hook `useApplyCoupon` (mutation). O cupom aplicado fica no Context (`coupon`/`setCoupon`, persistido em `kurio:coupon`) e o formulário é o `CouponForm` compartilhado por carrinho e pagamento.
+- O título "Carrinho de NFTs" na barra superior do mobile vem de `staticData.title` da rota, e "Mercado" ativo no menu desktop vem de `staticData.isMarketPage` (detalhe e carrinho). Vale para qualquer rota nova: sem listas de caminhos no header.
+- "Finalizar" (logado) leva a `/checkout`; "Conectar e finalizar" (deslogado) abre `?auth=login&redirect=/checkout`.
+
+**Login e cadastro** ([src/components/AuthDialog.tsx](src/components/AuthDialog.tsx)):
+- **Modal único** para os dois modos (mesma lógica; campos e textos vêm do objeto `MODES`). Em qualquer tamanho segue o frame mobile do Figma: marca **KURIO** no topo, título e, embaixo, "Novo na Kurio? Crie uma conta" (login) / "Já tem uma conta? Entre" (cadastro). Sem abas. Mobile: tela cheia; desktop: modal de 500px com barra laranja.
+- **Abre pela URL** em qualquer página: `?auth=login` ou `?auth=signup` (validado no `rootRoute`). Dá para mandar o link direto do cadastro. `useAuthModal()` ([src/hooks/useAuthModal.ts](src/hooks/useAuthModal.ts)) abre, troca e fecha; fechar ou logar mantém a página atual (retorno ao fluxo anterior). Esc e o voltar do navegador fecham.
+- **Validação à mão** em [src/utils/validation.ts](src/utils/validation.ts) (`validateAuthForm`): nome ≥ 3, e-mail válido, senha ≥ 6 no cadastro, confirmação igual. Erros ligados ao campo com `aria-describedby`; foco vai para o primeiro inválido. Erros da API com `field` (ex.: 409 no e-mail) aparecem no campo; os outros, num alerta do formulário.
+- Depois do cadastro, abre o login com o e-mail preenchido e o aviso "Conta criada!".
+- Logado: desktop mostra "Olá, nome" + "Sair"; no mobile, o ícone de perfil abre um menu (`popover` nativo) com nome, e-mail e "Sair". Deslogado, ambos abrem o login. "Esqueceu a senha?" e login social ficam desabilitados ("Em breve").
+
+**Contratos de auth** (mock em [src/mocks/auth.ts](src/mocks/auth.ts), hooks em [src/services/auth.ts](src/services/auth.ts)):
+- `POST /api/auth/register { name, email, password }` → `201 { user }` · `409 { message, field: 'email' }` (e-mail já cadastrado) · `422` (campos vazios).
+- `POST /api/auth/login { email, password }` → `200 { token, user }` · `401 { message: 'E-mail ou senha incorretos.' }`.
+- `GET /api/auth/session` (header `Authorization: Bearer <token>`) → `200 { user }` · `401` (sessão expirada após 8h ou inválida).
+- `POST /api/auth/logout` (Bearer) → `200 { ok: true }`.
+- **Variáveis de ambiente**: o `.env` está no `.gitignore`; o `.env.example` (versionado) traz `VITE_ENABLE_MOCKS=true` e `VITE_PASSWORD_SALT`. Num checkout limpo: `cp .env.example .env`. No deploy (Vercel), cadastrar as mesmas variáveis no painel. Documentar no README da solução.
+- **Senha nunca salva**: o mock guarda só `SHA-256("<VITE_PASSWORD_SALT>:<senha>")` (Web Crypto). O sal vem do `.env` (`VITE_PASSWORD_SALT`); como toda `VITE_*` é pública no bundle, é valor de demonstração.
+- "Banco" do mock no localStorage: `kurio:mock-users` e `kurio:mock-sessions`. Usuários de teste (criados no primeiro acesso): **`nova@kurio.test`** e **`leo@kurio.test`**, senha **`kurio123`**.
+- Front: o Context guarda só o token (`kurio:session`) e lê o usuário com `useSession` (`['session', token]`). Expõe `user`, `isCheckingSession`, `startSession`, `signOut`. O `signOut` chama o logout (`useLogout`), apaga o token e remove do cache só os dados privados (`removeQueries(['session'])`); o catálogo público continua em cache. Novas queries privadas (carrinho/favoritos/pedidos na API) devem levar o token na queryKey e ser removidas junto. Token que volta 401 é descartado automaticamente.
+- **Carrinho × sessão**: o botão do resumo mostra "Conectar e finalizar" (abre `?auth=login&redirect=/checkout`) quando deslogado e "Finalizar" (link para `/checkout`) quando logado.
+- **Retorno ao fluxo (`redirect`)**: `?redirect=` (só caminhos internos, validado no `rootRoute`) diz para onde ir depois do login. `useAuthModal().openAuth(mode, redirect)`; ao entrar, `finishLogin` faz `history.replace(redirect)` (a entrada do modal sai do histórico). Sem `redirect`, o modal só fecha e o usuário fica na página.
+
+**Pagamento (`/checkout?order=`)** ([src/pages/checkout/](src/pages/checkout/), hooks em [src/services/checkout.ts](src/services/checkout.ts), mock em [src/mocks/checkout.ts](src/mocks/checkout.ts)):
+- **Acesso**: exige login (deslogado vê "Entre para finalizar a compra", com login + `redirect` de volta). Carrinho vazio sem pedido mostra estado vazio. Mobile first: tudo empilhado (formulário → Seus NFTs → Carteira e rede → Confirmar); no desktop, 2 colunas (formulário | resumo de 360px). Título mobile "Pagamento com carteira" via `staticData`.
+- **Formulário** "Perfil do colecionador" (campos do Figma em `PROFILE_FIELDS`, [src/constants/checkout.ts](src/constants/checkout.ts)): obrigatórios como no Figma, exceto "Endereço da carteira" e "Código de indicação" (⚠️ desvio, decisão do usuário: continuam na tela, mas opcionais; endereço vazio = paga com a carteira conectada); também opcionais: carteira secundária e observação. Nome e e-mail vêm do usuário. Validação em `validateCheckoutForm` (0x + 40 hex, ENS, username, código 4–16). Erros com `aria-describedby`, foco no primeiro inválido; erros da API com `field` caem no campo (mesmas chaves do contrato). "Usar outra carteira?" paga com a carteira secundária (passa a exigir endereço 0x).
+- **Carteira e rede**: WalletConnect / MetaMask / Coinbase Wallet (radio cards) + "Conectar". Conectar exige rede escolhida; trocar rede ou carteira desconecta. Com o "Endereço da carteira" vazio, o pedido usa o endereço da carteira conectada. "Confirmar compra" pede carteira conectada.
+- **Revisão e cotação**: o resumo vem de `POST /api/quote` (totais da API). A primeira cotação vira a "revisada"; se a API devolver outro `quote_id` para o mesmo carrinho (ex.: `nft.updated` invalida `['quote']`), aparece "Os valores mudaram desde a sua revisão" (preço/quantidade/cupom/total antigo → novo) e o botão vira "Confirmar com novos valores". Ao confirmar, o pedido leva o `quote_id` revisado e **quem revalida é a API**: se os valores mudaram, ela responde `409 QUOTE_CHANGED`, a página busca a cotação nova e o aviso volta. A cotação fica desligada enquanto o pedido está pendente/confirmado (o resumo passa a ser o do pedido). Mudar cupom/itens não conta como mudança (nova revisão automática).
+- **Pedido idempotente**: cada tentativa gera um `Idempotency-Key` (UUID) e fica salva em `kurio:checkout-attempt` até ter resposta. Sem resposta (timeout de 6s / queda), o TanStack repete 1x com a mesma chave; se ainda falhar (ou após F5), aparece "Recuperar compra", que reenvia a mesma tentativa. Resposta → `?order=ID` na URL (`replace`).
+- **Estados**: pendente (form desabilitado, "Aguardando confirmação…", aviso que dá para recarregar), recusado (motivo + "Seus itens continuam no carrinho" + "Tentar novamente" = nova tentativa) e confirmado (recibo). Recuperação após F5/reconexão por `GET /api/orders/:id` (`['order', token, id]`), atualizado pelo `order.updated` e, como rede de segurança, polling de 4s só enquanto pendente.
+- **Recibo** (`OrderReceiptDialog`, modal em mobile e desktop): THANK YOU, ID da transação, data, total, carteira, itens/edições/subtotais, taxa, total, nota da rede. É o snapshot do pedido (não lê o catálogo). "Ver no Etherscan" desabilitado com aviso (transação simulada). Fechar → Início.
+- **Carrinho após a compra**: `removePurchasedItems(order)` no Context tira só as quantidades compradas e limpa o cupom, uma única vez por pedido (`kurio:settled-orders`). Recusa/erro não mexe no carrinho.
+- **Sessão expirada no checkout**: 401 em pedido/carteira abre `?auth=login&redirect=<url atual>` sem desmontar a página; o formulário é mantido.
+
+**Contratos do pagamento** (mock em [src/mocks/checkout.ts](src/mocks/checkout.ts); tipos em `types/api.ts`):
+- `POST /api/quote { items, coupon_code }` → `Quote { quote_id, lines[], warnings[], coupon, coupon_error, subtotal, discount, network_fee, total }`. Quantidade limitada ao estoque da edição (`requested_quantity` × `quantity`), edição esgotada sai das linhas com aviso; cupom inválido/expirado vira `coupon_error`. `quote_id` = hash do conteúdo (mesmos valores, mesmo id).
+- `POST /api/wallet/connect { provider, network }` (Bearer) → `200 { provider, network, address }` (endereços em [src/mocks/data/wallets.json](src/mocks/data/wallets.json)) · `403 WALLET_REJECTED` · `401`.
+- `POST /api/orders` (Bearer + `Idempotency-Key`) `{ items, coupon_code, quote_id, network, wallet_provider, profile }` → `201 Order` (pendente) · mesma chave e mesmo corpo → o pedido existente · mesma chave e outro corpo → `409 IDEMPOTENCY_CONFLICT` · cotação diferente → `409 QUOTE_CHANGED` · nada disponível → `409 AVAILABILITY_CONFLICT` · `422 { field }` (endereço inválido, NFT fora da rede) · `401 SESSION_EXPIRED`.
+- `GET /api/orders/:id` (Bearer) → `Order` · `404` (inexistente ou de outro usuário).
+- `Order { id, status, version, created_at, lines, subtotal, discount, network_fee, total, network, wallet_provider, wallet_address, tx_hash, decline_reason }`. O pedido é liquidado 3s depois de criado (`settle_at` salvo em `kurio:mock-orders`, reagendado ao carregar a página): confirmado baixa o estoque (`sellEditions` → `nft.updated`) e gera `tx_hash`; recusado guarda o motivo. Confirmado/recusado são terminais.
+- **`order.updated`** `{ eventId, type, resource: { type: 'order', id }, version, occurredAt, data: { status, tx_hash, decline_reason } }`, entregue só às conexões do dono: o cliente envia `session:join` com o token ao conectar/reconectar e quando a sessão muda (`REALTIME_COMMANDS`); o mock guarda o usuário de cada conexão e filtra (também entre abas). O cliente ignora `eventId` repetido e `version` ≤ a do cache. Ao reconectar, refaz `quote` e `order` ativos.
+- **Cenários do painel** (`kurio:mock-scenario`, [src/mocks/scenario.ts](src/mocks/scenario.ts); tipos em [src/types/mock.ts](src/types/mock.ts), sem imports, compartilhados com os testes): conexão da carteira (Aprova/Recusa), resultado do pagamento (Confirma/Recusa/Timeout: o pedido é criado e a resposta atrasa 8s, mais que o timeout do front), favoritos (Salva/Falha), **Rede** (Normal / Lenta: +2s em toda resposta REST, via `networkDelay()`), **Leituras** (Funcionam / Falham: `list_nfts`, `nft_info` e `banners` respondem 503, via `readFailureResponse()`) e "Expirar sessão no servidor". Só para testes (sem botão): `catalogOrder: 'out-of-order'` (a busca por Música demora 1,5s; o app cancela a requisição velha pelo `signal`).
+- **Comandos de socket só para teste** (`MOCK_COMMANDS`): `mock:replay-last-event` (mesmo `eventId`), `mock:send-stale-event` (penúltimo evento do NFT com outro `eventId`: só a versão o barra) e `mock:drop-connection` (o servidor fecha o socket; o cliente reconecta e reconcilia). Com mocks ligados, `window.__kurioMock.sendCommand(...)` ([src/mocks/browser.ts](src/mocks/browser.ts)) manda o comando pelo `socket.io-client`, como o painel.
+- ⚠️ O carrinho (`/cart`) ainda calcula os totais no front; o pagamento já usa a cotação da API. Migrar o carrinho para `useQuote` remove o desvio.
+
+**Perfil (`/account?tab=profile|wallets|activity|favorites`)** ([src/pages/account/](src/pages/account/), hooks em [src/services/account.ts](src/services/account.ts), mock em [src/mocks/account.ts](src/mocks/account.ts)):
+- **Acesso**: exige login (`LoginRequired`, o mesmo do pagamento, com `redirect` de volta). Entradas: "Olá, nome" no header desktop, "Meu perfil" no menu de conta do mobile e o coração da tab bar (abre a Lista de interesse). A aba fica na URL; aba inválida cai em "Dados do perfil".
+- **Menu** (`ACCOUNT_MENU` em [src/constants/account.ts](src/constants/account.ts)): desktop = menu lateral de 310px do Figma (barra de 6px no ativo, "Sair" separado). Mobile (sem frame no Figma): cartão com avatar, nome e e-mail + faixa de abas rolável na horizontal (o grid usa `grid-cols-1`, senão a faixa estica a página). Ofertas, Arquivos baixados e Suporte ficam `aria-disabled` ("Em breve").
+- **Dados do perfil**: Nome de exibição*, Nome de usuário*, E-mail* (409 se for de outra conta), Nome ENS e Apelido da carteira (opcionais), Avatar (Alterar/Remover; imagem até 500 KB salva como data URL). Salvar atualiza o perfil e o usuário da sessão (o nome do header muda). **Alterar senha** em formulário próprio (atual, nova, confirmar), conferida pelo hash no mock. Campos compartilhados em [src/components/FormField.tsx](src/components/FormField.tsx) (`TextField`, `SelectField`, `PasswordField`), também usados no pagamento.
+- **Carteiras**: principal (Apelido, Rede, Endereço 0x, Tipo) e secundária ("Adicionar"/"Remover" ou "Igual à carteira principal"). Desvio: campos reduzidos em relação ao frame do Figma, que repete o formulário do pagamento. **No pagamento**, as carteiras cadastradas preenchem rede, endereço, carteira secundária e tipo quando esses campos estão vazios.
+- **Atividade**: compras confirmadas do usuário (`GET /api/orders`, `['orders', token]`, atualizado pelo `order.updated`), com data, pedido, rede, transação, itens, edições, quantidades e total pago.
+- **Lista de interesse**: NFTs favoritos do usuário (`nft_info` de cada id, reaproveita o cache) com "Remover" (otimista).
+
+**Contratos do perfil** (todos com Bearer; `401` sem sessão):
+- `GET /api/profile` → `Profile { name, email, username, ens_name, wallet_nickname, avatar_url }` · `POST /api/profile` (Profile) → `{ profile, user }` · `422/409 { message, field }`.
+- `POST /api/profile/password { current_password, new_password }` → `{ ok }` · `422 { field: 'current_password' | 'new_password' }`.
+- `GET /api/wallets` → `Wallets { primary, secondary, secondary_same_as_primary }` · `POST /api/wallets` (Wallets) → Wallets · `422 { field: 'primary.address' | 'secondary.network' … }`.
+- `GET /api/orders` → `Order[]` do usuário (mais recentes primeiro).
+- `GET /api/favorites` → `{ nft_ids }` · `POST /api/favorites/:nftId { is_favorite }` → `{ nft_ids }` · `503` no cenário "Favoritos: Falha" do painel · `404` NFT inexistente. (POST em vez de PUT/DELETE porque toda chamada passa por `axiosGet`/`axiosPost`.)
+- "Banco" do mock: perfil e senha no próprio usuário (`kurio:mock-users`); carteiras e favoritos por usuário em `kurio:mock-wallets` e `kurio:mock-favorites`. Regras de validação são as mesmas do front (`validateProfileForm`, `validateWalletForm`, `WALLET_ADDRESS_PATTERN` de `utils/validation.ts`).
+- **Logout**: toda query privada leva o token na queryKey (`session`, `profile`, `wallets`, `orders`, `order`, `favorites`), e o `signOut` remove de uma vez tudo o que tem esse token (`removeQueries({ predicate })`). Query privada nova só precisa ter o token na chave.
+
+**Tempo real: `nft.updated`** (Socket.IO simulado no MSW):
+- **Transporte**: `socket.io-client` conecta em `wss://realtime.kurio.test` (`REALTIME_URL` em [src/constants/realtime.ts](src/constants/realtime.ts)) com `transports: ['websocket']`; o MSW intercepta com `ws.link(REALTIME_URL)` + `toSocketIo` do `@mswjs/socket.io-binding` ([src/mocks/realtime.ts](src/mocks/realtime.ts)). O mock de WebSocket roda dentro da página (não depende do Service Worker).
+- **Limitações do transporte** (registrar em `ARCHITECTURE.md`): (1) o binding 0.2.0 declara só MSW 2; `overrides` no `package.json` aceita o MSW 3, que funcionou em teste; (2) o `engine.io-client` guarda o `WebSocket` ao carregar, então o `socket.io-client` é importado dinamicamente depois do `worker.start()`; (3) no MSW 3, `ws.link` só casa pelo host (padrões com `/socket.io` falham), daí o host fictício exclusivo; (4) o binding anuncia ping de 25s mas não envia: o mock envia o ping do Engine.IO (`'2'`) a cada 25s, senão o cliente cai por "ping timeout" a cada 30s; (5) cada aba tem seu próprio servidor mock: os eventos chegam às outras abas por `BroadcastChannel` (`kurio:mock-realtime`).
+- **Evento**: `{ eventId, type: 'nft.updated', resource: { type: 'nft', id }, version, occurredAt, data: { price, editions: [{ id, available }] } }` (`NftUpdatedEvent` em `types/api.ts`). `price` é o preço em Ethereum (o exibido na UI).
+- **Estado do mock**: preço, estoque por edição e `version` de cada NFT ficam em `kurio:mock-market` ([src/mocks/market.ts](src/mocks/market.ts)); `list_nfts` e `nft_info` leem dali (REST e socket consistentes, sobrevive ao F5). `Nft` ganhou `version` (começa em 1 e só cresce, inclusive no reset).
+- **Cliente** ([src/services/realtime.ts](src/services/realtime.ts), `useRealtimeUpdates` no `AppProvider`): ignora `eventId` já visto; todo evento novo invalida a `quote` (vem do servidor, não depende do cache); NFT ainda fora do cache (página carregando) → refaz o `nft_info` em vez de perder a mudança; `version` ≤ a do cache é ignorada; atualiza `nft_info` e todas as `list_nfts` no cache do TanStack Query (catálogo, destaque, rails, detalhe e carrinho mudam juntos) e marca as listas como desatualizadas (filtros de preço/facetas são refeitos na próxima exibição). Ao reconectar, refaz `list_nfts` e `nft_info` ativos. Desconecta no unmount.
+- **Feedback**: preço alterado pisca (`animate-price-flash`) e ganha o selo "Atualizado" (ícone + texto) no card e no detalhe; o carrinho mostra `PriceChangeBanner` ("O preço de X mudou de A para B ETH", com "Entendi"). `aria-live` no `Layout` anuncia cada mudança. As mudanças de preço vivem no Context (`priceChanges`, `dismissPriceChanges`, `realtimeMessage`), só na memória da sessão. Edição selecionada que esgota mostra "ESGOTADO".
+- **Painel de dev** ([src/mocks/MockPanel.tsx](src/mocks/MockPanel.tsx), carregado sob demanda só com `VITE_ENABLE_MOCKS=true`): botão flutuante no canto inferior esquerdo; escolhe o NFT (pré-seleciona o da página de detalhe) e dispara "Preço +10%", "Preço −10%", "Esgotar uma edição", "Repor estoque" ou "Restaurar preços e estoques". O pedido vai pelo próprio socket (`mock:nft-action`, `mock:reset-market`) e o servidor mock responde com `nft.updated`: a UI nunca altera cache ou estado direto.
+
+**Pendências do contrato**: para as abas, sugerido `created_at` ("Novos lançamentos") e `previous_price` (preço riscado do Figma). Hoje "Listados recentemente" usa a ordem das fixtures.
+
+### Proposta (demais recursos)
 
 REST (prefixo `/api`; todos tipados e compartilhados entre transporte, mocks e UI):
 
@@ -361,7 +503,14 @@ O cliente ignora `eventId` já visto e `version` ≤ a atual. Após reconectar, 
 
 **Skeletons com shimmer** no catálogo, no detalhe e no resumo do carrinho, preservando dimensões (CLS) e respeitando `prefers-reduced-motion`.
 
-**Playwright**: os 12 cenários do README §9, em Chromium, desktop + mobile; regressão visual de Início, Detalhe, Carrinho e Pagamento com dados estáveis; estado isolado por teste; relógio, latência e eventos controlados; relatório HTML + traces.
+**Playwright** (feito, detalhes em [tests/README.md](tests/README.md)): os 12 cenários do README §9 + regressão visual de Início, Detalhe, Carrinho e Pagamento.
+- **Servidor**: `playwright.config.ts` sobe `vite build --mode test` (`.env.test`, versionado, mocks ligados) + `vite preview` na porta 4173, igual ao deploy.
+- **Projetos**: `desktop` (Chromium 1440×900, tudo) e `mobile` (Pixel 7, só `@principal` e `@visual`).
+- **Organização**: um arquivo por tela, nomes em inglês (`tests/e2e/catalog|nft-detail|auth|cart|checkout|account|realtime|accessibility|loading.spec.ts`, `tests/visual/screens.spec.ts`), helpers em `tests/support/app.ts`. Títulos dos testes em pt-BR.
+- **Seletores** por papel/nome acessível. Estado isolado por contexto; cenário do MSW por teste (`test.use({ scenario })`); eventos pelo socket (`window.__kurioMock`).
+- **Visual**: baseline única para Windows e Linux (`tests/visual/__screenshots__/<projeto>/`, sem sufixo de sistema), tolerância de 3% de pixels, `reducedMotion: 'reduce'`, fontes e ícones locais.
+- **Relatório e CI**: HTML (`playwright-report/`), traces e capturas só das falhas (`test-results/`). CI em `.github/workflows/e2e.yml` (typecheck, lint, E2E, artefatos).
+- **Melhorias feitas a partir dos testes**: foco preso no `ModalDialog` (Tab/Shift+Tab circulam dentro do diálogo), `aria-busy` nas linhas e no resumo do carrinho, e o cliente de tempo real não perde eventos sem cache (ver Tempo real).
 
 **Lighthouse** (Início e Detalhe, mobile e desktop, build otimizado, 3 execuções, mediana): Performance ≥ 90 · Accessibility ≥ 95 · Best Practices ≥ 95 · SEO ≥ 90. Registrar LCP, CLS e TBT. Imagens em WebP/AVIF com `width`/`height`; fontes locais; code-splitting por rota.
 
@@ -389,7 +538,32 @@ O cliente ignora `eventId` já visto e `version` ≤ a atual. Após reconectar, 
 
 ## 14. Estrutura de pastas (proposta)
 
-Já existem: `src/main.tsx` (fonte + `global.css`), `src/App.tsx` (`AppProvider` › `Layout` › conteúdo provisório), `src/app/layout.tsx` (moldura de todas as páginas, com `container mx-auto px-6`), `src/context/AppContext.ts` + `AppProvider.tsx` (estado global) e `src/styles/global.css` (tema). Alias `@/` aponta para `src/`.
+Já existem (26 arquivos em `src/`):
+- `src/main.tsx`: fonte, `global.css`, QueryClient, MSW e render do RouterProvider.
+- `src/router.tsx`: rotas (raiz = `AppProvider` › `Layout` › `Outlet`; `/` = Início; `/nft/$nftId` = Detalhe; 404).
+- `src/app/layout.tsx`: escolhe `MobileTopBar` + `MobileTabBar` (mobile, sticky) ou `DesktopHeader` + `Footer` (desktop) pelo `isMobile`.
+- `src/components/layout/Navigation.tsx`: DesktopHeader, MobileTopBar, MobileTabBar (+ SearchInput e CartButton internos). `Footer.tsx` à parte.
+- `src/components/`: NftCard (+ NftCardSkeleton), Skeleton (shimmer), StateMessage (vazio/erro, `onRetry`), ModalDialog (`<dialog>` com foco/Esc), QuantityStepper.
+- `src/pages/NotFoundPage.tsx`: 404 reutilizável (rota inexistente e NFT inexistente).
+- `src/pages/home/`: HomePage (+ HeaderMain), NftCatalog (+ FeaturedNft, Pagination), FilterPanel (+ FilterDialog e slider Radix).
+- `src/pages/nft-detail/`: NftDetailPage (+ abas e "Mais desta coleção"), NftGallery, NftPurchasePanel.
+- `src/pages/cart/`: CartPage (+ CollectorsAlsoViewed), CartOverview (+ CartLineItem e CartSummary).
+- `src/components/AuthDialog.tsx`: modal de login/cadastro (+ AuthForm e AuthInput). `src/hooks/useAuthModal.ts`: `?auth=` na URL.
+- `src/services/auth.ts`: useSession, useLogin, useRegister, logoutRequest. `src/mocks/auth.ts`: handlers de auth com hash de senha.
+- `src/utils/validation.ts`: `validateAuthForm`. `src/constants/storage.ts`: todas as chaves do localStorage (app e mock). `src/utils/storage.ts`: `readStoredJson`.
+- `src/components/Breadcrumb.tsx` (Início / Mercado / atual), `ModalDialog.tsx` também exporta `DialogCloseButton` (X de todos os modais). `src/hooks/useCartNfts.ts`: `nft_info` dos NFTs do carrinho (fonte única para itens e recomendações).
+- `src/components/NftRail.tsx`: lista horizontal de NFTs (mobile) / grid de 5 (desktop), com skeleton, erro e vazio.
+- `src/utils/`: `array.ts` (`range`, `unique`), `eth.ts` (`formatEth`, `ESTIMATED_NETWORK_FEE`).
+- `src/hooks/useCatalogSearch.ts`: leitura e atualização dos filtros/página na URL (também usado pelo Context para a busca).
+- `src/services/`: `api.ts` (axiosGet/axiosPost), `nfts.ts` (useListNfts, useNftInfo).
+- `src/types/api.ts`: tipos da API.
+- `src/constants/`: `catalog.ts` (coleções, redes e IDs de elementos), `icons.ts` (ICONS).
+- `src/mocks/`: `handlers.ts`, `data/nfts.json`, `data/nft-details.json`, `browser.ts` (worker do MSW: `startMocks`, chamado pelo `main.tsx`, e `reconnectMocks`), `market.ts` (preço/estoque/versão persistidos), `realtime.ts` (servidor Socket.IO simulado), `MockPanel.tsx` (painel de dev).
+- `src/pages/account/`: AccountPage (menu + abas), ProfileTab (perfil + senha), WalletsTab, ActivityTab, FavoritesTab. `src/services/account.ts`, `src/constants/account.ts`, `src/mocks/account.ts`. `src/components/FormField.tsx` (`TextField`, `SelectField`, `PasswordField`, `FormAlert`, `SubmitRow`) e `src/components/LoginRequired.tsx` (compartilhados). `src/utils/date.ts` (`formatShortDate`), `src/utils/form.ts` (`focusFirstError`).
+- `src/pages/checkout/`: CheckoutPage (orquestra cotação, carteira, pedido e estados), CollectorProfileForm, CheckoutSummary (+ QuoteChangedBanner), WalletPicker, OrderReceiptDialog. `src/services/checkout.ts`: useQuote, useConnectWallet, useCreateOrder, useOrder. `src/constants/checkout.ts`: carteiras, campos do formulário. `src/components/CouponForm.tsx`. `src/mocks/checkout.ts` (cupom, cotação, carteira, pedidos), `src/mocks/scenario.ts`, `src/mocks/data/wallets.json`.
+- `src/services/realtime.ts`: `useRealtimeUpdates(sessionToken)` (cliente Socket.IO: `nft.updated`, `order.updated`, `session:join` + cache) e `emitToRealtime`. `src/components/PriceUpdate.tsx`: `PriceUpdatedTag` e `PriceChangeBanner`. `src/constants/realtime.ts`: `REALTIME_URL` e `MOCK_COMMANDS`.
+
+Alias `@/` aponta para `src/`. Itens de telas ainda não construídas (carrinho, favoritos, perfil, Entrar, Criadores, Aprenda, newsletter) ficam desabilitados com "Em breve".
 
 ```
 src/

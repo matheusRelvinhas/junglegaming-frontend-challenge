@@ -1,3 +1,4 @@
+import Big from 'big.js'
 import { delay, http, HttpResponse } from 'msw'
 import { COLLECTIONS, NETWORKS } from '@/constants/catalog'
 import type { CatalogFacets, ListNftsResponse, Network, Nft, NftInfo } from '@/types/api'
@@ -9,9 +10,13 @@ import nftDetailsData from './data/nft-details.json'
 import { checkoutHandlers } from './checkout'
 import { getNftEditions, getNfts, getTokenId } from './market'
 import { realtimeHandler } from './realtime'
+import { getScenario, networkDelay, readFailureResponse } from './scenario'
 
 const PAGE_SIZE = 9
 const GALLERY_SIZE = 4
+// Cenário "respostas fora de ordem": a busca por Música chega depois da seguinte, para testar o descarte da resposta velha.
+const OUT_OF_ORDER_SLOW_COLLECTION = 'music'
+const OUT_OF_ORDER_EXTRA_MS = 1500
 type NftDetail = Pick<NftInfo, 'id' | 'creator' | 'description' | 'details' | 'attributes' | 'rating' | 'reviews_count'>
 const nftDetails = nftDetailsData as NftDetail[]
 
@@ -31,6 +36,12 @@ function buildNftInfo(nft: Nft): NftInfo | null {
     royalties_info: `Direitos autorais de ${detail.creator}: 5% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.`,
     gallery: range(GALLERY_SIZE).map(() => nft.url_img),
   }
+}
+
+function sortNfts(nfts: Nft[], sort: string | null) {
+  if (sort === 'price-asc') nfts.sort((first, second) => new Big(first.currency.ethereum).cmp(second.currency.ethereum))
+  if (sort === 'price-desc') nfts.sort((first, second) => new Big(second.currency.ethereum).cmp(first.currency.ethereum))
+  if (sort === 'name') nfts.sort((first, second) => first.name.localeCompare(second.name, 'pt-BR'))
 }
 
 function isPriceInRange(price: string, minPrice: string | null, maxPrice: string | null) {
@@ -62,12 +73,17 @@ export const handlers = [
   realtimeHandler,
 
   http.get('/api/list_nfts', async ({ request }) => {
-    await delay()
+    await networkDelay()
+    const failure = readFailureResponse()
+    if (failure) return failure
 
     const nfts = getNfts()
     const params = new URL(request.url).searchParams
     const search = params.get('search')?.toLowerCase()
     const collection = params.get('collection')
+    if (getScenario().catalogOrder === 'out-of-order' && collection === OUT_OF_ORDER_SLOW_COLLECTION) {
+      await delay(OUT_OF_ORDER_EXTRA_MS)
+    }
     const network = params.get('network') as Network | null
     const minPrice = params.get('min_price')
     const maxPrice = params.get('max_price')
@@ -81,6 +97,7 @@ export const handlers = [
         (!onlyTopNft || nft.top_nft) &&
         isPriceInRange(nft.currency.ethereum, minPrice, maxPrice),
     )
+    sortNfts(filteredNfts, params.get('sort'))
 
     const totalPages = Math.max(1, Math.ceil(filteredNfts.length / PAGE_SIZE))
     const page = Math.min(Math.max(1, Number(params.get('page')) || 1), totalPages)
@@ -99,7 +116,9 @@ export const handlers = [
   }),
 
   http.get('/api/nft_info/:id', async ({ params }) => {
-    await delay()
+    await networkDelay()
+    const failure = readFailureResponse()
+    if (failure) return failure
 
     const nft = getNfts().find((item) => item.id === Number(params.id))
     const nftInfo = nft && buildNftInfo(nft)
@@ -111,7 +130,10 @@ export const handlers = [
   }),
 
   http.get('/api/banners', async () => {
-    await delay()
+    await networkDelay()
+    const failure = readFailureResponse()
+    if (failure) return failure
+
     return HttpResponse.json(banners)
   }),
 ]

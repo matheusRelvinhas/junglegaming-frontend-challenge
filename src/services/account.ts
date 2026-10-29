@@ -76,6 +76,9 @@ export function useToggleFavorite(token: string | null) {
       return { previous }
     },
     onSuccess: (favorites) => queryClient.setQueryData(queryKey, favorites),
-    onError: (_error, _variables, context) => queryClient.setQueryData(queryKey, context?.previous),
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previous)
+      queryClient.invalidateQueries({ queryKey })
+    },
   })
 }

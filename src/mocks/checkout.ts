@@ -22,7 +22,7 @@ import coupons from './data/coupons.json'
 import wallets from './data/wallets.json'
 import { getNftEditions, getNfts, getTokenId, sellEditions } from './market'
 import { publish } from './realtime'
-import { getScenario } from './scenario'
+import { getScenario, networkDelay } from './scenario'
 
 const SETTLE_DELAY_MS = 3000
 const LOST_RESPONSE_DELAY_MS = 8000
@@ -182,7 +182,7 @@ getOrders()
 
 export const checkoutHandlers = [
   http.get('/api/coupon/:code', async ({ params }) => {
-    await delay()
+    await networkDelay()
 
     const { coupon, error, status } = findCoupon(String(params.code))
     if (!coupon) return HttpResponse.json({ message: error }, { status })
@@ -190,13 +190,13 @@ export const checkoutHandlers = [
   }),
 
   http.post('/api/quote', async ({ request }) => {
-    await delay()
+    await networkDelay()
     const body = (await request.json()) as QuoteBody
     return HttpResponse.json(buildQuote(body))
   }),
 
   http.post('/api/wallet/connect', async ({ request }) => {
-    await delay(800)
+    await networkDelay()
 
     if (!findRequestUserId(request)) return unauthorizedResponse()
     const body = (await request.json()) as Pick<WalletConnection, 'provider' | 'network'>
@@ -211,7 +211,7 @@ export const checkoutHandlers = [
   }),
 
   http.post('/api/orders', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()
@@ -279,7 +279,7 @@ export const checkoutHandlers = [
   }),
 
   http.get('/api/orders', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()
@@ -292,7 +292,7 @@ export const checkoutHandlers = [
   }),
 
   http.get('/api/orders/:id', async ({ request, params }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()

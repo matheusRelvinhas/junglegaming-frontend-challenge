@@ -3,12 +3,12 @@ import { Link } from '@tanstack/react-router'
 import { NftCard, NftCardSkeleton } from '@/components/NftCard'
 import { Skeleton } from '@/components/Skeleton'
 import { StateMessage } from '@/components/StateMessage'
-import { CATALOG_SECTION_ID } from '@/constants/catalog'
+import { CATALOG_SECTION_ID, SORT_OPTIONS } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
 import { useAppContext } from '@/context/AppContext'
 import { useCatalogSearch } from '@/hooks/useCatalogSearch'
 import { useListNfts } from '@/services/nfts'
-import type { Nft } from '@/types/api'
+import type { CatalogSort, Nft } from '@/types/api'
 import { range } from '@/utils/array'
 import { FilterDialog, FilterPanel } from './FilterPanel'
 
@@ -50,6 +50,28 @@ function FeaturedNft({ nft, isLoading }: { nft?: Nft; isLoading: boolean }) {
         </div>
       </Link>
     </article>
+  )
+}
+
+function SortSelect({ sort, onChange }: { sort?: CatalogSort; onChange: (sort: CatalogSort) => void }) {
+  return (
+    <label className="flex items-center gap-2 text-xs desktop:text-sm">
+      <span className="text-sand">Ordenar por:</span>
+      <span className="relative">
+        <select
+          value={sort ?? 'recent'}
+          onChange={(event) => onChange(event.target.value as CatalogSort)}
+          className="h-8 appearance-none rounded-sm border bg-surface pr-8 pl-2 text-foreground focus:border-primary"
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <Icon icon={ICONS.chevronDown} className="pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2 text-sand" aria-hidden />
+      </span>
+    </label>
   )
 }
 
@@ -162,13 +184,16 @@ export function NftCatalog() {
       </aside>
 
       <div>
-        <div className="mb-4 flex items-center justify-between desktop:mb-8">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 desktop:mb-8">
           <h2 id="catalog-title" className="border-b-2 border-primary pb-1 text-[0.9375rem] font-semibold text-primary">
             Todos os NFTs
           </h2>
-          <p role="status" className="text-xs text-khaki">
-            {catalog.isFetching ? 'Atualizando…' : catalog.data && `${catalog.data.total} NFTs`}
-          </p>
+          <div className="flex items-center gap-4">
+            <p role="status" className="text-xs text-khaki">
+              {catalog.isFetching ? 'Atualizando…' : catalog.data && `${catalog.data.total} NFTs`}
+            </p>
+            <SortSelect sort={filters.sort} onChange={(sort) => updateCatalogSearch({ sort: sort === 'recent' ? undefined : sort })} />
+          </div>
         </div>
         {renderResults()}
       </div>

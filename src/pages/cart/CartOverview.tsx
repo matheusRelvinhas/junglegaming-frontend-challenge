@@ -121,7 +121,7 @@ function CartSummary({ subtotal, isLoading }: { subtotal: Big; isLoading: boolea
 
       <CouponForm />
 
-      <dl className="grid gap-2.5">
+      <dl aria-busy={isLoading} className="grid gap-2.5">
         <SummaryRow label="Subtotal" value={`${formatEth(subtotal)} ETH`} isLoading={isLoading} />
         <SummaryRow label="Desconto do lançamento" value={`(-) ${formatEth(discount)}`} isLoading={isLoading} />
         <SummaryRow label="Taxa de rede" value={`${formatEth(networkFee)} ETH`} isLoading={isLoading} />
@@ -210,7 +210,7 @@ export function CartOverview() {
           <span>Edições</span>
           <span>Total</span>
         </div>
-        <ul className="grid gap-5 desktop:gap-3">
+        <ul aria-busy={isLoading} className="grid gap-5 desktop:gap-3">
           {isLoading
             ? cartItems.map((item) => (
                 <li key={`${item.nft_id}-${item.edition}`}>

@@ -1,10 +1,15 @@
+import { addCollection, type IconifyJSON } from '@iconify/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/roboto-mono'
+import iconData from '@/constants/icon-data.json'
 import '@/styles/global.css'
 import { router } from '@/router'
+
+const iconCollections = iconData as unknown as IconifyJSON[]
+iconCollections.forEach((collection) => addCollection(collection))
 
 const queryClient = new QueryClient({
   defaultOptions: {

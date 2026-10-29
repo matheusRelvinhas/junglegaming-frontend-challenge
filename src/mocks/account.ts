@@ -1,11 +1,11 @@
-import { delay, http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { STORAGE_KEYS } from '@/constants/storage'
 import type { ChangePasswordBody, Profile, Wallets } from '@/types/api'
 import { readStoredJson, saveStoredJson } from '@/utils/storage'
 import { MIN_PASSWORD_LENGTH, validateProfileForm, validateWalletForm } from '@/utils/validation'
 import { findRequestUserId, getUsers, hashPassword, saveUsers, toPublicUser, unauthorizedResponse, type StoredUser } from './auth'
 import { getNfts } from './market'
-import { getScenario } from './scenario'
+import { getScenario, networkDelay } from './scenario'
 
 const MAX_AVATAR_LENGTH = 700_000
 const EMPTY_WALLETS: Wallets = { primary: null, secondary: null, secondary_same_as_primary: false }
@@ -43,7 +43,7 @@ function firstValidationError(errors: Record<string, string | undefined>, fieldP
 
 export const accountHandlers = [
   http.get('/api/profile', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     const user = (await getUsers()).find((storedUser) => storedUser.id === userId)
@@ -52,7 +52,7 @@ export const accountHandlers = [
   }),
 
   http.post('/api/profile', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     const users = await getUsers()
@@ -82,7 +82,7 @@ export const accountHandlers = [
   }),
 
   http.post('/api/profile/password', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     const users = await getUsers()
@@ -103,7 +103,7 @@ export const accountHandlers = [
   }),
 
   http.get('/api/wallets', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()
@@ -111,7 +111,7 @@ export const accountHandlers = [
   }),
 
   http.post('/api/wallets', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()
@@ -133,7 +133,7 @@ export const accountHandlers = [
   }),
 
   http.get('/api/favorites', async ({ request }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()
@@ -141,7 +141,7 @@ export const accountHandlers = [
   }),
 
   http.post('/api/favorites/:nftId', async ({ request, params }) => {
-    await delay()
+    await networkDelay()
 
     const userId = findRequestUserId(request)
     if (!userId) return unauthorizedResponse()

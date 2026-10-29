@@ -1,6 +1,29 @@
 import { Icon } from '@iconify/react'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, type KeyboardEvent, type ReactNode } from 'react'
 import { ICONS } from '@/constants/icons'
+
+const FOCUSABLE_SELECTOR = ':is(a[href], button, input, select, textarea, [tabindex]):not([disabled]):not([tabindex="-1"])'
+
+function keepFocusInside(event: KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== 'Tab') return
+
+  const focusableElements = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) =>
+    element.checkVisibility(),
+  )
+  const firstElement = focusableElements[0]
+  const lastElement = focusableElements.at(-1)
+  const isLeavingFromStart = event.shiftKey && document.activeElement === firstElement
+  const isLeavingFromEnd = !event.shiftKey && document.activeElement === lastElement
+
+  if (isLeavingFromStart) {
+    event.preventDefault()
+    lastElement?.focus()
+  }
+  if (isLeavingFromEnd) {
+    event.preventDefault()
+    firstElement?.focus()
+  }
+}
 
 type ModalDialogProps = {
   isOpen: boolean
@@ -31,6 +54,7 @@ export function ModalDialog({ isOpen, onClose, className, children, ...dialogPro
       ref={dialogRef}
       onClose={onClose}
       onClick={(event) => event.target === event.currentTarget && onClose()}
+      onKeyDown={keepFocusInside}
       className={className}
       {...dialogProps}
     >

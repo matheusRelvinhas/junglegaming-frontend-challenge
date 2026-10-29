@@ -17,6 +17,10 @@ export function emitToRealtime(eventName: string, ...args: unknown[]) {
   activeSocket?.emit(eventName, ...args)
 }
 
+export function isRealtimeConnected() {
+  return activeSocket?.connected ?? false
+}
+
 function isNewerUpdate(nft: Nft, event: NftUpdatedEvent) {
   return nft.id === event.resource.id && event.version > nft.version
 }
@@ -82,14 +86,18 @@ export function useRealtimeUpdates(sessionToken: string | null) {
       if (isRepeatedEvent(event.eventId)) return
 
       const cachedNft = findCachedNft(queryClient, event.resource.id)
-      if (!cachedNft || event.version <= cachedNft.version) return
+      if (cachedNft && event.version <= cachedNft.version) return
+      queryClient.invalidateQueries({ queryKey: ['quote'] })
+      if (!cachedNft) {
+        queryClient.invalidateQueries({ queryKey: ['nft_info', event.resource.id] })
+        return
+      }
 
       queryClient.setQueryData<NftInfo>(['nft_info', cachedNft.id], (nftInfo) => nftInfo && updateNftInfo(nftInfo, event))
       queryClient.setQueriesData<ListNftsResponse>({ queryKey: ['list_nfts'] }, (list) =>
         list ? { ...list, items: list.items.map((item) => updateNft(item, event)) } : list,
       )
       queryClient.invalidateQueries({ queryKey: ['list_nfts'], refetchType: 'none' })
-      queryClient.invalidateQueries({ queryKey: ['quote'] })
 
       const previousPrice = cachedNft.currency.ethereum
       const newPrice = event.data.price

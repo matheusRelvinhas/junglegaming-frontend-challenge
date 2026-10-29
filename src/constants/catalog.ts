@@ -1,4 +1,11 @@
-import type { CollectionSlug, Network } from '@/types/api'
+import type { CatalogSort, CollectionSlug, Network } from '@/types/api'
+
+export const SORT_OPTIONS: { value: CatalogSort; label: string }[] = [
+  { value: 'recent', label: 'Listados recentemente' },
+  { value: 'price-asc', label: 'Menor preço' },
+  { value: 'price-desc', label: 'Maior preço' },
+  { value: 'name', label: 'Nome (A–Z)' },
+]
 
 export const COLLECTIONS: { slug: CollectionSlug; label: string }[] = [
   { slug: 'digital-art', label: 'Arte digital' },

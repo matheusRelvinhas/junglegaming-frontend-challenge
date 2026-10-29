@@ -22,8 +22,11 @@ export type Nft = {
   version: number
 }
 
+export type CatalogSort = 'recent' | 'price-asc' | 'price-desc' | 'name'
+
 export type ListNftsParams = {
   search?: string
+  sort?: CatalogSort
   collection?: CollectionSlug
   network?: Network
   min_price?: number

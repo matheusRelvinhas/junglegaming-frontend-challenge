@@ -34,7 +34,7 @@ export function Footer() {
         <div>
           <h3 className="mb-5 text-[1.0625rem] font-bold leading-4">Antecipe-se ao próximo lançamento</h3>
           <div className="mb-4 flex" title="Em breve">
-            <label htmlFor="newsletter-email" className="sr-only">E-mail</label>
+            <label htmlFor="newsletter-email" className="sr-only">E-mail para a newsletter</label>
             <input
               id="newsletter-email"
               type="email"
