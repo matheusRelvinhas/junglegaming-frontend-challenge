@@ -61,7 +61,7 @@ Nos cenários sensíveis a tempo, a latência é a do mock (determinística) e o
 
 ## Regressão visual
 
-As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas, **uma por sistema**: `home-win32.png` para Windows e `home-linux.png` para Linux e o CI. Elas não podem ser compartilhadas porque o Linux quebra as linhas de texto de outro jeito e a página fica com outra altura. A comparação aceita só 1% de pixels diferentes (antialias).
+As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas para **Windows** (`home-win32.png`). O nome leva o sistema porque o Linux quebra as linhas de texto de outro jeito e a página fica com outra altura. Por isso, no CI os testes visuais rodam num job `windows-latest`, e os E2E rodam no Ubuntu (`--grep-invert "@visual"`). A comparação aceita só 1% de pixels diferentes (antialias).
 
 A tela é estabilizada antes da captura:
 - dados limpos do mock;
@@ -69,9 +69,6 @@ A tela é estabilizada antes da captura:
 - fontes e ícones locais;
 - espera pelas imagens.
 
-Mudou o layout de propósito?
-1. **Windows:** rode `npm run test:e2e:update-snapshots` e confira as imagens `*-win32.png`.
-2. **Linux:** no GitHub, abra **Actions → "Atualizar baselines visuais (Linux)" → Run workflow**. Baixe o artefato `baselines-linux` e copie as imagens `*-linux.png` para `tests/visual/__screenshots__/` (mesmas pastas `desktop/` e `mobile/`).
-3. Faça commit das imagens. Até as `*-linux.png` estarem no repositório, o CI falha só nos testes visuais.
+Mudou o layout de propósito? No Windows, rode `npm run test:e2e:update-snapshots`, confira as imagens `*-win32.png` e faça commit delas. Em Linux ou macOS, rode só os E2E (`npx playwright test --grep-invert "@visual"`): não há baseline para esses sistemas.
 
 Os seletores usam papel e nome acessível (`getByRole`, `getByLabel`). Quando o teste não acha um elemento pelo nome, há um problema de acessibilidade a corrigir.

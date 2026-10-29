@@ -508,7 +508,7 @@ O cliente ignora `eventId` já visto e `version` ≤ a atual. Após reconectar, 
 - **Projetos**: `desktop` (Chromium 1440×900, tudo) e `mobile` (Pixel 7, só `@principal` e `@visual`).
 - **Organização**: um arquivo por tela, nomes em inglês (`tests/e2e/catalog|nft-detail|auth|cart|checkout|account|realtime|accessibility|loading.spec.ts`, `tests/visual/screens.spec.ts`), helpers em `tests/support/app.ts`. Títulos dos testes em pt-BR.
 - **Seletores** por papel/nome acessível. Estado isolado por contexto; cenário do MSW por teste (`test.use({ scenario })`); eventos pelo socket (`window.__kurioMock`).
-- **Visual**: baseline por sistema (`tests/visual/__screenshots__/<projeto>/<tela>-win32.png` e `-linux.png`). A baseline única falhou no CI porque o Linux quebra linhas de outro jeito e a página muda de altura. Tolerância de 1%, `reducedMotion: 'reduce'`, fontes e ícones locais. As do Linux vêm do workflow manual `.github/workflows/update-snapshots.yml` (artefato `baselines-linux`), e o commit fica com o usuário.
+- **Visual**: baselines do Windows (`tests/visual/__screenshots__/<projeto>/<tela>-win32.png`). O Linux quebra linhas de outro jeito e a página muda de altura, então no CI os visuais rodam num job `windows-latest` e os E2E no Ubuntu (`--grep-invert "@visual"`). Tolerância de 1%, `reducedMotion: 'reduce'`, fontes e ícones locais.
 - **Relatório e CI**: HTML (`playwright-report/`), traces e capturas só das falhas (`test-results/`). CI em `.github/workflows/e2e.yml` (typecheck, lint, E2E, artefatos).
 - **Melhorias feitas a partir dos testes**: foco preso no `ModalDialog` (Tab/Shift+Tab circulam dentro do diálogo), `aria-busy` nas linhas e no resumo do carrinho, e o cliente de tempo real não perde eventos sem cache (ver Tempo real).
 

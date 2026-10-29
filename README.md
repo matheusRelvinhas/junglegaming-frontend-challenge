@@ -1,4 +1,121 @@
-# Desafio Frontend — Marketplace de NFTs
+# Kurio: marketplace de NFTs
+
+O **Kurio** é um marketplace de NFTs (arte digital) em React + TypeScript, feito sobre o enunciado mais abaixo. Não há backend real: toda a API REST e todo o tempo real (Socket.IO) são simulados com **MSW** dentro do navegador, inclusive no build publicado.
+
+## Regras de negócio, em resumo
+
+- **Catálogo:** busca, filtros (coleção, rede, faixa de preço), ordenação e paginação. Tudo fica na URL e sobrevive ao F5 e ao voltar do navegador.
+- **NFT:** cada NFT tem **edições** (`1/1`, `1/10`, `1/50`, `ABERTA`), cada uma com estoque próprio. Edição esgotada não pode ser comprada, e a quantidade é limitada ao estoque.
+- **Preços:** em **ETH**, sempre como texto decimal (`"1.19"`). Os cálculos usam `big.js`, nunca `number`.
+- **Carrinho:** fica no navegador, inclusive para visitantes, e não se perde ao entrar na conta. Aceita cupom (`KURIO10`).
+- **Pagamento:** exige login. O usuário preenche o perfil de colecionador, escolhe e conecta uma carteira (MetaMask, Coinbase ou WalletConnect) numa rede e confirma.
+  - A API revalida preço, estoque e cupom antes de criar o pedido. Se algo mudou, pede nova confirmação.
+  - O pedido usa uma chave de idempotência, então clique repetido ou timeout não duplicam a compra.
+  - O pedido nasce **pendente** e termina **confirmado** (recibo) ou **recusado** (o carrinho fica intacto). Só as quantidades compradas saem do carrinho.
+- **Tempo real:**
+  - `nft.updated` muda preço e estoque no catálogo, no detalhe, no carrinho e no pagamento;
+  - `order.updated` confirma ou recusa o pedido;
+  - eventos repetidos ou antigos são ignorados.
+- **Conta:** cadastro, login, sessão que sobrevive ao F5 e logout. Perfil com avatar e troca de senha, carteiras (usadas no pagamento), histórico de compras e lista de interesse (favoritos, com atualização otimista).
+
+## Como rodar
+
+**Requisitos:** Node.js **24** (mínimo 22.18, porque os scripts em `scripts/` são TypeScript executado direto pelo Node) e npm.
+
+```bash
+npm install
+cp .env.example .env        # no Windows (PowerShell): Copy-Item .env.example .env
+npm run dev                 # http://localhost:5173
+```
+
+### Variáveis de ambiente (`.env`)
+
+O `.env` fica fora do Git. O `.env.example` traz os valores de demonstração; basta copiá-lo.
+
+| Variável | Valor de exemplo | Para que serve |
+| --- | --- | --- |
+| `VITE_ENABLE_MOCKS` | `true` | Liga o MSW (API REST + Socket.IO simulados). **Precisa ser `true`**, porque o projeto não tem backend real. Vale também para o build publicado. |
+| `VITE_PASSWORD_SALT` | `kurio-demo-salt-2026` | Sal do hash SHA-256 das senhas no "banco" do mock (as senhas nunca são guardadas em texto). Como toda variável `VITE_*` vai para o bundle, é só um valor de demonstração. |
+
+- **Testes e Lighthouse:** usam o `.env.test` (versionado, mesmos valores) e não dependem do seu `.env`.
+- **Deploy (Vercel):** cadastre as mesmas duas variáveis no painel do projeto.
+
+### Credenciais de teste
+
+| E-mail | Senha |
+| --- | --- |
+| `nova@kurio.test` | `kurio123` |
+| `leo@kurio.test` | `kurio123` |
+
+Também dá para criar uma conta pela tela de cadastro. Cupons: `KURIO10` (10% de desconto) e `EXPIRADO` (expirado).
+
+### Comandos
+
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Desenvolvimento com mocks (`http://localhost:5173`) |
+| `npm run build` | Typecheck + build de produção (`dist/`) |
+| `npm run preview` | Serve o build de produção |
+| `npm run typecheck` | Verificação de tipos (app, testes e scripts) |
+| `npm run lint` | ESLint |
+| `npm run test:e2e` | Testes Playwright: build com mocks + preview, desktop e mobile ([tests/README.md](tests/README.md)) |
+| `npm run test:e2e:ui` / `test:e2e:report` | Modo interativo / relatório HTML |
+| `npm run test:e2e:update-snapshots` | Regera as baselines visuais (Windows; em Linux/macOS rode só os E2E com `--grep-invert "@visual"`) |
+| `npm run lighthouse` | Auditoria Lighthouse: 3 execuções por página e perfil, com mediana ([lighthouse/README.md](lighthouse/README.md)) |
+| `npm run icons` / `npm run images` | Regera os ícones locais / as artes em WebP |
+
+Antes dos testes e do Lighthouse, instale o navegador uma vez: `npx playwright install chromium`.
+
+## Cenários do mock: seleção e reset
+
+Com os mocks ligados aparece um **botão redondo no canto inferior esquerdo** (painel de dev). Por ele dá para:
+
+- **disparar eventos em tempo real** pelo Socket.IO simulado: preço +10% / −10%, esgotar uma edição, repor estoque e restaurar preços e estoques;
+- **escolher cenários**, que valem para as próximas requisições e ficam salvos no navegador:
+
+  | Cenário | Opções |
+  | --- | --- |
+  | Conexão da carteira | Aprova · Recusa |
+  | Resultado do pagamento | Confirma · Recusa · Timeout (o pedido é criado, mas a resposta se perde) |
+  | Rede | Normal · Lenta (+2s em toda resposta) |
+  | Leituras (catálogo, detalhe, banners) | Funcionam · Falham (HTTP 503) |
+  | Favoritos | Salva · Falha |
+
+- **expirar a sessão** no servidor.
+
+**Reset:**
+- **"Restaurar preços e estoques"** volta o catálogo aos valores das fixtures (e avisa as abas abertas via `nft.updated`).
+- **Reset completo** (usuários, sessões, pedidos, carteiras, favoritos, carrinho e cenários): todo o "banco" do mock fica no `localStorage` do site. Apague os dados do site (DevTools → Application → Storage → **Clear site data**, ou `localStorage.clear()` no console) e recarregue a página. Tudo volta ao cenário conhecido das fixtures.
+
+## Como reproduzir os fluxos de falha
+
+| Fluxo | Como reproduzir |
+| --- | --- |
+| Skeletons com carregamento lento | Painel → Rede: **Lenta** → navegue pela Início, por um NFT ou pelo carrinho |
+| Falha de rede + "Tentar novamente" | Painel → Leituras: **Falham** → recarregue a Início → volte para **Funcionam** e clique em "Tentar novamente" |
+| Respostas fora de ordem | Console: `localStorage.setItem('kurio:mock-scenario', JSON.stringify({ catalogOrder: 'out-of-order' }))` + F5. A busca por **Música** demora 1,5s; troque logo para outra coleção e só a última aparece |
+| NFT ou rota inexistente | Abra `/nft/9999` ou `/qualquer-coisa` |
+| Cadastro com e-mail em uso (409) | Cadastre-se com `nova@kurio.test` |
+| Login inválido | Entre com uma senha errada |
+| Sessão expirada (durante a navegação ou o pagamento) | Painel → **Expirar sessão no servidor** → confirme a compra ou recarregue o perfil: o login abre e, depois dele, você volta para a mesma tela |
+| Cupom inválido / expirado | No carrinho, aplique `XYZ` / `EXPIRADO` |
+| Preço alterado ou edição esgotada durante a compra | Com um NFT no carrinho, abra o pagamento → Painel → escolha o NFT → **Preço +10%** ou **Esgotar uma edição**. O pagamento mostra "Os valores mudaram" e exige nova confirmação |
+| Carteira recusada | Painel → Conexão da carteira: **Recusa** → "Conectar" no pagamento |
+| Pagamento recusado | Painel → Resultado do pagamento: **Recusa** → confirme a compra: o carrinho é mantido |
+| Timeout após criar o pedido | Painel → Resultado do pagamento: **Timeout** → confirme: a nova tentativa usa a mesma chave e recupera o mesmo pedido (só 1 pedido em Perfil → Atividade) |
+| Pedido pendente + F5 | Confirme uma compra e recarregue durante "Pagamento pendente": o pedido é retomado pela URL (`?order=`) |
+| Favorito com falha (rollback) | Painel → Favoritos: **Falha** → clique em Favoritar num NFT: o coração volta e aparece o erro |
+
+## Documentação
+
+- [ARCHITECTURE.md](ARCHITECTURE.md): contratos REST e eventos, sessão, carrinho, cache, reconciliação REST × Socket.IO, limitações, decisões de UX e desvios do Figma.
+- [tests/README.md](tests/README.md): testes E2E e regressão visual (cobertura do §9).
+- [lighthouse/README.md](lighthouse/README.md) e [lighthouse/RESULTS.md](lighthouse/RESULTS.md): auditoria de performance (§10).
+- [CONTEXT.md](CONTEXT.md): diário de decisões do projeto.
+
+---
+
+# Desafio Frontend — Marketplace de NFTs (enunciado)
 
 Implemente o **NFT Marketplace** em React e TypeScript, seguindo o [layout no Figma](https://www.figma.com/design/Ff0SksUi7UFtPWUO8kyNtw/Frontend-Challenge?node-id=0-1).
 
