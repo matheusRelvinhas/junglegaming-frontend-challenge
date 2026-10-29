@@ -1,5 +1,7 @@
 # Kurio: marketplace de NFTs
 
+Link: https://junglegaming-frontend-challenge-two.vercel.app/
+
 O **Kurio** é um marketplace de NFTs (arte digital) em React + TypeScript, feito sobre o enunciado mais abaixo. Não há backend real: toda a API REST e todo o tempo real (Socket.IO) são simulados com **MSW** dentro do navegador, inclusive no build publicado.
 
 ## Regras de negócio, em resumo
