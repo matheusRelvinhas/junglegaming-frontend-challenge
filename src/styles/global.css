@@ -108,6 +108,14 @@
     }
   }
 
+  --animate-banner-in: banner-in 0.6s ease-out;
+
+  @keyframes banner-in {
+    from {
+      opacity: 0;
+    }
+  }
+
   --animate-price-flash: price-flash 1.6s ease-out;
 
   @keyframes price-flash {

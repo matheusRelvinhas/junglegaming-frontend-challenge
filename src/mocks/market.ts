@@ -51,6 +51,10 @@ export function getNftEditions(nftId: number) {
   return getMarket().find((item) => item.id === nftId)?.editions ?? []
 }
 
+export function getTokenId(nft: Pick<Nft, 'name'>) {
+  return `#${nft.name.split('#')[1].padStart(4, '0')}`
+}
+
 function hasSameValues(first: NftMarket, second: NftMarket) {
   const hasSameStock = first.editions.every((edition, index) => edition.available === second.editions[index]?.available)
   return first.price === second.price && hasSameStock
@@ -103,6 +107,27 @@ export function updateNftMarket(nftId: number, action: MarketAction) {
   const updatedNft = { ...changedNft, version: currentNft.version + 1 }
   saveMarket(market.map((item) => (item.id === nftId ? updatedNft : item)))
   return toNftUpdatedEvent(updatedNft)
+}
+
+export function sellEditions(soldItems: { nft_id: number; edition: string; quantity: number }[]) {
+  const market = getMarket()
+  const events: NftUpdatedEvent[] = []
+
+  const updatedMarket = market.map((nftMarket) => {
+    const soldItemsOfNft = soldItems.filter((item) => item.nft_id === nftMarket.id)
+    if (soldItemsOfNft.length === 0) return nftMarket
+
+    const editions = nftMarket.editions.map((edition) => {
+      const soldItem = soldItemsOfNft.find((item) => item.edition === edition.id)
+      return soldItem ? { ...edition, available: Math.max(0, edition.available - soldItem.quantity) } : edition
+    })
+    const updatedNft = { ...nftMarket, editions, version: nftMarket.version + 1 }
+    events.push(toNftUpdatedEvent(updatedNft))
+    return updatedNft
+  })
+
+  saveMarket(updatedMarket)
+  return events
 }
 
 export function resetMarket() {

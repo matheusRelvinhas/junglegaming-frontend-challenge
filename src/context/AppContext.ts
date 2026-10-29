@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { User } from '@/types/api'
+import type { Coupon, Order, User } from '@/types/api'
 
 const MOBILE_BREAKPOINT = 1040
 export const MOBILE_MEDIA_QUERY = `(width < ${MOBILE_BREAKPOINT}px)`
@@ -32,8 +32,13 @@ type AppContextValue = {
   addToCart: (item: CartItem) => void
   updateCartQuantity: (nftId: number, edition: string, quantity: number) => void
   removeFromCart: (nftId: number, edition: string) => void
+  coupon: Coupon | null
+  setCoupon: (coupon: Coupon | null) => void
+  removePurchasedItems: (order: Order) => void
   favoriteIds: number[]
   toggleFavorite: (nftId: number) => void
+  favoriteError: string
+  sessionToken: string | null
   user: User | null
   isCheckingSession: boolean
   startSession: (token: string, user: User) => void

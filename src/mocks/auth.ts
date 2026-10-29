@@ -1,7 +1,7 @@
 import { delay, http, HttpResponse } from 'msw'
 import { STORAGE_KEYS } from '@/constants/storage'
-import type { LoginBody, RegisterBody, User } from '@/types/api'
-import { readStoredJson } from '@/utils/storage'
+import type { LoginBody, Profile, RegisterBody, User } from '@/types/api'
+import { readStoredJson, saveStoredJson } from '@/utils/storage'
 
 const SESSION_DURATION_MS = 8 * 60 * 60 * 1000
 
@@ -10,10 +10,11 @@ const SEED_USERS = [
   { id: 'user-leo', name: 'Leo Matsu', email: 'leo@kurio.test', password: 'kurio123' },
 ]
 
-type StoredUser = User & { password_hash: string }
+export type StoredUser = User &
+  Partial<Pick<Profile, 'username' | 'ens_name' | 'wallet_nickname' | 'avatar_url'>> & { password_hash: string }
 type StoredSession = { token: string; user_id: string; expires_at: number }
 
-async function hashPassword(password: string) {
+export async function hashPassword(password: string) {
   const salt = import.meta.env.VITE_PASSWORD_SALT ?? ''
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${salt}:${password}`))
   return Array.from(new Uint8Array(digest))
@@ -21,22 +22,22 @@ async function hashPassword(password: string) {
     .join('')
 }
 
-function saveStoredList(key: string, list: unknown[]) {
-  localStorage.setItem(key, JSON.stringify(list))
+export function saveUsers(users: StoredUser[]) {
+  saveStoredJson(STORAGE_KEYS.mockUsers, users)
 }
 
-async function getUsers() {
+export async function getUsers() {
   const storedUsers = readStoredJson<StoredUser[] | null>(STORAGE_KEYS.mockUsers, null)
   if (storedUsers) return storedUsers
 
   const seededUsers: StoredUser[] = await Promise.all(
     SEED_USERS.map(async ({ password, ...user }) => ({ ...user, password_hash: await hashPassword(password) })),
   )
-  saveStoredList(STORAGE_KEYS.mockUsers, seededUsers)
+  saveStoredJson(STORAGE_KEYS.mockUsers, seededUsers)
   return seededUsers
 }
 
-function toPublicUser(user: StoredUser): User {
+export function toPublicUser(user: StoredUser): User {
   return { id: user.id, name: user.name, email: user.email }
 }
 
@@ -47,6 +48,22 @@ function getActiveSessions() {
 
 function getBearerToken(request: Request) {
   return request.headers.get('Authorization')?.replace('Bearer ', '') ?? ''
+}
+
+export function findUserIdByToken(token: string | null) {
+  return getActiveSessions().find((session) => session.token === token)?.user_id ?? null
+}
+
+export function findRequestUserId(request: Request) {
+  return findUserIdByToken(getBearerToken(request))
+}
+
+export function unauthorizedResponse() {
+  return HttpResponse.json({ message: 'Sua sessão expirou. Entre novamente.', code: 'SESSION_EXPIRED' }, { status: 401 })
+}
+
+export function expireAllSessions() {
+  saveStoredJson(STORAGE_KEYS.mockSessions, [])
 }
 
 export const authHandlers = [
@@ -66,7 +83,7 @@ export const authHandlers = [
     }
 
     const newUser: StoredUser = { id: crypto.randomUUID(), name, email, password_hash: await hashPassword(body.password) }
-    saveStoredList(STORAGE_KEYS.mockUsers, [...users, newUser])
+    saveStoredJson(STORAGE_KEYS.mockUsers, [...users, newUser])
     return HttpResponse.json({ user: toPublicUser(newUser) }, { status: 201 })
   }),
 
@@ -82,7 +99,7 @@ export const authHandlers = [
     }
 
     const session: StoredSession = { token: crypto.randomUUID(), user_id: user.id, expires_at: Date.now() + SESSION_DURATION_MS }
-    saveStoredList(STORAGE_KEYS.mockSessions, [...getActiveSessions(), session])
+    saveStoredJson(STORAGE_KEYS.mockSessions, [...getActiveSessions(), session])
     return HttpResponse.json({ token: session.token, user: toPublicUser(user) })
   }),
 
@@ -101,7 +118,7 @@ export const authHandlers = [
 
   http.post('/api/auth/logout', async ({ request }) => {
     const token = getBearerToken(request)
-    saveStoredList(
+    saveStoredJson(
       STORAGE_KEYS.mockSessions,
       getActiveSessions().filter((session) => session.token !== token),
     )

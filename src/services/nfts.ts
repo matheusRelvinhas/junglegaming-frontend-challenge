@@ -1,6 +1,13 @@
 import { keepPreviousData, queryOptions, useMutation, useQueries, useQuery } from '@tanstack/react-query'
-import type { ApiError, Coupon, ListNftsParams, ListNftsResponse, NftInfo } from '@/types/api'
+import type { ApiError, Banner, Coupon, ListNftsParams, ListNftsResponse, NftInfo } from '@/types/api'
 import { axiosGet } from './api'
+
+export function useBanners() {
+  return useQuery<Banner[], ApiError>({
+    queryKey: ['banners'],
+    queryFn: ({ signal }) => axiosGet<Banner[]>('banners', { signal }),
+  })
+}
 
 export function listNftsQueryOptions(params: ListNftsParams = {}) {
   return queryOptions<ListNftsResponse, ApiError>({

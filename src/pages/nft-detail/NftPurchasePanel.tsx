@@ -16,7 +16,7 @@ type NftPurchasePanelProps = {
 }
 
 export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
-  const { cartItems, addToCart, favoriteIds, toggleFavorite, priceChanges } = useAppContext()
+  const { cartItems, addToCart, favoriteIds, toggleFavorite, favoriteError, priceChanges } = useAppContext()
   const [editionId, setEditionId] = useState(() => nft.editions.find((edition) => edition.available > 0)?.id)
   const [quantity, setQuantity] = useState(1)
   const navigate = useNavigate()
@@ -151,6 +151,9 @@ export function NftPurchasePanel({ nft }: NftPurchasePanelProps) {
           </button>
         </div>
       </div>
+      <p role="alert" className="mt-2 text-right text-xs text-destructive empty:hidden">
+        {favoriteError}
+      </p>
 
       <dl className="mt-6 grid gap-2.5 text-[0.9375rem] text-sand">
         {nftFacts.map((fact) => (

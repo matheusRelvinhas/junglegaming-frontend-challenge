@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react'
 import { Link } from '@tanstack/react-router'
 import Big from 'big.js'
-import { useState, type FormEvent } from 'react'
+import { CouponForm } from '@/components/CouponForm'
 import { PriceChangeBanner } from '@/components/PriceUpdate'
 import { QuantityStepper } from '@/components/QuantityStepper'
 import { Skeleton } from '@/components/Skeleton'
@@ -11,8 +11,7 @@ import { ICONS } from '@/constants/icons'
 import { useAppContext, type CartItem } from '@/context/AppContext'
 import { useAuthModal } from '@/hooks/useAuthModal'
 import { useCartNfts } from '@/hooks/useCartNfts'
-import { useApplyCoupon } from '@/services/nfts'
-import type { Coupon, NftInfo } from '@/types/api'
+import type { NftInfo } from '@/types/api'
 import { ESTIMATED_NETWORK_FEE, formatEth } from '@/utils/eth'
 
 const tableColumnsClass = 'desktop:grid-cols-[70px_1fr_90px_110px_100px_32px]'
@@ -102,30 +101,14 @@ function SummaryRow({ label, value, isLoading }: { label: string; value: string;
 }
 
 function CartSummary({ subtotal, isLoading }: { subtotal: Big; isLoading: boolean }) {
-  const { user } = useAppContext()
+  const { user, coupon } = useAppContext()
   const { openAuth } = useAuthModal()
-  const [coupon, setCoupon] = useState<Coupon | null>(null)
-  const [couponCode, setCouponCode] = useState('')
-  const applyCoupon = useApplyCoupon()
 
   const discount = coupon ? subtotal.times(coupon.discount_percent).div(100) : new Big(0)
   const networkFee = new Big(ESTIMATED_NETWORK_FEE)
   const total = subtotal.minus(discount).plus(networkFee)
-
-  function submitCoupon(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    applyCoupon.mutate(couponCode.trim(), {
-      onSuccess: (validCoupon) => {
-        setCoupon(validCoupon)
-        setCouponCode('')
-      },
-    })
-  }
-
-  function removeCoupon() {
-    setCoupon(null)
-    applyCoupon.reset()
-  }
+  const finishButtonClass =
+    'grid h-[58px] w-full place-items-center rounded-full bg-linear-to-r from-primary to-primary-dark text-[0.9375rem] font-bold text-primary-foreground desktop:h-10 desktop:rounded-sm desktop:bg-none desktop:bg-primary'
 
   return (
     <aside
@@ -136,44 +119,7 @@ function CartSummary({ subtotal, isLoading }: { subtotal: Big; isLoading: boolea
         Resumo da carteira
       </h2>
 
-      {coupon ? (
-        <div className="flex items-center justify-between gap-3 rounded-full border border-primary px-4 py-2 text-sm desktop:rounded-sm">
-          <span>
-            Cupom <b className="text-primary">{coupon.code}</b> (-{coupon.discount_percent}%)
-          </span>
-          <button type="button" onClick={removeCoupon} className="text-primary underline-offset-4 hover:underline">
-            Remover
-          </button>
-        </div>
-      ) : (
-        <form onSubmit={submitCoupon}>
-          <label htmlFor="coupon-code" className="sr-only desktop:not-sr-only desktop:mb-1.5 desktop:block desktop:text-[0.8125rem] desktop:font-bold">
-            Código promocional
-          </label>
-          <div className="flex h-12 overflow-hidden rounded-full border desktop:h-10 desktop:rounded-none desktop:border-primary">
-            <input
-              id="coupon-code"
-              value={couponCode}
-              onChange={(event) => setCouponCode(event.target.value)}
-              placeholder="Digite o código promocional..."
-              autoComplete="off"
-              aria-invalid={applyCoupon.isError}
-              aria-describedby="coupon-feedback"
-              className="min-w-0 flex-1 bg-transparent px-4 text-xs outline-none desktop:px-2"
-            />
-            <button
-              type="submit"
-              disabled={!couponCode.trim() || applyCoupon.isPending}
-              className="rounded-full bg-linear-to-r from-primary to-primary-dark px-4 font-bold text-primary-foreground disabled:opacity-60 desktop:rounded-none desktop:bg-none desktop:bg-primary"
-            >
-              {applyCoupon.isPending ? 'Aplicando…' : 'Aplicar'}
-            </button>
-          </div>
-        </form>
-      )}
-      <p id="coupon-feedback" role="alert" className="mt-1.5 mb-3 min-h-5 text-xs text-destructive">
-        {applyCoupon.error?.message}
-      </p>
+      <CouponForm />
 
       <dl className="grid gap-2.5">
         <SummaryRow label="Subtotal" value={`${formatEth(subtotal)} ETH`} isLoading={isLoading} />
@@ -187,13 +133,15 @@ function CartSummary({ subtotal, isLoading }: { subtotal: Big; isLoading: boolea
         {isLoading ? <Skeleton className="h-6 w-28" /> : <span className="text-lg text-primary">{formatEth(total)} ETH</span>}
       </div>
 
-      <button
-        type="button"
-        onClick={user ? undefined : () => openAuth('login')}
-        className="h-[58px] w-full rounded-full bg-linear-to-r from-primary to-primary-dark text-[0.9375rem] font-bold text-primary-foreground desktop:h-10 desktop:rounded-sm desktop:bg-none desktop:bg-primary"
-      >
-        {user ? 'Finalizar' : 'Conectar e finalizar'}
-      </button>
+      {user ? (
+        <Link to="/checkout" className={finishButtonClass}>
+          Finalizar
+        </Link>
+      ) : (
+        <button type="button" onClick={() => openAuth('login', '/checkout')} className={finishButtonClass}>
+          Conectar e finalizar
+        </button>
+      )}
       <Link to="/" hash={CATALOG_SECTION_ID} className="mt-3 block text-center text-[0.9375rem] text-primary hover:underline">
         Continuar explorando
       </Link>

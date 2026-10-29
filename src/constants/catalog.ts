@@ -18,6 +18,12 @@ export const NETWORKS: { slug: Network; label: string }[] = [
   { slug: 'solana', label: 'Solana' },
 ]
 
+export const NETWORK_OPTIONS = NETWORKS.map((network) => ({ value: network.slug, label: network.label }))
+
+export function getNetworkLabel(network: Network) {
+  return NETWORKS.find((item) => item.slug === network)?.label
+}
+
 export const RAIL_SIZE = 5
 
 export const STAY_IN_PLACE = { hash: true, resetScroll: false, hashScrollIntoView: false } as const

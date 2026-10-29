@@ -6,3 +6,11 @@ export function readStoredJson<T>(key: string, fallback: T): T {
     return fallback
   }
 }
+
+export function saveStoredJson(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // ignore
+  }
+}

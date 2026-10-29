@@ -1,0 +1,5 @@
+[
+  { "provider": "walletconnect", "address": "0x3E8d1F5a7B9c2D4e6F8a0B1c3D5e7F9a1B2c4D6E" },
+  { "provider": "metamask", "address": "0xA91F3c5E2b7D4f6A8C1e9B0d2F4a6C8E1b3DE82C" },
+  { "provider": "coinbase", "address": "0x7C42aE19b3D5f8061C2e4A9B7d0F3e5a8C1b19E8" }
+]

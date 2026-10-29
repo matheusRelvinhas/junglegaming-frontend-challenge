@@ -5,7 +5,7 @@ import { axiosGet, axiosPost } from './api'
 export function useSession(token: string | null) {
   return useQuery<UserResponse, ApiError>({
     queryKey: ['session', token],
-    queryFn: ({ signal }) => axiosGet<UserResponse>('auth/session', { signal, token: token ?? undefined }),
+    queryFn: ({ signal }) => axiosGet<UserResponse>('auth/session', { signal, token }),
     enabled: token !== null,
     retry: false,
     staleTime: Infinity,

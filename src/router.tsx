@@ -1,11 +1,14 @@
 import { createRootRoute, createRoute, createRouter, Outlet, type ErrorComponentProps } from '@tanstack/react-router'
 import { Layout } from '@/app/layout'
 import { StateMessage } from '@/components/StateMessage'
+import { ACCOUNT_MENU, type AccountTab } from '@/constants/account'
 import { COLLECTIONS, NETWORKS } from '@/constants/catalog'
 import { ICONS } from '@/constants/icons'
 import { AppProvider } from '@/context/AppProvider'
 import type { AuthMode } from '@/hooks/useAuthModal'
+import { AccountPage } from '@/pages/account/AccountPage'
 import { CartPage } from '@/pages/cart/CartPage'
+import { CheckoutPage } from '@/pages/checkout/CheckoutPage'
 import { HomePage } from '@/pages/home/HomePage'
 import { NftDetailPage } from '@/pages/nft-detail/NftDetailPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -39,9 +42,26 @@ function parseHomeSearch(search: Record<string, unknown>): ListNftsParams {
   }
 }
 
-function parseRootSearch(search: Record<string, unknown>): { auth?: AuthMode } {
+// Só caminhos internos ("/checkout"), nunca outro site ("//site.com", "https://...").
+function toInternalPath(value: unknown) {
+  return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : undefined
+}
+
+function parseRootSearch(search: Record<string, unknown>): { auth?: AuthMode; redirect?: string } {
   const auth = search.auth
-  return { auth: auth === 'login' || auth === 'signup' ? auth : undefined }
+  return {
+    auth: auth === 'login' || auth === 'signup' ? auth : undefined,
+    redirect: toInternalPath(search.redirect),
+  }
+}
+
+function parseCheckoutSearch(search: Record<string, unknown>): { order?: string } {
+  return { order: toText(search.order) || undefined }
+}
+
+function parseAccountSearch(search: Record<string, unknown>): { tab?: AccountTab } {
+  const menuItem = ACCOUNT_MENU.find((item) => item.tab !== undefined && item.tab === search.tab)
+  return { tab: menuItem?.tab }
 }
 
 const rootRoute = createRootRoute({
@@ -77,8 +97,24 @@ const cartRoute = createRoute({
   component: CartPage,
 })
 
+const checkoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/checkout',
+  validateSearch: parseCheckoutSearch,
+  staticData: { title: 'Pagamento com carteira', isMarketPage: true },
+  component: CheckoutPage,
+})
+
+const accountRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/account',
+  validateSearch: parseAccountSearch,
+  staticData: { title: 'Meu perfil' },
+  component: AccountPage,
+})
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute]),
+  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute, checkoutRoute, accountRoute]),
   defaultErrorComponent: ({ reset }: ErrorComponentProps) => (
     <div className="py-10">
       <StateMessage

@@ -68,10 +68,10 @@ function DesktopAccount() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="flex items-center gap-1 text-sm text-sand" title={user.name}>
+      <Link to="/account" title={`Meu perfil (${user.name})`} className="flex items-center gap-1 text-sm text-sand hover:text-primary">
         Olá,
         <b className="w-[72px] truncate text-foreground">{user.name.split(' ')[0]}</b>
-      </span>
+      </Link>
       <SignOutButton className="h-[35px] px-3 text-[0.9375rem] hover:bg-primary/10" />
     </div>
   )
@@ -108,7 +108,15 @@ function MobileAccount() {
         <p title={user.email} className="truncate text-xs text-gray">
           {user.email}
         </p>
-        <SignOutButton className="mt-4 h-10 w-full justify-center" />
+        <Link
+          to="/account"
+          onClick={() => document.getElementById('account-menu')?.hidePopover()}
+          className="mt-4 flex h-10 items-center justify-center gap-2 rounded-sm bg-primary font-bold text-primary-foreground"
+        >
+          <Icon icon={ICONS.userOutline} className="size-5" aria-hidden />
+          Meu perfil
+        </Link>
+        <SignOutButton className="mt-2 h-10 w-full justify-center" />
       </div>
     </>
   )
@@ -243,9 +251,14 @@ export function MobileTabBar() {
       >
         <Icon icon={ICONS.home} className="size-6" aria-hidden />
       </Link>
-      <button type="button" disabled aria-label="Favoritos (em breve)" className="grid size-11 place-items-center disabled:opacity-40">
+      <Link
+        to="/account"
+        search={{ tab: 'favorites' }}
+        aria-label="Lista de interesse"
+        className="grid size-11 place-items-center aria-[current=page]:text-primary"
+      >
         <Icon icon={ICONS.heart} className="size-6" aria-hidden />
-      </button>
+      </Link>
       <button
         type="button"
         onClick={focusSearch}

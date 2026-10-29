@@ -252,17 +252,17 @@ function AuthForm({ mode, registeredEmail, onSwitchMode, onRegistered, onLoggedI
 }
 
 export function AuthDialog() {
-  const { authMode, openAuth, closeAuth } = useAuthModal()
+  const { authMode, switchAuthMode, closeAuth, finishLogin } = useAuthModal()
   const [registeredEmail, setRegisteredEmail] = useState('')
 
   function switchMode(mode: AuthMode) {
     setRegisteredEmail('')
-    openAuth(mode)
+    switchAuthMode(mode)
   }
 
   function finishSignup(email: string) {
     setRegisteredEmail(email)
-    openAuth('login')
+    switchAuthMode('login')
   }
 
   return (
@@ -280,7 +280,7 @@ export function AuthDialog() {
           registeredEmail={registeredEmail}
           onSwitchMode={switchMode}
           onRegistered={finishSignup}
-          onLoggedIn={closeAuth}
+          onLoggedIn={finishLogin}
         />
       )}
     </ModalDialog>

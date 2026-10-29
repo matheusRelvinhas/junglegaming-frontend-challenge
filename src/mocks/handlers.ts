@@ -2,10 +2,12 @@ import { delay, http, HttpResponse } from 'msw'
 import { COLLECTIONS, NETWORKS } from '@/constants/catalog'
 import type { CatalogFacets, ListNftsResponse, Network, Nft, NftInfo } from '@/types/api'
 import { range } from '@/utils/array'
+import { accountHandlers } from './account'
 import { authHandlers } from './auth'
-import coupons from './data/coupons.json'
+import banners from './data/banners.json'
 import nftDetailsData from './data/nft-details.json'
-import { getNftEditions, getNfts } from './market'
+import { checkoutHandlers } from './checkout'
+import { getNftEditions, getNfts, getTokenId } from './market'
 import { realtimeHandler } from './realtime'
 
 const PAGE_SIZE = 9
@@ -23,7 +25,7 @@ function buildNftInfo(nft: Nft): NftInfo | null {
     ...nft,
     ...detail,
     editions: getNftEditions(nft.id),
-    token_id: `#${nft.name.split('#')[1].padStart(4, '0')}`,
+    token_id: getTokenId(nft),
     network_info: `Disponível em ${networks.join(', ')}, com procedência imutável e metadados armazenados no IPFS.`,
     contract_info: `0x7A${String(nft.id).padStart(2, '0')}...19E8 • Contrato inteligente ERC-721 verificado.`,
     royalties_info: `Direitos autorais de ${detail.creator}: 5% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.`,
@@ -55,6 +57,8 @@ function countFacets(nfts: Nft[]): CatalogFacets {
 
 export const handlers = [
   ...authHandlers,
+  ...checkoutHandlers,
+  ...accountHandlers,
   realtimeHandler,
 
   http.get('/api/list_nfts', async ({ request }) => {
@@ -106,13 +110,8 @@ export const handlers = [
     return HttpResponse.json(nftInfo)
   }),
 
-  http.get('/api/coupon/:code', async ({ params }) => {
+  http.get('/api/banners', async () => {
     await delay()
-
-    const coupon = coupons.find((item) => item.code === String(params.code).trim().toUpperCase())
-    if (!coupon) return HttpResponse.json({ message: 'Cupom inválido.' }, { status: 404 })
-    if (coupon.expired) return HttpResponse.json({ message: 'Este cupom expirou.' }, { status: 410 })
-
-    return HttpResponse.json({ code: coupon.code, discount_percent: coupon.discount_percent })
+    return HttpResponse.json(banners)
   }),
 ]
