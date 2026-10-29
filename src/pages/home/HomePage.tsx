@@ -9,16 +9,19 @@ import type { Banner } from '@/types/api'
 import { NftCatalog } from './NftCatalog'
 
 const ROTATION_INTERVAL_MS = 6000
+const BANNER_HEIGHT_CLASS = 'h-[220px] desktop:h-[380px]'
 
 function BannerSlide({ banner, isFirst }: { banner: Banner; isFirst: boolean }) {
   return (
-    <div className="flex animate-banner-in items-center gap-4 overflow-hidden rounded-2xl bg-linear-to-br from-surface-3 to-surface-2 p-4 pb-8 desktop:grid desktop:grid-cols-[1fr_380px] desktop:gap-8 desktop:rounded-none desktop:bg-none desktop:p-0">
+    <div
+      className={`flex animate-banner-in items-center gap-4 overflow-hidden rounded-2xl bg-linear-to-br from-surface-3 to-surface-2 p-4 pb-8 desktop:grid desktop:grid-cols-[1fr_380px] desktop:items-start desktop:gap-8 desktop:rounded-none desktop:bg-none desktop:p-0 ${BANNER_HEIGHT_CLASS}`}
+    >
       <div className="flex-1 desktop:pt-11">
         <p className="text-xs font-semibold desktop:text-sm desktop:font-normal desktop:tracking-[0.14em]">Bem-vindo à Kurio</p>
-        <h2 className="mt-2 text-base font-bold leading-7 tracking-[0.06em] desktop:mt-3.5 desktop:text-display desktop:leading-[70px]">
+        <h2 className="mt-2 line-clamp-2 text-base font-bold leading-7 tracking-[0.06em] desktop:mt-3.5 desktop:line-clamp-none desktop:text-display desktop:leading-[70px]">
           {banner.title}
         </h2>
-        <p className="mt-1.5 text-xs leading-[17px] text-sand desktop:mt-3 desktop:max-w-[560px] desktop:text-sm desktop:leading-6 desktop:tracking-[0.06em]">
+        <p className="mt-1.5 line-clamp-3 text-xs leading-[17px] text-sand desktop:mt-3 desktop:line-clamp-none desktop:max-w-[560px] desktop:text-sm desktop:leading-6 desktop:tracking-[0.06em]">
           {banner.description}
         </p>
         <a
@@ -60,7 +63,7 @@ function HeaderMain() {
   }
 
   if (banners.isPending) {
-    return <Skeleton className="h-[180px] rounded-2xl desktop:h-[380px] desktop:rounded-none" />
+    return <Skeleton className={`rounded-2xl desktop:rounded-none ${BANNER_HEIGHT_CLASS}`} />
   }
   if (banners.isError) {
     return <StateMessage icon={ICONS.offline} title="Não foi possível carregar os destaques" description={banners.error.message} onRetry={() => banners.refetch()} />

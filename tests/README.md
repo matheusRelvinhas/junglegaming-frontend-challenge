@@ -61,12 +61,17 @@ Nos cenários sensíveis a tempo, a latência é a do mock (determinística) e o
 
 ## Regressão visual
 
-As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas. É **uma baseline só para Windows e Linux**: a comparação aceita até 3% de pixels diferentes (antialias de fonte muda entre sistemas). A tela é estabilizada antes da captura:
+As baselines ficam em `visual/__screenshots__/<projeto>/` e são versionadas, **uma por sistema**: `home-win32.png` para Windows e `home-linux.png` para Linux e o CI. Elas não podem ser compartilhadas porque o Linux quebra as linhas de texto de outro jeito e a página fica com outra altura. A comparação aceita só 1% de pixels diferentes (antialias).
+
+A tela é estabilizada antes da captura:
 - dados limpos do mock;
 - `reducedMotion: 'reduce'`, que para o carrossel e as animações;
 - fontes e ícones locais;
 - espera pelas imagens.
 
-Mudou o layout de propósito? Rode `npm run test:e2e:update-snapshots`, confira as imagens e versione-as.
+Mudou o layout de propósito?
+1. **Windows:** rode `npm run test:e2e:update-snapshots` e confira as imagens `*-win32.png`.
+2. **Linux:** no GitHub, abra **Actions → "Atualizar baselines visuais (Linux)" → Run workflow**. Baixe o artefato `baselines-linux` e copie as imagens `*-linux.png` para `tests/visual/__screenshots__/` (mesmas pastas `desktop/` e `mobile/`).
+3. Faça commit das imagens. Até as `*-linux.png` estarem no repositório, o CI falha só nos testes visuais.
 
 Os seletores usam papel e nome acessível (`getByRole`, `getByLabel`). Quando o teste não acha um elemento pelo nome, há um problema de acessibilidade a corrigir.

@@ -1,0 +1,646 @@
+{
+  "environment": [
+    {
+      "label": "Data",
+      "value": "2026-10-29T15:50:16.110Z"
+    },
+    {
+      "label": "Lighthouse",
+      "value": "13.6.0"
+    },
+    {
+      "label": "Navegador",
+      "value": "HeadlessChrome/156.0.0.0"
+    },
+    {
+      "label": "Node.js",
+      "value": "v24.22.1"
+    },
+    {
+      "label": "Sistema",
+      "value": "Windows_NT 10.0.19045 (x64)"
+    },
+    {
+      "label": "CPU",
+      "value": "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz · 24 núcleos"
+    },
+    {
+      "label": "Memória",
+      "value": "24 GB"
+    },
+    {
+      "label": "Build",
+      "value": "vite build --mode test (produção, mocks MSW ligados, cenário padrão) + vite preview"
+    }
+  ],
+  "summaries": [
+    {
+      "page": {
+        "name": "home",
+        "label": "Início",
+        "path": "/"
+      },
+      "profile": {
+        "name": "mobile",
+        "label": "Mobile"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 79
+            },
+            {
+              "id": "accessibility",
+              "value": 96
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3560.4619999999995
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.0004383293848092952
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 460
+            }
+          ]
+        },
+        {
+          "run": 2,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 80
+            },
+            {
+              "id": "accessibility",
+              "value": 96
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3512.8061
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 422
+            }
+          ]
+        },
+        {
+          "run": 3,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 80
+            },
+            {
+              "id": "accessibility",
+              "value": 96
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3569.6318499999998
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.0044402982584921275
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 426.5
+            }
+          ]
+        }
+      ],
+      "throttling": "formFactor mobile, método simulate, RTT 150 ms, banda 1638.4 Kbps, CPU 4×",
+      "medianScores": [
+        {
+          "id": "performance",
+          "value": 80
+        },
+        {
+          "id": "accessibility",
+          "value": 96
+        },
+        {
+          "id": "best-practices",
+          "value": 100
+        },
+        {
+          "id": "seo",
+          "value": 100
+        }
+      ],
+      "medianMetrics": [
+        {
+          "id": "largest-contentful-paint",
+          "value": 3560.4619999999995
+        },
+        {
+          "id": "cumulative-layout-shift",
+          "value": 0.0004383293848092952
+        },
+        {
+          "id": "total-blocking-time",
+          "value": 426.5
+        }
+      ],
+      "representativeRun": 2
+    },
+    {
+      "page": {
+        "name": "home",
+        "label": "Início",
+        "path": "/"
+      },
+      "profile": {
+        "name": "desktop",
+        "label": "Desktop"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 100
+            },
+            {
+              "id": "accessibility",
+              "value": 97
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 789.4037
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.002513950408033468
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 16
+            }
+          ]
+        },
+        {
+          "run": 2,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 100
+            },
+            {
+              "id": "accessibility",
+              "value": 97
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 791.07525
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.002513950408033468
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "run": 3,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 100
+            },
+            {
+              "id": "accessibility",
+              "value": 97
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 822.1227999999999
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.002513950408033468
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 9.999999999999886
+            }
+          ]
+        }
+      ],
+      "throttling": "formFactor desktop, método simulate, RTT 40 ms, banda 10240 Kbps, CPU 1×",
+      "medianScores": [
+        {
+          "id": "performance",
+          "value": 100
+        },
+        {
+          "id": "accessibility",
+          "value": 97
+        },
+        {
+          "id": "best-practices",
+          "value": 100
+        },
+        {
+          "id": "seo",
+          "value": 100
+        }
+      ],
+      "medianMetrics": [
+        {
+          "id": "largest-contentful-paint",
+          "value": 791.07525
+        },
+        {
+          "id": "cumulative-layout-shift",
+          "value": 0.002513950408033468
+        },
+        {
+          "id": "total-blocking-time",
+          "value": 11
+        }
+      ],
+      "representativeRun": 1
+    },
+    {
+      "page": {
+        "name": "nft-detail",
+        "label": "Detalhe do NFT",
+        "path": "/nft/1"
+      },
+      "profile": {
+        "name": "mobile",
+        "label": "Mobile"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 83
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3646.4271499999995
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.00008325104862565032
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 305
+            }
+          ]
+        },
+        {
+          "run": 2,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 83
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3644.21895
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.00008325104862565032
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 304
+            }
+          ]
+        },
+        {
+          "run": 3,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 82
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 3576.2447
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 368.58510000000047
+            }
+          ]
+        }
+      ],
+      "throttling": "formFactor mobile, método simulate, RTT 150 ms, banda 1638.4 Kbps, CPU 4×",
+      "medianScores": [
+        {
+          "id": "performance",
+          "value": 83
+        },
+        {
+          "id": "accessibility",
+          "value": 100
+        },
+        {
+          "id": "best-practices",
+          "value": 100
+        },
+        {
+          "id": "seo",
+          "value": 100
+        }
+      ],
+      "medianMetrics": [
+        {
+          "id": "largest-contentful-paint",
+          "value": 3644.21895
+        },
+        {
+          "id": "cumulative-layout-shift",
+          "value": 0.00008325104862565032
+        },
+        {
+          "id": "total-blocking-time",
+          "value": 305
+        }
+      ],
+      "representativeRun": 1
+    },
+    {
+      "page": {
+        "name": "nft-detail",
+        "label": "Detalhe do NFT",
+        "path": "/nft/1"
+      },
+      "profile": {
+        "name": "desktop",
+        "label": "Desktop"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 99
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 822.556
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.015254821922035661
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "run": 2,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 100
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 822.0049
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.015254821922035661
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "run": 3,
+          "scores": [
+            {
+              "id": "performance",
+              "value": 100
+            },
+            {
+              "id": "accessibility",
+              "value": 100
+            },
+            {
+              "id": "best-practices",
+              "value": 100
+            },
+            {
+              "id": "seo",
+              "value": 100
+            }
+          ],
+          "metrics": [
+            {
+              "id": "largest-contentful-paint",
+              "value": 780.97545
+            },
+            {
+              "id": "cumulative-layout-shift",
+              "value": 0.015254821922035661
+            },
+            {
+              "id": "total-blocking-time",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "throttling": "formFactor desktop, método simulate, RTT 40 ms, banda 10240 Kbps, CPU 1×",
+      "medianScores": [
+        {
+          "id": "performance",
+          "value": 100
+        },
+        {
+          "id": "accessibility",
+          "value": 100
+        },
+        {
+          "id": "best-practices",
+          "value": 100
+        },
+        {
+          "id": "seo",
+          "value": 100
+        }
+      ],
+      "medianMetrics": [
+        {
+          "id": "largest-contentful-paint",
+          "value": 822.0049
+        },
+        {
+          "id": "cumulative-layout-shift",
+          "value": 0.015254821922035661
+        },
+        {
+          "id": "total-blocking-time",
+          "value": 0
+        }
+      ],
+      "representativeRun": 2
+    }
+  ]
+}
